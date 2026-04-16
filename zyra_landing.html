@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Zyra — AI Customer Experience for D2C Brands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050510;--bg1:#080818;--bg2:#0d0d22;--bg3:#12122e;
+  --acc:#7C3AED;--acc2:#A855F7;--acc3:#C084FC;
+  --pink:#EC4899;--teal:#06B6D4;--green:#10B981;
+  --txt:#F1F0FF;--txt2:#A8A4C8;--txt3:#5C587A;
+  --bdr:rgba(124,58,237,0.2);--bdr2:rgba(124,58,237,0.4);
+  --grd:linear-gradient(135deg,#7C3AED,#EC4899);
+  --grd2:linear-gradient(135deg,#06B6D4,#7C3AED);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.6}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.1}
+
+/* NOISE OVERLAY */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
+
+/* GLOW ORBS */
+.orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
+.orb1{width:600px;height:600px;background:rgba(124,58,237,0.15);top:-200px;right:-100px}
+.orb2{width:400px;height:400px;background:rgba(236,72,153,0.1);top:200px;left:-100px}
+.orb3{width:500px;height:500px;background:rgba(6,182,212,0.08);bottom:-100px;right:200px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;height:70px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(20px);background:rgba(5,5,16,0.8)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:800;background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--txt2);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--txt)}
+.nav-cta{display:flex;gap:0.75rem;align-items:center}
+.btn-ghost{background:transparent;border:1px solid var(--bdr2);color:var(--txt2);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:0.875rem;font-weight:500;transition:all .2s;font-family:'DM Sans',sans-serif}
+.btn-ghost:hover{border-color:var(--acc3);color:var(--txt)}
+.btn-primary{background:var(--grd);border:none;color:#fff;padding:9px 20px;border-radius:8px;cursor:pointer;font-size:0.875rem;font-weight:600;font-family:'DM Sans',sans-serif;transition:opacity .2s;white-space:nowrap}
+.btn-primary:hover{opacity:0.9}
+.btn-large{padding:14px 32px;font-size:1rem;border-radius:10px}
+.btn-outline-large{background:transparent;border:1.5px solid var(--bdr2);color:var(--txt);padding:13px 32px;border-radius:10px;cursor:pointer;font-size:1rem;font-weight:500;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-outline-large:hover{border-color:var(--acc3);background:rgba(124,58,237,0.1)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 5% 80px;position:relative;overflow:hidden}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,0.12);border:1px solid var(--bdr2);border-radius:100px;padding:6px 16px;margin-bottom:2rem;font-size:0.8rem;color:var(--acc3);font-weight:500}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.8)}}
+.hero h1{font-size:clamp(3.2rem,8vw,6.5rem);font-weight:600;letter-spacing:-1px;margin:0 auto 1.5rem;max-width:900px;text-align:center;width:100%}
+.hero h1 .grad{background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero h1 .grad2{background:var(--grd2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(1rem,2vw,1.2rem);color:var(--txt2);max-width:580px;margin:0 auto 2.5rem;line-height:1.8;font-weight:300;text-align:center}
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.hero-social-proof{display:flex;align-items:center;gap:12px;font-size:0.8rem;color:var(--txt3)}
+.avatars{display:flex}
+.avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--bg);margin-left:-8px;background:var(--grd);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.avatar:first-child{margin-left:0}
+.stars{color:#F59E0B;letter-spacing:1px}
+
+/* DASHBOARD MOCKUP */
+.hero-mockup{width:100%;max-width:900px;margin:0 auto;position:relative;z-index:1}
+.mockup-wrapper{background:linear-gradient(135deg,rgba(124,58,237,0.3),rgba(236,72,153,0.2));border-radius:20px;padding:2px;margin-top:4rem}
+.mockup-inner{background:var(--bg1);border-radius:18px;overflow:hidden}
+.mockup-bar{background:var(--bg2);padding:12px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot-r{background:#FF5F57}.dot-y{background:#FFBD2E}.dot-g{background:#28CA41}
+.mockup-url{flex:1;background:rgba(255,255,255,0.05);border-radius:6px;padding:4px 12px;font-size:11px;color:var(--txt3);text-align:center;max-width:300px;margin:0 auto}
+.mockup-body{display:grid;grid-template-columns:220px 1fr;min-height:360px}
+.mock-sidebar{background:var(--bg2);border-right:1px solid rgba(255,255,255,0.05);padding:16px}
+.mock-logo{font-family:'Cormorant Garamond',serif;font-weight:800;font-size:1.1rem;background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px;padding:4px 0}
+.mock-nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;font-size:12px;color:var(--txt3);margin-bottom:2px;cursor:pointer}
+.mock-nav-item.active{background:rgba(124,58,237,0.2);color:var(--acc3)}
+.mock-nav-icon{width:16px;height:16px;border-radius:4px;background:currentColor;opacity:0.6;flex-shrink:0}
+.mock-main{padding:20px}
+.mock-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.mock-stat{background:var(--bg2);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px}
+.mock-stat-val{font-size:1.4rem;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--txt)}
+.mock-stat-lbl{font-size:10px;color:var(--txt3);margin-top:2px}
+.mock-stat-chg{font-size:10px;color:var(--green);margin-top:4px}
+.mock-msgs{background:var(--bg2);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px}
+.mock-msgs-title{font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.mock-badge{background:rgba(124,58,237,0.3);color:var(--acc3);font-size:10px;padding:2px 7px;border-radius:100px}
+.mock-msg{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.mock-msg:last-child{border-bottom:none}
+.mock-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.mock-msg-content{flex:1}
+.mock-msg-name{font-size:11px;font-weight:600;color:var(--txt)}
+.mock-msg-text{font-size:10px;color:var(--txt3);margin-top:1px}
+.mock-msg-tag{font-size:9px;padding:1px 6px;border-radius:100px;display:inline-block;margin-top:3px}
+.tag-ai{background:rgba(124,58,237,0.2);color:var(--acc3)}
+.tag-pending{background:rgba(236,72,153,0.2);color:#F9A8D4}
+.tag-resolved{background:rgba(16,185,129,0.2);color:#6EE7B7}
+
+/* LOGOS STRIP */
+.logos-strip{padding:40px 5%;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);overflow:hidden;background:rgba(8,8,24,0.5)}
+.logos-label{text-align:center;font-size:0.8rem;color:var(--txt3);margin-bottom:24px;letter-spacing:2px;text-transform:uppercase}
+.logos-track{display:flex;gap:3rem;align-items:center;animation:scroll 20s linear infinite}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.logo-item{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1rem;color:var(--txt3);white-space:nowrap;opacity:0.5}
+
+/* SECTIONS */
+section{padding:100px 5%;position:relative}
+.section-label{display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--acc3);margin-bottom:1rem}
+.section-label::before{content:'';width:20px;height:2px;background:var(--acc)}
+h2.section-title{font-size:clamp(2.4rem,4.5vw,3.6rem);font-weight:600;letter-spacing:-0.5px;margin-bottom:1rem}
+p.section-sub{font-size:1.05rem;color:var(--txt2);max-width:540px;line-height:1.8}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem}
+.feature-card{background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:border-color .3s,transform .3s}
+.feature-card:hover{border-color:var(--bdr2);transform:translateY(-4px)}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--grd);opacity:0;transition:opacity .3s}
+.feature-card:hover::before{opacity:1}
+.feature-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1.25rem}
+.feature-icon.purple{background:rgba(124,58,237,0.15)}
+.feature-icon.pink{background:rgba(236,72,153,0.15)}
+.feature-icon.teal{background:rgba(6,182,212,0.15)}
+.feature-icon.green{background:rgba(16,185,129,0.15)}
+.feature-icon.orange{background:rgba(245,158,11,0.15)}
+.feature-icon.blue{background:rgba(59,130,246,0.15)}
+.feature-card h3{font-size:1.3rem;font-weight:600;margin-bottom:0.5rem;color:var(--txt)}
+.feature-card p{font-size:0.875rem;color:var(--txt2);line-height:1.75}
+.feature-tag{display:inline-block;margin-top:1rem;font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--acc3);background:rgba(124,58,237,0.1);padding:3px 10px;border-radius:100px}
+
+/* VOICE DEMO SECTION */
+.voice-section{background:var(--bg1);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05)}
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:3rem}
+.voice-chat{background:var(--bg2);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06)}
+.chat-header{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.chat-avatar{width:38px;height:38px;border-radius:50%;background:var(--grd);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.chat-name{font-weight:600;font-size:0.9rem}
+.chat-status{font-size:0.75rem;color:var(--green);display:flex;align-items:center;gap:4px}
+.chat-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}
+.chat-bubble{padding:10px 14px;border-radius:12px;font-size:0.85rem;margin-bottom:8px;max-width:80%;line-height:1.6}
+.bubble-customer{background:rgba(255,255,255,0.07);color:var(--txt2);border-bottom-left-radius:4px}
+.bubble-brand{background:rgba(124,58,237,0.25);color:var(--txt);border-bottom-right-radius:4px;margin-left:auto;text-align:left}
+.bubble-label{font-size:0.65rem;color:var(--txt3);margin-bottom:3px}
+.bubble-label.ai{color:var(--acc3)}
+.ai-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);border-radius:100px;padding:3px 10px;font-size:0.7rem;color:var(--acc3);font-weight:500;margin-top:8px}
+
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;margin-top:4rem;position:relative}
+.steps::before{content:'';position:absolute;top:32px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--bdr2),transparent)}
+.step{text-align:center;position:relative}
+.step-num{width:64px;height:64px;border-radius:50%;background:var(--grd);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:800;color:#fff;margin:0 auto 1.25rem;position:relative;z-index:1;box-shadow:0 0 30px rgba(124,58,237,0.4)}
+.step h3{font-size:0.95rem;font-weight:600;margin-bottom:0.5rem}
+.step p{font-size:0.8rem;color:var(--txt2);line-height:1.7}
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem;max-width:1000px;margin-left:auto;margin-right:auto}
+.pricing-card{background:var(--bg1);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:2rem;position:relative;transition:transform .3s}
+.pricing-card:hover{transform:translateY(-6px)}
+.pricing-card.popular{border-color:var(--acc);background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(236,72,153,0.06))}
+.popular-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--grd);color:#fff;font-size:0.7rem;font-weight:700;padding:4px 16px;border-radius:100px;white-space:nowrap;letter-spacing:0.5px}
+.pricing-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;margin-bottom:0.5rem}
+.pricing-price{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:800;color:var(--txt);margin-bottom:0.25rem}
+.pricing-price span{font-size:1rem;color:var(--txt2);font-weight:400}
+.pricing-desc{font-size:0.8rem;color:var(--txt3);margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.pricing-feature{display:flex;align-items:center;gap:10px;font-size:0.85rem;color:var(--txt2);margin-bottom:10px}
+.pricing-feature::before{content:'✓';width:18px;height:18px;border-radius:50%;background:rgba(16,185,129,0.2);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.pricing-btn{width:100%;margin-top:1.5rem;padding:11px;border-radius:10px;font-weight:600;font-size:0.9rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.pricing-btn.pri{background:var(--grd);border:none;color:#fff}
+.pricing-btn.sec{background:transparent;border:1px solid var(--bdr2);color:var(--txt2)}
+.pricing-btn.sec:hover{border-color:var(--acc3);color:var(--txt)}
+
+/* TESTIMONIALS */
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem}
+.testi-card{background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.75rem}
+.testi-stars{color:#F59E0B;font-size:0.9rem;margin-bottom:1rem;letter-spacing:2px}
+.testi-text{font-size:0.875rem;color:var(--txt2);line-height:1.8;margin-bottom:1.25rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.testi-name{font-weight:600;font-size:0.85rem}
+.testi-handle{font-size:0.75rem;color:var(--txt3)}
+
+/* FAQ */
+.faq-grid{max-width:700px;margin:4rem auto 0;display:flex;flex-direction:column;gap:0.75rem}
+.faq-item{background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden}
+.faq-q{padding:1.1rem 1.5rem;font-weight:600;font-size:0.9rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-q:hover{color:var(--acc3)}
+.faq-icon{font-size:1.2rem;color:var(--txt3);transition:transform .3s}
+.faq-item.open .faq-icon{transform:rotate(45deg);color:var(--acc3)}
+.faq-a{padding:0 1.5rem 1.1rem;font-size:0.85rem;color:var(--txt2);line-height:1.8;display:none}
+.faq-item.open .faq-a{display:block}
+
+/* CTA SECTION */
+.cta-section{text-align:center;padding:120px 5%}
+.cta-box{background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(236,72,153,0.1));border:1px solid rgba(124,58,237,0.3);border-radius:28px;padding:80px 40px;position:relative;overflow:hidden;max-width:900px;margin:0 auto}
+.cta-box::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1px;background:var(--grd)}
+.cta-box h2{font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:600;letter-spacing:-0.5px;margin-bottom:1rem}
+.cta-box p{font-size:1.05rem;color:var(--txt2);margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8}
+.cta-note{font-size:0.8rem;color:var(--txt3);margin-top:1rem}
+
+/* FOOTER */
+footer{padding:60px 5% 40px;border-top:1px solid rgba(255,255,255,0.05)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-brand p{font-size:0.85rem;color:var(--txt3);margin-top:0.75rem;line-height:1.7;max-width:260px}
+.footer-col h4{font-family:'Cormorant Garamond',serif;font-size:0.85rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);margin-bottom:1rem}
+.footer-col a{display:block;font-size:0.85rem;color:var(--txt3);text-decoration:none;margin-bottom:0.6rem;transition:color .2s}
+.footer-col a:hover{color:var(--txt)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.05);font-size:0.8rem;color:var(--txt3)}
+
+/* ANIMATIONS */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* MOBILE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .features-grid{grid-template-columns:1fr}
+  .voice-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .steps::before{display:none}
+  .pricing-grid{grid-template-columns:1fr}
+  .testimonials-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:2.4rem}
+  .mockup-body{grid-template-columns:1fr}
+  .mock-sidebar{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" style="text-decoration:none"><div class="nav-logo">Zyra</div></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn-ghost" onclick="window.location.href='zyra_auth.html'">Log in</button>
+    <button class="btn-primary" onclick="window.location.href='zyra_auth.html'">Start free trial →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Now with Hinglish & Regional Language Support
+    </div>
+    <h1 style="text-align:center;width:100%">Your brand's voice.<br/><span class="grad">On autopilot.</span></h1>
+    <p class="hero-sub">Zyra learns how you talk, then handles every customer message on WhatsApp and Instagram — so you can focus on building your brand, not answering the same questions 80 times a day.</p>
+    <div class="hero-cta">
+      <button class="btn-primary btn-large" onclick="window.location.href='zyra_auth.html'">Start free — no card needed →</button>
+      <button class="btn-outline-large" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">See how it works</button>
+    </div>
+    <div class="hero-social-proof">
+      <div class="avatars">
+        <div class="avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">P</div>
+        <div class="avatar" style="background:linear-gradient(135deg,#06B6D4,#7C3AED)">S</div>
+        <div class="avatar" style="background:linear-gradient(135deg,#EC4899,#F59E0B)">R</div>
+        <div class="avatar" style="background:linear-gradient(135deg,#10B981,#06B6D4)">A</div>
+        <div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#EC4899)">M</div>
+      </div>
+      <div>
+        <div class="stars">★★★★★</div>
+        <div>Loved by <strong style="color:var(--txt)">500+</strong> D2C brand owners</div>
+      </div>
+    </div>
+
+    <!-- MOCKUP -->
+    <div class="hero-mockup" style="margin-top:4rem">
+      <div class="mockup-wrapper">
+        <div class="mockup-inner">
+          <div class="mockup-bar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <div class="mockup-url">app.zyra.in/dashboard</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mock-sidebar">
+              <div class="mock-logo">Zyra</div>
+              <div class="mock-nav-item active">📊 Dashboard</div>
+              <div class="mock-nav-item">💬 Conversations</div>
+              <div class="mock-nav-item">🎙️ Brand Voice</div>
+              <div class="mock-nav-item">📢 Broadcasts</div>
+              <div class="mock-nav-item">📦 Orders</div>
+              <div class="mock-nav-item">📈 Analytics</div>
+              <div class="mock-nav-item">⚙️ Settings</div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-stats">
+                <div class="mock-stat">
+                  <div class="mock-stat-val">247</div>
+                  <div class="mock-stat-lbl">Messages today</div>
+                  <div class="mock-stat-chg">↑ AI handled 89%</div>
+                </div>
+                <div class="mock-stat">
+                  <div class="mock-stat-val">₹38,400</div>
+                  <div class="mock-stat-lbl">Revenue recovered</div>
+                  <div class="mock-stat-chg">↑ 12 carts saved</div>
+                </div>
+                <div class="mock-stat">
+                  <div class="mock-stat-val">4.9★</div>
+                  <div class="mock-stat-lbl">Customer rating</div>
+                  <div class="mock-stat-chg">↑ 23 reviews this week</div>
+                </div>
+              </div>
+              <div class="mock-msgs">
+                <div class="mock-msgs-title">
+                  Live Conversations
+                  <span class="mock-badge">3 need review</span>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">P</div>
+                  <div class="mock-msg-content">
+                    <div class="mock-msg-name">Priya S.</div>
+                    <div class="mock-msg-text">Kab tak aayega mera order? 📦</div>
+                    <span class="mock-msg-tag tag-ai">✦ AI replied</span>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:linear-gradient(135deg,#06B6D4,#10B981)">R</div>
+                  <div class="mock-msg-content">
+                    <div class="mock-msg-name">Rahul M.</div>
+                    <div class="mock-msg-text">Wrong size received, very disappointed</div>
+                    <span class="mock-msg-tag tag-pending">⚡ Needs your reply</span>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:linear-gradient(135deg,#F59E0B,#EC4899)">A</div>
+                  <div class="mock-msg-content">
+                    <div class="mock-msg-name">Anjali K.</div>
+                    <div class="mock-msg-text">Loved the packaging, ordering again! 💕</div>
+                    <span class="mock-msg-tag tag-resolved">✓ Resolved</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos-strip">
+  <div class="logos-label">Trusted by brands on</div>
+  <div style="overflow:hidden">
+    <div class="logos-track">
+      <span class="logo-item">Instagram Shops</span>
+      <span class="logo-item">Shopify</span>
+      <span class="logo-item">WooCommerce</span>
+      <span class="logo-item">Shiprocket</span>
+      <span class="logo-item">WhatsApp Business</span>
+      <span class="logo-item">Delhivery</span>
+      <span class="logo-item">ONDC</span>
+      <span class="logo-item">Meesho</span>
+      <span class="logo-item">Instagram Shops</span>
+      <span class="logo-item">Shopify</span>
+      <span class="logo-item">WooCommerce</span>
+      <span class="logo-item">Shiprocket</span>
+      <span class="logo-item">WhatsApp Business</span>
+      <span class="logo-item">Delhivery</span>
+      <span class="logo-item">ONDC</span>
+      <span class="logo-item">Meesho</span>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title fade-up">Everything a solo D2C founder needs.<br/><span style="background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Nothing you don't.</span></h2>
+  <p class="section-sub fade-up">Built specifically for Indian D2C brands run by one person doing everything.</p>
+  <div class="features-grid">
+    <div class="feature-card fade-up">
+      <div class="feature-icon purple">🎙️</div>
+      <h3>Brand Voice Cloning</h3>
+      <p>Upload 20 past WhatsApp chats. Zyra learns your exact tone — whether you say "bestie", use Hinglish, or end every message with 💕. Every AI reply sounds like you, not a robot.</p>
+      <span class="feature-tag">✦ Unique to Zyra</span>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon pink">💔→💚</div>
+      <h3>Complaint Recovery Engine</h3>
+      <p>When Zyra detects an angry customer — wrong product, late delivery, damage — it automatically crafts a recovery offer with the right discount or replacement. Turns your worst moments into loyal customers.</p>
+      <span class="feature-tag">✦ Unique to Zyra</span>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon teal">📦</div>
+      <h3>Live Order Tracking Replies</h3>
+      <p>Connects with Shiprocket and Delhivery. When a customer asks "where is my order?", Zyra checks the live tracking and replies with the exact status. You never open a tracking link again.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon green">📢</div>
+      <h3>Plain English Broadcasts</h3>
+      <p>Type "Send a Diwali offer to customers who bought in last 3 months." Zyra builds the list, writes the message in your voice, and sends it. Like having a marketing team for ₹1,999/month.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon orange">⭐</div>
+      <h3>Auto Review & UGC Collector</h3>
+      <p>After delivery, Zyra automatically asks for a review and photo on WhatsApp. Photos go to your media library for Instagram content. Turns happy customers into your content team.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon blue">🇮🇳</div>
+      <h3>Hinglish & Regional Languages</h3>
+      <p>Customer writes in Hindi, Tamil, Marathi, or Bengali? Zyra understands and replies in the same language, in your brand's voice. The only D2C support tool built for how Indians actually talk.</p>
+      <span class="feature-tag">✦ Unique to Zyra</span>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon purple">🛒</div>
+      <h3>Abandoned Cart Recovery</h3>
+      <p>Customer asks about a product, shows interest, then goes silent? Zyra sends a gentle follow-up 3 hours later in your voice. Recovers sales you didn't even know you were losing.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon pink">☀️</div>
+      <h3>Daily Business Pulse</h3>
+      <p>Every morning at 9am you get a WhatsApp message with how many messages were handled, any complaints, revenue recovered, and one tip for the day. Your business report, on your phone.</p>
+      <span class="feature-tag">✦ Unique to Zyra</span>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon teal">✅</div>
+      <h3>You Always Stay in Control</h3>
+      <p>Every AI reply is shown to you before sending. One tap to approve, edit, or decline. Zyra handles the 80% — you stay in control of the 20% that needs your personal touch.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VOICE DEMO -->
+<section class="voice-section">
+  <div class="section-label">Brand Voice</div>
+  <h2 class="section-title fade-up">It replies like <span style="background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">you</span>, not like a chatbot.</h2>
+  <div class="voice-grid">
+    <div class="fade-up">
+      <p style="color:var(--txt2);line-height:1.9;margin-bottom:1.5rem;font-size:1rem">Zyra doesn't use generic templates. It reads your actual past conversations and learns how you communicate — your word choices, your emojis, your level of formality. Then it replies the same way.</p>
+      <p style="color:var(--txt2);line-height:1.9;margin-bottom:1.5rem;font-size:1rem">A fashion brand owner who says "bestie" and uses 💕 gets very different AI replies than a premium skincare brand that keeps it sophisticated. Both sound 100% authentic.</p>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div style="display:flex;align-items:center;gap:10px;font-size:0.875rem;color:var(--txt2)">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;color:var(--acc3);font-size:12px;flex-shrink:0">✓</div>
+          Learns from your real WhatsApp conversations
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:0.875rem;color:var(--txt2)">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;color:var(--acc3);font-size:12px;flex-shrink:0">✓</div>
+          Works in Hindi, Hinglish, and English
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:0.875rem;color:var(--txt2)">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;color:var(--acc3);font-size:12px;flex-shrink:0">✓</div>
+          Gets smarter the more you use it
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:0.875rem;color:var(--txt2)">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;color:var(--acc3);font-size:12px;flex-shrink:0">✓</div>
+          Customers never know it's AI
+        </div>
+      </div>
+    </div>
+    <div class="voice-chat fade-up">
+      <div class="chat-header">
+        <div class="chat-avatar">S</div>
+        <div>
+          <div class="chat-name">Sana's Closet 👗</div>
+          <div class="chat-status">Zyra AI active</div>
+        </div>
+      </div>
+      <div>
+        <div class="bubble-label">Customer</div>
+        <div class="chat-bubble bubble-customer">hi! do you have this kurta in small size? and what's the return policy bestie 🙏</div>
+      </div>
+      <div style="text-align:right">
+        <div class="bubble-label ai">✦ Zyra replied in your voice</div>
+        <div class="chat-bubble bubble-brand">Heyy bestie! 💕 Yes the ivory kurta is available in S right now — grab it fast, only 3 left! 🏃‍♀️<br/><br/>Returns are super easy — 7 days from delivery, just WhatsApp us the order number and we'll sort it out for you! 🤍<br/><br/>Want me to reserve your size?</div>
+        <div class="ai-badge">✦ Sounds like you · Sent instantly</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div style="text-align:center">
+    <div class="section-label" style="justify-content:center">How it works</div>
+    <h2 class="section-title fade-up">Live in <span style="background:var(--grd2);-webkit-background-clip:text;-webkit-text-fill-color:transparent">10 minutes.</span></h2>
+    <p class="section-sub fade-up" style="margin:0 auto">No tech skills needed. No developer. No complicated setup.</p>
+  </div>
+  <div class="steps">
+    <div class="step fade-up">
+      <div class="step-num">1</div>
+      <h3>Tell Zyra about your brand</h3>
+      <p>Enter your brand name, what you sell, your return policy, and shipping timelines. 3 minutes.</p>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">2</div>
+      <h3>Upload past conversations</h3>
+      <p>Share 20-30 old WhatsApp chats. Zyra reads them and learns exactly how you talk to customers.</p>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">3</div>
+      <h3>Connect WhatsApp</h3>
+      <p>One QR code scan connects your WhatsApp Business number. All messages now flow through Zyra.</p>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">4</div>
+      <h3>You're live 🎉</h3>
+      <p>Zyra starts handling messages. You review and approve AI replies before they send. Total control.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background:var(--bg1);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05)">
+  <div style="text-align:center">
+    <div class="section-label" style="justify-content:center">Pricing</div>
+    <h2 class="section-title fade-up">Less than one <span style="background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">extra order</span> a month.</h2>
+    <p class="section-sub fade-up" style="margin:0 auto">Start free. Upgrade when Zyra has already paid for itself.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card fade-up">
+      <div class="pricing-name">Starter</div>
+      <div class="pricing-price">₹799<span>/month</span></div>
+      <div class="pricing-desc">Perfect for brands just starting out</div>
+      <div class="pricing-feature">500 AI replies/month</div>
+      <div class="pricing-feature">1 WhatsApp number</div>
+      <div class="pricing-feature">Brand voice setup</div>
+      <div class="pricing-feature">Order tracking replies</div>
+      <div class="pricing-feature">Basic analytics</div>
+      <div class="pricing-feature">Email support</div>
+      <button class="pricing-btn sec">Get started free</button>
+    </div>
+    <div class="pricing-card popular fade-up">
+      <div class="popular-badge">✦ MOST POPULAR</div>
+      <div class="pricing-name">Growth</div>
+      <div class="pricing-price">₹1,999<span>/month</span></div>
+      <div class="pricing-desc">For brands doing 50+ orders a month</div>
+      <div class="pricing-feature">2,500 AI replies/month</div>
+      <div class="pricing-feature">Broadcast campaigns</div>
+      <div class="pricing-feature">Abandoned cart recovery</div>
+      <div class="pricing-feature">Review & UGC collector</div>
+      <div class="pricing-feature">Complaint recovery engine</div>
+      <div class="pricing-feature">Daily Business Pulse</div>
+      <div class="pricing-feature">Priority support</div>
+      <button class="pricing-btn pri">Start 14-day free trial</button>
+    </div>
+    <div class="pricing-card fade-up">
+      <div class="pricing-name">Pro</div>
+      <div class="pricing-price">₹4,999<span>/month</span></div>
+      <div class="pricing-desc">For scaling brands with a team</div>
+      <div class="pricing-feature">Unlimited AI replies</div>
+      <div class="pricing-feature">Multiple team members</div>
+      <div class="pricing-feature">Instagram DM integration</div>
+      <div class="pricing-feature">Full analytics suite</div>
+      <div class="pricing-feature">Custom compliance rules</div>
+      <div class="pricing-feature">Dedicated onboarding call</div>
+      <div class="pricing-feature">WhatsApp support line</div>
+      <button class="pricing-btn sec">Contact us</button>
+    </div>
+  </div>
+  <p style="text-align:center;margin-top:2rem;font-size:0.8rem;color:var(--txt3)">14-day free trial · No credit card required · Cancel any time · Prices in INR + GST</p>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div style="text-align:center">
+    <div class="section-label" style="justify-content:center">Testimonials</div>
+    <h2 class="section-title fade-up">D2C founders <span style="background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">love Zyra.</span></h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testi-card fade-up">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I was spending 3 hours every day just replying to WhatsApp. Now Zyra handles 90% of it and honestly my customers can't tell the difference. Feels exactly like me. 💕"</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">P</div>
+        <div>
+          <div class="testi-name">Priya Kapoor</div>
+          <div class="testi-handle">@sanas_closet · Fashion, Mumbai</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card fade-up">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The complaint recovery feature is a game changer. One angry customer last week — Zyra offered a 10% discount automatically, she ended up ordering again the same day."</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:linear-gradient(135deg,#06B6D4,#10B981)">R</div>
+        <div>
+          <div class="testi-name">Rohan Mehta</div>
+          <div class="testi-handle">@earthroots.in · Skincare, Pune</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card fade-up">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Mere customers Hindi mein likhte hain, kabhi kabhi Marathi bhi. Zyra sabko perfectly handle karta hai. Pehle tool tha jo actually kaam kiya mere liye. 🙌"</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:linear-gradient(135deg,#F59E0B,#EC4899)">A</div>
+        <div>
+          <div class="testi-name">Anjali Desai</div>
+          <div class="testi-handle">@mithai.by.anjali · Food, Nashik</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg1);border-top:1px solid rgba(255,255,255,0.05)">
+  <div style="text-align:center">
+    <div class="section-label" style="justify-content:center">FAQ</div>
+    <h2 class="section-title fade-up">Questions we get <span style="background:var(--grd2);-webkit-background-clip:text;-webkit-text-fill-color:transparent">a lot.</span></h2>
+  </div>
+  <div class="faq-grid">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Will my customers know they're talking to AI? <span class="faq-icon">+</span></div>
+      <div class="faq-a">No. Zyra learns your exact tone, vocabulary, and style from your past conversations. It uses your emojis, your phrases, your warmth. Unless you tell them, customers will think it's you replying.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">What if the AI sends a wrong reply? <span class="faq-icon">+</span></div>
+      <div class="faq-a">By default, Zyra shows you every reply before sending and waits for your approval. You can also switch on "auto-send" mode for specific query types you fully trust it to handle — like order tracking questions.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Do I need any technical knowledge to set it up? <span class="faq-icon">+</span></div>
+      <div class="faq-a">None at all. Setup takes under 10 minutes — you fill in a form, upload some chats, and scan a QR code to connect WhatsApp. If you can use Instagram, you can use Zyra.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Which languages does Zyra support? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Hindi, English, Hinglish, Marathi, Tamil, Telugu, Bengali, and Gujarati. Zyra automatically detects the language your customer is writing in and replies in the same language.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Does it work with my existing WhatsApp number? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Yes. We connect to your existing WhatsApp Business number via the official WhatsApp Business API. You keep the same number your customers already know.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I cancel any time? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Absolutely. No lock-in contracts, no cancellation fees. Cancel from your settings page at any time. Your data is yours and we'll export everything for you if you need it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <div class="orb" style="width:300px;height:300px;background:rgba(124,58,237,0.2);top:-50px;right:-50px;filter:blur(80px)"></div>
+    <div style="position:relative;z-index:1">
+      <div class="hero-badge" style="margin:0 auto 1.5rem">
+        <span class="hero-badge-dot"></span>
+        14-day free trial · No credit card
+      </div>
+      <h2>Stop answering the same<br/>question <span style="background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">80 times a day.</span></h2>
+      <p>Join 500+ D2C founders who gave their customers a better experience and got their evenings back.</p>
+      <button class="btn-primary btn-large">Start your free trial now →</button>
+      <div class="cta-note">Setup in 10 minutes · Works on your existing WhatsApp · Cancel any time</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" style="text-decoration:none"><div class="nav-logo">Zyra</div></a>
+      <p>AI-powered customer experience platform built specifically for independent D2C brand owners in India.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <a href="#">Integrations</a>
+      <a href="#">Changelog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Blog</a>
+      <a href="#">Careers</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Refund Policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Zyra. All rights reserved.</span>
+    <span>Made with 💜 for Indian D2C founders</span>
+  </div>
+</footer>
+
+<script>
+function toggleFaq(el){
+  var item=el.parentElement;
+  item.classList.toggle('open');
+}
+var observer=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('visible');}
+  });
+},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(function(el){observer.observe(el);});
+</script>
+</body>
+</html>

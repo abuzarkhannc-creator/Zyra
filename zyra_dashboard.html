@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Zyra — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050510;--bg1:#080818;--bg2:#0d0d22;--bg3:#12122e;
+  --acc:#7C3AED;--acc2:#A855F7;--acc3:#C084FC;
+  --pink:#EC4899;--teal:#06B6D4;--green:#10B981;
+  --txt:#F1F0FF;--txt2:#A8A4C8;--txt3:#5C587A;
+  --bdr:rgba(124,58,237,0.15);--bdr2:rgba(124,58,237,0.35);
+  --grd:linear-gradient(135deg,#7C3AED,#EC4899);
+  --grd2:linear-gradient(135deg,#06B6D4,#7C3AED);
+  --err:#F87171;--warn:#FBBF24;--ok:#10B981;
+}
+body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif}
+
+/* ── SIDEBAR ── */
+.sidebar{width:240px;min-height:100vh;background:var(--bg1);border-right:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:50;transition:transform .3s}
+.sidebar-logo{padding:1.5rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,0.05)}
+.logo-text{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-brand{font-size:0.72rem;color:var(--txt3);margin-top:2px}
+.sidebar-nav{flex:1;padding:1rem 0.75rem;overflow-y:auto}
+.nav-section{font-size:0.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3);padding:0.75rem 0.5rem 0.4rem}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:0.875rem;color:var(--txt2);cursor:pointer;transition:all .2s;margin-bottom:2px;text-decoration:none;font-family:'DM Sans',sans-serif}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--txt)}
+.nav-item.active{background:rgba(124,58,237,0.15);color:var(--acc3)}
+.nav-item.active .nav-icon{opacity:1}
+.nav-icon{font-size:16px;width:20px;text-align:center;opacity:0.7;flex-shrink:0}
+.nav-badge{margin-left:auto;background:rgba(236,72,153,0.2);color:#F9A8D4;font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px}
+.nav-badge.green{background:rgba(16,185,129,0.2);color:#6EE7B7}
+.sidebar-bottom{padding:1rem 0.75rem;border-top:1px solid rgba(255,255,255,0.05)}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .2s}
+.sidebar-user:hover{background:rgba(255,255,255,0.04)}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--grd);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.user-name{font-size:0.82rem;font-weight:600}
+.user-plan{font-size:0.7rem;color:var(--acc3)}
+
+/* ── MAIN ── */
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{height:60px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(5,5,16,0.8);backdrop-filter:blur(20px);position:sticky;top:0;z-index:40}
+.topbar-left{display:flex;align-items:center;gap:1rem}
+.topbar-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:0.75rem}
+.topbar-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:var(--txt2);padding:7px 14px;font-size:0.8rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;gap:6px}
+.topbar-btn:hover{background:rgba(255,255,255,0.07);color:var(--txt)}
+.topbar-btn.primary{background:var(--grd);border:none;color:#fff}
+.notif-btn{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:15px}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--pink);border:2px solid var(--bg)}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:100px;padding:4px 12px;font-size:0.72rem;color:var(--ok);font-weight:600}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ── PAGES ── */
+.page{display:none;flex:1;flex-direction:column}
+.page.active{display:flex}
+.page-body{padding:2rem;flex:1;overflow-y:auto}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;transition:transform .2s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.purple::before{background:var(--grd)}
+.stat-card.teal::before{background:var(--grd2)}
+.stat-card.green::before{background:linear-gradient(90deg,#10B981,#06B6D4)}
+.stat-card.pink::before{background:linear-gradient(90deg,#EC4899,#F59E0B)}
+.stat-label{font-size:0.75rem;color:var(--txt3);font-weight:500;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--txt);line-height:1;margin-bottom:0.4rem}
+.stat-change{font-size:0.75rem;display:flex;align-items:center;gap:4px}
+.stat-change.up{color:var(--ok)}
+.stat-change.down{color:var(--err)}
+.stat-icon{position:absolute;top:1.25rem;right:1.25rem;font-size:1.5rem;opacity:0.4}
+
+/* ── GRID LAYOUTS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.grid-3{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.card{background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden}
+.card-header{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:0.9rem;font-weight:600;color:var(--txt)}
+.card-action{font-size:0.75rem;color:var(--acc3);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif}
+.card-action:hover{text-decoration:underline}
+.card-body{padding:1.25rem 1.5rem}
+
+/* ── ACTIVITY CHART ── */
+.chart-wrap{padding:1.5rem;position:relative;height:180px;display:flex;align-items:flex-end;gap:6px}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{width:100%;border-radius:4px 4px 0 0;transition:height .5s ease,background .2s}
+.bar.ai{background:rgba(124,58,237,0.5)}
+.bar.human{background:rgba(236,72,153,0.3)}
+.bar:hover{filter:brightness(1.3)}
+.bar-label{font-size:9px;color:var(--txt3);white-space:nowrap}
+.chart-legend{display:flex;gap:1rem;padding:0 1.5rem 1rem;font-size:0.72rem;color:var(--txt3)}
+.legend-dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px}
+
+/* ── CONVERSATION LIST ── */
+.conv-list{display:flex;flex-direction:column}
+.conv-item{display:flex;align-items:flex-start;gap:12px;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .2s;position:relative}
+.conv-item:hover{background:rgba(255,255,255,0.02)}
+.conv-item.unread{background:rgba(124,58,237,0.04)}
+.conv-item.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc);border-radius:0 2px 2px 0}
+.conv-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.conv-info{flex:1;min-width:0}
+.conv-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.conv-name{font-size:0.875rem;font-weight:600}
+.conv-time{font-size:0.72rem;color:var(--txt3);flex-shrink:0}
+.conv-preview{font-size:0.8rem;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.conv-tags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.tag{font-size:0.65rem;font-weight:600;padding:2px 8px;border-radius:100px}
+.tag-ai{background:rgba(124,58,237,0.15);color:var(--acc3)}
+.tag-pending{background:rgba(236,72,153,0.15);color:#F9A8D4}
+.tag-resolved{background:rgba(16,185,129,0.15);color:#6EE7B7}
+.tag-angry{background:rgba(248,113,113,0.15);color:var(--err)}
+.tag-order{background:rgba(6,182,212,0.15);color:#67E8F9}
+
+/* ── CONVERSATION DETAIL ── */
+.conv-detail{display:none;flex-direction:column;height:calc(100vh - 60px)}
+.conv-detail.open{display:flex}
+.conv-detail-header{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;background:var(--bg1);flex-shrink:0}
+.conv-detail-user{display:flex;align-items:center;gap:12px}
+.conv-detail-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff}
+.conv-detail-name{font-size:1rem;font-weight:600}
+.conv-detail-num{font-size:0.75rem;color:var(--txt3)}
+.conv-detail-actions{display:flex;gap:8px}
+.icon-btn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .2s}
+.icon-btn:hover{background:rgba(255,255,255,0.08)}
+.chat-area{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;background:var(--bg)}
+.msg-row{display:flex;gap:10px;align-items:flex-end}
+.msg-row.outgoing{flex-direction:row-reverse}
+.msg-bubble{max-width:68%;padding:10px 14px;border-radius:14px;font-size:0.875rem;line-height:1.65}
+.msg-bubble.incoming{background:rgba(255,255,255,0.06);color:var(--txt);border-bottom-left-radius:4px}
+.msg-bubble.outgoing{background:rgba(124,58,237,0.25);color:var(--txt);border-bottom-right-radius:4px}
+.msg-bubble.ai-draft{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);color:var(--txt);border-bottom-right-radius:4px}
+.msg-meta{font-size:0.65rem;color:var(--txt3);margin-top:4px;display:flex;align-items:center;gap:5px}
+.msg-meta.right{justify-content:flex-end}
+.ai-label{background:rgba(124,58,237,0.2);color:var(--acc3);font-size:0.6rem;font-weight:700;padding:1px 6px;border-radius:100px}
+
+/* AI DRAFT BOX */
+.ai-draft-box{background:var(--bg1);border-top:1px solid rgba(255,255,255,0.05);padding:1rem 1.5rem;flex-shrink:0}
+.ai-draft-label{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--acc3);font-weight:600;margin-bottom:0.75rem}
+.ai-draft-label .ai-icon{width:20px;height:20px;border-radius:6px;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;font-size:11px}
+.ai-draft-text{background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);border-radius:10px;padding:10px 14px;font-size:0.875rem;color:var(--txt);line-height:1.65;margin-bottom:0.75rem;min-height:60px}
+.draft-actions{display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap}
+.btn-approve{background:var(--ok);border:none;border-radius:8px;color:#fff;padding:8px 18px;font-size:0.82rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s}
+.btn-approve:hover{opacity:0.88}
+.btn-edit{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--txt2);padding:8px 14px;font-size:0.82rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+.btn-edit:hover{background:rgba(255,255,255,0.08);color:var(--txt)}
+.btn-decline{background:none;border:none;color:var(--txt3);font-size:0.78rem;font-family:'DM Sans',sans-serif;cursor:pointer;padding:8px}
+.btn-decline:hover{color:var(--err)}
+.btn-regen{background:none;border:none;color:var(--acc3);font-size:0.78rem;font-family:'DM Sans',sans-serif;cursor:pointer;padding:8px;display:flex;align-items:center;gap:4px}
+.send-row{display:flex;gap:8px;margin-top:0.75rem;border-top:1px solid rgba(255,255,255,0.05);padding-top:0.75rem}
+.send-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;resize:none}
+.send-input:focus{border-color:var(--bdr2)}
+.send-input::placeholder{color:var(--txt3)}
+.btn-send{background:var(--grd);border:none;border-radius:10px;color:#fff;padding:9px 18px;font-size:0.82rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap}
+
+/* ── QUICK ACTIONS ── */
+.quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem}
+.qa-btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;cursor:pointer;transition:all .2s;text-align:left;font-family:'DM Sans',sans-serif}
+.qa-btn:hover{background:rgba(124,58,237,0.08);border-color:var(--bdr2)}
+.qa-icon{font-size:1.4rem;margin-bottom:0.5rem;display:block}
+.qa-label{font-size:0.8rem;font-weight:600;color:var(--txt);display:block}
+.qa-desc{font-size:0.72rem;color:var(--txt3);margin-top:2px}
+
+/* ── TODAY SUMMARY ── */
+.today-items{display:flex;flex-direction:column;gap:0.5rem}
+.today-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.82rem}
+.today-item:last-child{border-bottom:none}
+.today-item-label{color:var(--txt2);display:flex;align-items:center;gap:8px}
+.today-item-val{font-weight:600;color:var(--txt)}
+
+/* ── PULSE CARD ── */
+.pulse-card{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(236,72,153,0.06));border:1px solid rgba(124,58,237,0.2);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.pulse-title{font-size:0.75rem;font-weight:600;color:var(--acc3);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;display:flex;align-items:center;gap:6px}
+.pulse-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+.pulse-text{font-size:0.875rem;color:var(--txt2);line-height:1.7}
+.pulse-text strong{color:var(--txt)}
+
+/* ── BROADCASTS PAGE ── */
+.broadcast-templates{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.bc-template{background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:1.25rem;cursor:pointer;transition:all .2s}
+.bc-template:hover{border-color:var(--bdr2);background:rgba(124,58,237,0.06)}
+.bc-template.selected{border-color:var(--acc);background:rgba(124,58,237,0.1)}
+.bc-icon{font-size:1.75rem;margin-bottom:0.75rem}
+.bc-name{font-size:0.9rem;font-weight:600;margin-bottom:0.35rem}
+.bc-desc{font-size:0.75rem;color:var(--txt2);line-height:1.6}
+.compose-box{background:var(--bg2);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.25rem}
+.compose-header{font-size:0.8rem;font-weight:600;color:var(--txt2);margin-bottom:0.75rem;display:flex;align-items:center;gap:6px}
+.compose-msg{width:100%;background:transparent;border:none;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:80px;line-height:1.7}
+.compose-msg::placeholder{color:var(--txt3)}
+.bc-audience{display:flex;gap:0.75rem;margin:1rem 0;flex-wrap:wrap}
+.audience-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:6px 14px;font-size:0.78rem;color:var(--txt2);cursor:pointer;transition:all .2s}
+.audience-chip:hover,.audience-chip.selected{background:rgba(124,58,237,0.12);border-color:var(--bdr2);color:var(--acc3)}
+.bc-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem}
+.bc-stat{background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;text-align:center}
+.bc-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700}
+.bc-stat-lbl{font-size:0.72rem;color:var(--txt3);margin-top:2px}
+
+/* ── ANALYTICS PAGE ── */
+.analytics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.metric-card{background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:1.25rem}
+.metric-icon{font-size:1.5rem;margin-bottom:0.75rem}
+.metric-val{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;margin-bottom:4px}
+.metric-label{font-size:0.75rem;color:var(--txt3)}
+.metric-trend{font-size:0.72rem;margin-top:6px}
+.metric-trend.up{color:var(--ok)}
+.metric-trend.down{color:var(--err)}
+.sparkline{display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:10px}
+.spark-bar{flex:1;border-radius:2px;background:rgba(124,58,237,0.3);transition:background .2s}
+.spark-bar:hover{background:rgba(124,58,237,0.7)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--bg1);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:1rem 1.5rem;display:flex;align-items:center;gap:12px;font-size:0.875rem;z-index:999;transform:translateY(100px);opacity:0;transition:all .3s;max-width:340px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-icon{font-size:1.2rem}
+.toast-close{background:none;border:none;color:var(--txt3);cursor:pointer;margin-left:auto;font-size:16px;padding:0 4px}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--txt3)}
+.empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.5}
+.empty-title{font-size:1rem;font-weight:600;color:var(--txt2);margin-bottom:0.5rem}
+.empty-desc{font-size:0.85rem;line-height:1.7}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .broadcast-templates{grid-template-columns:1fr 1fr}
+  .analytics-grid{grid-template-columns:1fr 1fr}
+}
+
+/* SETTINGS TABS */
+.settings-tab{padding:7px 16px;border-radius:8px;border:none;background:transparent;color:var(--txt3);cursor:pointer;font-size:0.82rem;font-weight:500;font-family:'DM Sans',sans-serif;transition:all .2s}
+.settings-tab.active{background:var(--bg2);color:var(--acc3)}
+.settings-panel{display:none}
+.settings-panel.active{display:block}
+
+@media(max-width:900px){
+  #hamburger{display:block!important}
+  .sidebar.open~* #sidebar-overlay{display:block}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr}
+  .topbar{padding:0 1rem}
+  .page-body{padding:1rem}
+  #conv-list-panel{width:100%}
+}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(124,58,237,0.3);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(124,58,237,0.5)}
+/* SMOOTH TRANSITIONS */
+.page{animation:pageIn .25s ease}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* CARD HOVER GLOW */
+.card:hover{border-color:rgba(124,58,237,0.15)}
+.stat-card:hover{box-shadow:0 8px 32px rgba(124,58,237,0.1)}
+</style>
+</head>
+<body>
+
+<!-- MOBILE OVERLAY -->
+<div id="sidebar-overlay" onclick="document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:49;backdrop-filter:blur(4px)"></div>
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <span id="toast-msg">Message sent!</span>
+  <button class="toast-close" onclick="hideToast()">×</button>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Zyra</div>
+    <div class="sidebar-brand">Sana's Closet 👗</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">📊</span> Dashboard</a>
+    <a class="nav-item" onclick="showPage('conversations')"><span class="nav-icon">💬</span> Conversations <span class="nav-badge">3</span></a>
+    <a class="nav-item" onclick="showPage('broadcasts')"><span class="nav-icon">📢</span> Broadcasts</a>
+    <a class="nav-item" onclick="showPage('analytics')"><span class="nav-icon">📈</span> Analytics</a>
+    <div class="nav-section">Brand</div>
+    <a class="nav-item" onclick="showPage('voice')"><span class="nav-icon">🎙️</span> Brand Voice</a>
+    <a class="nav-item" onclick="showPage('catalog')"><span class="nav-icon">📦</span> Catalog</a>
+    <div class="nav-section">Settings</div>
+    <a class="nav-item" onclick="showPage('integrations')"><span class="nav-icon">🔌</span> Integrations <span class="nav-badge green">Live</span></a>
+    <a class="nav-item" onclick="showPage('settings')"><span class="nav-icon">⚙️</span> Settings</a>
+    <a class="nav-item" href="zyra_landing.html"><span class="nav-icon">🌐</span> View Landing Page</a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="sidebar-user">
+      <div class="user-avatar">P</div>
+      <div>
+        <div class="user-name">Priya Kapoor</div>
+        <div class="user-plan">Growth Plan · 12 days left</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button id="hamburger" onclick="var s=document.getElementById('sidebar');s.classList.toggle('open');document.getElementById('sidebar-overlay').style.display=s.classList.contains('open')?'block':'none'" style="display:none;background:none;border:none;color:var(--txt2);font-size:1.3rem;cursor:pointer;padding:4px 8px;margin-right:4px">☰</button>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="live-badge"><span class="live-dot"></span> Live</div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="showPage('broadcasts')">📢 New Broadcast</button>
+      <button class="topbar-btn primary" onclick="showPage('conversations')">💬 Inbox <span id="inbox-count" style="background:rgba(255,255,255,0.2);border-radius:100px;padding:1px 7px;font-size:10px">3</span></button>
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- ══ DASHBOARD PAGE ══ -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-body">
+
+      <!-- PULSE -->
+      <div class="pulse-card">
+        <div class="pulse-title">Today's Pulse — Thursday, 16 April</div>
+        <div class="pulse-text">Good morning Priya! 🌅 Zyra handled <strong>89 messages</strong> while you were away. <strong>3 messages</strong> need your personal reply. You also have <strong>2 carts</strong> ready for follow-up. Revenue recovered this week: <strong>₹14,200</strong>.</div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card purple">
+          <div class="stat-icon">💬</div>
+          <div class="stat-label">Messages today</div>
+          <div class="stat-val">247</div>
+          <div class="stat-change up">↑ 12% vs yesterday</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">🤖</div>
+          <div class="stat-label">AI handled</div>
+          <div class="stat-val">89%</div>
+          <div class="stat-change up">↑ 4% this week</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">Revenue recovered</div>
+          <div class="stat-val">₹38,400</div>
+          <div class="stat-change up">↑ 23% this month</div>
+        </div>
+        <div class="stat-card pink">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-label">Avg. rating</div>
+          <div class="stat-val">4.9</div>
+          <div class="stat-change up">↑ 23 reviews this week</div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <!-- CHART -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Message Activity — Last 7 days</div>
+            <button class="card-action">View full analytics →</button>
+          </div>
+          <div class="chart-wrap" id="chart-wrap"></div>
+          <div class="chart-legend">
+            <span><span class="legend-dot" style="background:rgba(124,58,237,0.5)"></span>AI handled</span>
+            <span><span class="legend-dot" style="background:rgba(236,72,153,0.3)"></span>Manually replied</span>
+          </div>
+        </div>
+
+        <!-- TODAY SUMMARY -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Today at a glance</div></div>
+          <div class="card-body">
+            <div class="today-items">
+              <div class="today-item"><span class="today-item-label">🔥 Need attention</span><span class="today-item-val" style="color:var(--err)">3</span></div>
+              <div class="today-item"><span class="today-item-label">✅ Resolved</span><span class="today-item-val" style="color:var(--ok)">198</span></div>
+              <div class="today-item"><span class="today-item-label">🛒 Carts to follow up</span><span class="today-item-val" style="color:var(--warn)">2</span></div>
+              <div class="today-item"><span class="today-item-label">⭐ Reviews collected</span><span class="today-item-val">6</span></div>
+              <div class="today-item"><span class="today-item-label">📦 Order queries</span><span class="today-item-val">41</span></div>
+              <div class="today-item"><span class="today-item-label">↩️ Return requests</span><span class="today-item-val">4</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- RECENT CONVERSATIONS -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Conversations</div>
+            <button class="card-action" onclick="showPage('conversations')">View all →</button>
+          </div>
+          <div class="conv-list">
+            <div class="conv-item unread" onclick="openConversation(0)">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">P</div>
+              <div class="conv-info">
+                <div class="conv-top"><span class="conv-name">Priya Sharma</span><span class="conv-time">2m</span></div>
+                <div class="conv-preview">Wrong size received, very disappointed 😞</div>
+                <div class="conv-tags"><span class="tag tag-pending">⚡ Needs reply</span><span class="tag tag-angry">😠 Angry</span></div>
+              </div>
+            </div>
+            <div class="conv-item unread" onclick="openConversation(1)">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#06B6D4,#10B981)">R</div>
+              <div class="conv-info">
+                <div class="conv-top"><span class="conv-name">Rahul Mehta</span><span class="conv-time">15m</span></div>
+                <div class="conv-preview">Kab tak aayega mera order? Track nahi ho raha</div>
+                <div class="conv-tags"><span class="tag tag-ai">✦ AI replied</span><span class="tag tag-order">📦 Order</span></div>
+              </div>
+            </div>
+            <div class="conv-item" onclick="openConversation(2)">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#F59E0B,#EC4899)">A</div>
+              <div class="conv-info">
+                <div class="conv-top"><span class="conv-name">Anjali Singh</span><span class="conv-time">32m</span></div>
+                <div class="conv-preview">Do you have the blue kurta in size S?</div>
+                <div class="conv-tags"><span class="tag tag-ai">✦ AI replied</span></div>
+              </div>
+            </div>
+            <div class="conv-item" onclick="openConversation(3)">
+              <div class="conv-avatar" style="background:linear-gradient(135deg,#10B981,#06B6D4)">M</div>
+              <div class="conv-info">
+                <div class="conv-top"><span class="conv-name">Meera Patel</span><span class="conv-time">1h</span></div>
+                <div class="conv-preview">Loved the packaging! Will order again 💕</div>
+                <div class="conv-tags"><span class="tag tag-resolved">✓ Resolved</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Quick Actions</div></div>
+          <div class="card-body">
+            <div class="quick-actions">
+              <button class="qa-btn" onclick="showPage('broadcasts')">
+                <span class="qa-icon">📢</span>
+                <span class="qa-label">Send Broadcast</span>
+                <span class="qa-desc">Message all customers</span>
+              </button>
+              <button class="qa-btn" onclick="showPage('voice')">
+                <span class="qa-icon">🎙️</span>
+                <span class="qa-label">Update Voice</span>
+                <span class="qa-desc">Refine your AI tone</span>
+              </button>
+              <button class="qa-btn" onclick="showPage('catalog')">
+                <span class="qa-icon">📦</span>
+                <span class="qa-label">Add Products</span>
+                <span class="qa-desc">Update your catalog</span>
+              </button>
+              <button class="qa-btn" onclick="showPage('analytics')">
+                <span class="qa-icon">📈</span>
+                <span class="qa-label">View Analytics</span>
+                <span class="qa-desc">Full performance data</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ CONVERSATIONS PAGE ══ -->
+  <div class="page" id="page-conversations">
+    <div style="display:flex;flex:1;overflow:hidden;height:calc(100vh - 60px)">
+
+      <!-- LIST -->
+      <div style="width:360px;border-right:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;flex-shrink:0" id="conv-list-panel">
+        <div style="padding:1rem;border-bottom:1px solid rgba(255,255,255,0.05)">
+          <input placeholder="🔍  Search conversations..." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none"/>
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
+            <button class="audience-chip selected" onclick="filterConvs(this,'all')">All</button>
+            <button class="audience-chip" onclick="filterConvs(this,'pending')">⚡ Needs reply</button>
+            <button class="audience-chip" onclick="filterConvs(this,'ai')">✦ AI handled</button>
+            <button class="audience-chip" onclick="filterConvs(this,'resolved')">✓ Resolved</button>
+          </div>
+        </div>
+        <div class="conv-list" style="flex:1;overflow-y:auto" id="conv-list-full">
+          <div class="conv-item unread" onclick="openConversation(0)">
+            <div class="conv-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">P</div>
+            <div class="conv-info">
+              <div class="conv-top"><span class="conv-name">Priya Sharma</span><span class="conv-time">2m ago</span></div>
+              <div class="conv-preview">Wrong size received, very disappointed</div>
+              <div class="conv-tags"><span class="tag tag-pending">⚡ Needs reply</span><span class="tag tag-angry">😠 Angry</span></div>
+            </div>
+          </div>
+          <div class="conv-item unread" onclick="openConversation(1)">
+            <div class="conv-avatar" style="background:linear-gradient(135deg,#06B6D4,#10B981)">R</div>
+            <div class="conv-info">
+              <div class="conv-top"><span class="conv-name">Rahul Mehta</span><span class="conv-time">15m ago</span></div>
+              <div class="conv-preview">Kab tak aayega mera order?</div>
+              <div class="conv-tags"><span class="tag tag-ai">✦ AI replied</span><span class="tag tag-order">📦 Order</span></div>
+            </div>
+          </div>
+          <div class="conv-item" onclick="openConversation(2)">
+            <div class="conv-avatar" style="background:linear-gradient(135deg,#F59E0B,#EC4899)">A</div>
+            <div class="conv-info">
+              <div class="conv-top"><span class="conv-name">Anjali Singh</span><span class="conv-time">32m ago</span></div>
+              <div class="conv-preview">Do you have the blue kurta in size S?</div>
+              <div class="conv-tags"><span class="tag tag-ai">✦ AI replied</span></div>
+            </div>
+          </div>
+          <div class="conv-item" onclick="openConversation(3)">
+            <div class="conv-avatar" style="background:linear-gradient(135deg,#10B981,#06B6D4)">M</div>
+            <div class="conv-info">
+              <div class="conv-top"><span class="conv-name">Meera Patel</span><span class="conv-time">1h ago</span></div>
+              <div class="conv-preview">Loved the packaging! Will order again 💕</div>
+              <div class="conv-tags"><span class="tag tag-resolved">✓ Resolved</span></div>
+            </div>
+          </div>
+          <div class="conv-item" onclick="openConversation(4)">
+            <div class="conv-avatar" style="background:linear-gradient(135deg,#EC4899,#F59E0B)">S</div>
+            <div class="conv-info">
+              <div class="conv-top"><span class="conv-name">Sneha Gupta</span><span class="conv-time">2h ago</span></div>
+              <div class="conv-preview">Refund kab milega? 2 weeks ho gaye</div>
+              <div class="conv-tags"><span class="tag tag-pending">⚡ Needs reply</span></div>
+            </div>
+          </div>
+          <div class="conv-item" onclick="openConversation(5)">
+            <div class="conv-avatar" style="background:linear-gradient(135deg,#7C3AED,#06B6D4)">K</div>
+            <div class="conv-info">
+              <div class="conv-top"><span class="conv-name">Kavya R.</span><span class="conv-time">3h ago</span></div>
+              <div class="conv-preview">Can I exchange for a different colour?</div>
+              <div class="conv-tags"><span class="tag tag-ai">✦ AI replied</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAIL -->
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden" id="conv-detail-panel">
+        <div id="conv-empty" style="flex:1;display:flex;align-items:center;justify-content:center">
+          <div class="empty-state">
+            <div class="empty-icon">💬</div>
+            <div class="empty-title">Select a conversation</div>
+            <div class="empty-desc">Click any conversation on the left to open it</div>
+          </div>
+        </div>
+        <div class="conv-detail" id="conv-detail">
+          <div class="conv-detail-header">
+            <div class="conv-detail-user">
+              <div class="conv-detail-avatar" id="detail-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">P</div>
+              <div>
+                <div class="conv-detail-name" id="detail-name">Priya Sharma</div>
+                <div class="conv-detail-num" id="detail-num">+91 98765 43210 · Last seen 2m ago</div>
+              </div>
+            </div>
+            <div class="conv-detail-actions">
+              <div class="icon-btn" title="Customer profile">👤</div>
+              <div class="icon-btn" title="Mark resolved" onclick="markResolved()">✓</div>
+              <div class="icon-btn" title="More options">⋮</div>
+            </div>
+          </div>
+          <div class="chat-area" id="chat-area"></div>
+          <div class="ai-draft-box" id="ai-draft-box">
+            <div class="ai-draft-label">
+              <div class="ai-icon">✦</div>
+              Zyra draft — in your voice
+            </div>
+            <div class="ai-draft-text" id="draft-text" contenteditable="true"></div>
+            <div class="draft-actions">
+              <button class="btn-approve" onclick="approveDraft()">✓ Approve & Send</button>
+              <button class="btn-edit" onclick="focusDraft()">✏️ Edit</button>
+              <button class="btn-regen" onclick="regenDraft()">↻ Regenerate</button>
+              <button class="btn-decline" onclick="declineDraft()">✕ Decline</button>
+            </div>
+            <div class="send-row">
+              <textarea class="send-input" id="manual-input" rows="1" placeholder="Or type your own reply…" oninput="autoResize(this)"></textarea>
+              <button class="btn-send" onclick="sendManual()">Send →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BROADCASTS PAGE ══ -->
+  <div class="page" id="page-broadcasts">
+    <div class="page-body">
+      <div style="margin-bottom:1.5rem">
+        <h2 style="font-size:1.6rem;font-weight:600;margin-bottom:0.35rem">Broadcasts 📢</h2>
+        <p style="font-size:0.875rem;color:var(--txt2)">Send a message to your customers in plain English. Zyra writes it in your voice.</p>
+      </div>
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-header"><div class="card-title">Choose a template</div></div>
+        <div class="card-body">
+          <div class="broadcast-templates">
+            <div class="bc-template selected" onclick="selectTemplate(this,'sale')">
+              <div class="bc-icon">🎉</div>
+              <div class="bc-name">Sale / Offer</div>
+              <div class="bc-desc">Announce a discount or limited offer to your customers</div>
+            </div>
+            <div class="bc-template" onclick="selectTemplate(this,'restock')">
+              <div class="bc-icon">📦</div>
+              <div class="bc-name">Back in Stock</div>
+              <div class="bc-desc">Tell customers their wishlist item is available again</div>
+            </div>
+            <div class="bc-template" onclick="selectTemplate(this,'festival')">
+              <div class="bc-icon">🪔</div>
+              <div class="bc-name">Festival Greeting</div>
+              <div class="bc-desc">Send a warm festival message with a special offer</div>
+            </div>
+            <div class="bc-template" onclick="selectTemplate(this,'newlaunch')">
+              <div class="bc-icon">✨</div>
+              <div class="bc-name">New Launch</div>
+              <div class="bc-desc">Announce a new product or collection</div>
+            </div>
+            <div class="bc-template" onclick="selectTemplate(this,'review')">
+              <div class="bc-icon">⭐</div>
+              <div class="bc-name">Ask for Review</div>
+              <div class="bc-desc">Request a Google or Instagram review from past buyers</div>
+            </div>
+            <div class="bc-template" onclick="selectTemplate(this,'custom')">
+              <div class="bc-icon">✍️</div>
+              <div class="bc-name">Custom</div>
+              <div class="bc-desc">Write your own message from scratch</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Write your message</div><button class="card-action" onclick="generateBroadcast()">✦ Generate with AI</button></div>
+          <div class="card-body">
+            <div style="margin-bottom:1rem">
+              <div style="font-size:0.78rem;color:var(--txt3);margin-bottom:6px;font-weight:500">Tell Zyra what to say (plain English)</div>
+              <textarea id="bc-prompt" rows="2" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;resize:none" placeholder="e.g. Send a Diwali discount of 20% to customers who bought in the last 3 months"></textarea>
+            </div>
+            <div class="compose-box">
+              <div class="compose-header">📱 Message preview</div>
+              <textarea class="compose-msg" id="bc-message" rows="4" placeholder="Your message will appear here after clicking Generate…">Heyy bestie! 💕 Diwali is around the corner and we have a special surprise for you! 🪔
+
+Use code DIWALI20 for flat 20% OFF on everything — just for our lovely returning customers! 🎁
+
+Valid till 31st October. Happy shopping! 🛍️
+
+— Sana's Closet 👗</textarea>
+            </div>
+            <div style="margin-top:1rem">
+              <div style="font-size:0.78rem;color:var(--txt3);margin-bottom:8px;font-weight:500">Send to</div>
+              <div class="bc-audience">
+                <button class="audience-chip selected" onclick="toggleChip(this)">All customers (412)</button>
+                <button class="audience-chip" onclick="toggleChip(this)">Bought in last 30 days (87)</button>
+                <button class="audience-chip" onclick="toggleChip(this)">Bought in last 3 months (203)</button>
+                <button class="audience-chip" onclick="toggleChip(this)">Never bought (128)</button>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.75rem;margin-top:1.25rem">
+              <button style="flex:1;background:var(--grd);border:none;border-radius:10px;color:#fff;padding:11px;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="sendBroadcast()">Send Broadcast →</button>
+              <button style="background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--txt2);padding:11px 18px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer">Schedule</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recent Broadcasts</div></div>
+          <div class="card-body">
+            <div class="bc-stats-row">
+              <div class="bc-stat"><div class="bc-stat-val" style="color:var(--acc3)">8</div><div class="bc-stat-lbl">Sent this month</div></div>
+              <div class="bc-stat"><div class="bc-stat-val" style="color:var(--ok)">68%</div><div class="bc-stat-lbl">Avg open rate</div></div>
+              <div class="bc-stat"><div class="bc-stat-val" style="color:var(--teal)">₹24k</div><div class="bc-stat-lbl">Revenue from broadcasts</div></div>
+            </div>
+            <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:0.6rem">
+              <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.875rem">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:600">Navratri Sale 🎉</span><span style="font-size:0.72rem;color:var(--ok)">412 sent</span></div>
+                <div style="font-size:0.75rem;color:var(--txt3)">12 Apr · 71% opened · ₹8,400 revenue</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.875rem">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:600">New Summer Collection ✨</span><span style="font-size:0.72rem;color:var(--ok)">387 sent</span></div>
+                <div style="font-size:0.75rem;color:var(--txt3)">8 Apr · 64% opened · ₹6,200 revenue</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.875rem">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:600">Back in Stock — Ivory Kurta</span><span style="font-size:0.72rem;color:var(--ok)">156 sent</span></div>
+                <div style="font-size:0.75rem;color:var(--txt3)">3 Apr · 78% opened · ₹4,800 revenue</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ANALYTICS PAGE ══ -->
+  <div class="page" id="page-analytics">
+    <div class="page-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <div><h2 style="font-size:1.6rem;font-weight:600;margin-bottom:0.35rem">Analytics 📈</h2><p style="font-size:0.875rem;color:var(--txt2)">How Zyra is performing for your brand</p></div>
+        <div style="display:flex;gap:0.5rem">
+          <button class="topbar-btn active" style="border-color:var(--acc);color:var(--acc3)">This week</button>
+          <button class="topbar-btn">This month</button>
+          <button class="topbar-btn">All time</button>
+        </div>
+      </div>
+      <div class="analytics-grid">
+        <div class="metric-card"><div class="metric-icon">💬</div><div class="metric-val">1,284</div><div class="metric-label">Total messages</div><div class="metric-trend up">↑ 18% vs last week</div><div class="sparkline" id="spark1"></div></div>
+        <div class="metric-card"><div class="metric-icon">🤖</div><div class="metric-val">89%</div><div class="metric-label">AI resolution rate</div><div class="metric-trend up">↑ 4% improvement</div><div class="sparkline" id="spark2"></div></div>
+        <div class="metric-card"><div class="metric-icon">⏱️</div><div class="metric-val">18s</div><div class="metric-label">Avg response time</div><div class="metric-trend up">↓ from 4hrs manually</div><div class="sparkline" id="spark3"></div></div>
+        <div class="metric-card"><div class="metric-icon">💰</div><div class="metric-val">₹38,400</div><div class="metric-label">Revenue recovered</div><div class="metric-trend up">↑ 23% vs last week</div><div class="sparkline" id="spark4"></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Top Query Categories</div></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:0.875rem">
+              <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:5px"><span style="color:var(--txt2)">📦 Order tracking</span><span style="color:var(--txt);font-weight:600">38%</span></div><div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:5px;width:38%;background:var(--grd);border-radius:3px"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:5px"><span style="color:var(--txt2)">💬 Product queries</span><span style="color:var(--txt);font-weight:600">24%</span></div><div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:5px;width:24%;background:var(--grd2);border-radius:3px"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:5px"><span style="color:var(--txt2)">↩️ Returns & exchanges</span><span style="color:var(--txt);font-weight:600">18%</span></div><div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:5px;width:18%;background:linear-gradient(90deg,#10B981,#06B6D4);border-radius:3px"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:5px"><span style="color:var(--txt2)">💳 Payment issues</span><span style="color:var(--txt);font-weight:600">12%</span></div><div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:5px;width:12%;background:linear-gradient(90deg,#EC4899,#F59E0B);border-radius:3px"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:5px"><span style="color:var(--txt2)">🎁 Discount / offers</span><span style="color:var(--txt);font-weight:600">8%</span></div><div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:5px;width:8%;background:rgba(124,58,237,0.6);border-radius:3px"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Customer Satisfaction</div></div>
+          <div class="card-body">
+            <div style="text-align:center;padding:0.5rem 0 1.25rem">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:700;color:var(--ok)">4.9</div>
+              <div style="font-size:1.2rem;color:#F59E0B;letter-spacing:3px;margin:4px 0">★★★★★</div>
+              <div style="font-size:0.78rem;color:var(--txt3)">Based on 47 reviews this month</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;align-items:center;gap:10px;font-size:0.78rem"><span style="color:var(--txt3);width:16px">5★</span><div style="flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px"><div style="height:4px;width:82%;background:var(--ok);border-radius:2px"></div></div><span style="color:var(--txt2);width:28px;text-align:right">82%</span></div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:0.78rem"><span style="color:var(--txt3);width:16px">4★</span><div style="flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px"><div style="height:4px;width:12%;background:var(--teal);border-radius:2px"></div></div><span style="color:var(--txt2);width:28px;text-align:right">12%</span></div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:0.78rem"><span style="color:var(--txt3);width:16px">3★</span><div style="flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px"><div style="height:4px;width:4%;background:var(--warn);border-radius:2px"></div></div><span style="color:var(--txt2);width:28px;text-align:right">4%</span></div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:0.78rem"><span style="color:var(--txt3);width:16px">1★</span><div style="flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px"><div style="height:4px;width:2%;background:var(--err);border-radius:2px"></div></div><span style="color:var(--txt2);width:28px;text-align:right">2%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ BRAND VOICE PAGE ══ -->
+  <div class="page" id="page-voice">
+    <div class="page-body">
+      <div style="margin-bottom:1.5rem">
+        <h2 style="font-size:1.6rem;font-weight:600;margin-bottom:0.35rem">Brand Voice 🎙️</h2>
+        <p style="font-size:0.875rem;color:var(--txt2)">Teach Zyra how you talk. The more conversations you upload, the more it sounds like you.</p>
+      </div>
+      <div class="grid-2" style="align-items:start">
+        <div style="display:flex;flex-direction:column;gap:1.5rem">
+          <!-- Voice Score -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Voice Match Score</div><button class="card-action" onclick="showToast('✦','Recalibrating voice model...')">Recalibrate</button></div>
+            <div class="card-body" style="text-align:center;padding:2rem 1.5rem">
+              <div style="position:relative;width:120px;height:120px;margin:0 auto 1rem">
+                <svg viewBox="0 0 120 120" style="width:120px;height:120px;transform:rotate(-90deg)">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="url(#vgrad)" stroke-width="10" stroke-dasharray="283" stroke-dashoffset="51" stroke-linecap="round"/>
+                  <defs><linearGradient id="vgrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
+                </svg>
+                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                  <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--txt)">82%</div>
+                  <div style="font-size:0.65rem;color:var(--acc3);font-weight:600">MATCH</div>
+                </div>
+              </div>
+              <div style="font-size:0.875rem;color:var(--txt2);line-height:1.7">Zyra has analysed <strong style="color:var(--txt)">24 conversations</strong> and identified your voice pattern. Upload more to improve accuracy.</div>
+              <div style="display:flex;justify-content:center;gap:1.5rem;margin-top:1.25rem">
+                <div style="text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700">24</div><div style="font-size:0.7rem;color:var(--txt3)">Chats analysed</div></div>
+                <div style="text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700">847</div><div style="font-size:0.7rem;color:var(--txt3)">Messages learned</div></div>
+                <div style="text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700">38</div><div style="font-size:0.7rem;color:var(--txt3)">Phrases captured</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload More -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Upload More Conversations</div></div>
+            <div class="card-body">
+              <div id="voice-upload-area" style="border:2px dashed rgba(124,58,237,0.3);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all .3s;position:relative" onmouseenter="this.style.borderColor='var(--acc)'" onmouseleave="this.style.borderColor='rgba(124,58,237,0.3)'">
+                <input type="file" multiple accept=".txt" style="position:absolute;inset:0;opacity:0;cursor:pointer" onchange="handleVoiceUpload(event)"/>
+                <div style="font-size:2rem;margin-bottom:0.75rem">💬</div>
+                <div style="font-size:0.875rem;font-weight:600;margin-bottom:0.35rem">Drop WhatsApp .txt exports here</div>
+                <div style="font-size:0.78rem;color:var(--txt3)">Or click to browse · Supports .txt files</div>
+              </div>
+              <div id="voice-files" style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem"></div>
+              <div style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.15);border-radius:10px;padding:0.875rem;margin-top:1rem;font-size:0.78rem;color:var(--txt2);line-height:1.7">
+                <strong style="color:var(--acc3)">Tip:</strong> Export chats from WhatsApp → ⋮ Menu → More → Export Chat → Without Media. Upload 10-20 different customer conversations for best results.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1.5rem">
+          <!-- Tone Sliders -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Tone Adjustments</div><button class="card-action" onclick="showToast('✅','Tone saved!')">Save changes</button></div>
+            <div class="card-body">
+              <p style="font-size:0.8rem;color:var(--txt2);margin-bottom:1.5rem;line-height:1.7">Fine-tune how Zyra responds. These override patterns learned from your chats.</p>
+              <div id="tone-sliders"></div>
+            </div>
+          </div>
+
+          <!-- Learned Phrases -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Phrases Zyra Learned</div><button class="card-action" onclick="showToast('✅','Phrases updated!')">Edit</button></div>
+            <div class="card-body">
+              <p style="font-size:0.78rem;color:var(--txt2);margin-bottom:1rem">These phrases and patterns were detected in your conversations:</p>
+              <div style="display:flex;flex-wrap:wrap;gap:0.5rem" id="phrase-tags"></div>
+            </div>
+          </div>
+
+          <!-- Live Preview -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Live Voice Preview</div></div>
+            <div class="card-body">
+              <p style="font-size:0.78rem;color:var(--txt2);margin-bottom:1rem">See how Zyra would reply to a common message:</p>
+              <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap" id="preview-prompts"></div>
+              <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:10px;padding:0.875rem;font-size:0.875rem;color:var(--txt);line-height:1.7" id="voice-preview-text">
+                Heyy bestie! 💕 Yes the Ivory Embroidered Kurta is available in S right now — only 3 pieces left so grab it fast! 🏃‍♀️ Want me to hold one for you?
+              </div>
+              <div style="font-size:0.7rem;color:var(--acc3);margin-top:6px;display:flex;align-items:center;gap:4px">✦ Generated in your voice · 82% match</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CATALOG PAGE ══ -->
+  <div class="page" id="page-catalog">
+    <div class="page-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <div><h2 style="font-size:1.6rem;font-weight:600;margin-bottom:0.35rem">Product Catalog 📦</h2><p style="font-size:0.875rem;color:var(--txt2)">Manage what Zyra knows about your products</p></div>
+        <div style="display:flex;gap:0.75rem">
+          <button class="topbar-btn" onclick="showToast('🛍️','Shopify import coming soon!')">Import from Shopify</button>
+          <button class="topbar-btn primary" onclick="addProductModal()">+ Add Product</button>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem">
+        <div class="stat-card purple" style="padding:1rem 1.25rem"><div class="stat-label">Total products</div><div class="stat-val" style="font-size:1.6rem">12</div></div>
+        <div class="stat-card green" style="padding:1rem 1.25rem"><div class="stat-label">In stock</div><div class="stat-val" style="font-size:1.6rem;color:var(--ok)">9</div></div>
+        <div class="stat-card pink" style="padding:1rem 1.25rem"><div class="stat-label">Low stock</div><div class="stat-val" style="font-size:1.6rem;color:var(--warn)">2</div></div>
+        <div class="stat-card teal" style="padding:1rem 1.25rem"><div class="stat-label">Out of stock</div><div class="stat-val" style="font-size:1.6rem;color:var(--err)">1</div></div>
+      </div>
+
+      <!-- Search + Filter -->
+      <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
+        <input placeholder="🔍  Search products..." style="flex:1;min-width:200px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none"/>
+        <select style="background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt2);font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none">
+          <option>All categories</option><option>Kurtas</option><option>Co-ord Sets</option><option>Dupattas</option><option>Accessories</option>
+        </select>
+        <select style="background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt2);font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none">
+          <option>All stock</option><option>In stock</option><option>Low stock</option><option>Out of stock</option>
+        </select>
+      </div>
+
+      <!-- Product Table -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <table style="width:100%;border-collapse:collapse" id="product-table">
+          <thead>
+            <tr style="background:var(--bg2)">
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Product</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Category</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Price</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Sizes</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Stock</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Queries</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif"></th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Add Product Modal -->
+      <div id="product-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;padding:1rem">
+        <div style="background:var(--bg1);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:100%;max-width:500px;position:relative">
+          <button onclick="closeProductModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--txt3);font-size:1.5rem;cursor:pointer">×</button>
+          <h3 style="font-size:1.3rem;font-weight:600;margin-bottom:1.5rem">Add Product</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <div style="grid-column:1/-1"><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Product name *</label><input id="new-prod-name" type="text" placeholder="e.g. Ivory Embroidered Kurta" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Price (₹) *</label><input id="new-prod-price" type="text" placeholder="1,299" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Category</label><select id="new-prod-cat" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"><option>Kurtas</option><option>Co-ord Sets</option><option>Dupattas</option><option>Accessories</option></select></div>
+            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Available sizes</label><input id="new-prod-sizes" type="text" placeholder="XS, S, M, L, XL" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+            <div style="grid-column:1/-1"><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Description (helps AI answer questions)</label><textarea id="new-prod-desc" rows="2" placeholder="e.g. Handcrafted ivory kurta with floral embroidery, suitable for casual and festive occasions" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;resize:none"></textarea></div>
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1.5rem">
+            <button onclick="saveProduct()" style="flex:1;background:var(--grd);border:none;border-radius:10px;color:#fff;padding:11px;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer">Add Product</button>
+            <button onclick="closeProductModal()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--txt2);padding:11px 18px;font-size:0.875rem;font-family:'DM Sans',sans-serif;cursor:pointer">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ INTEGRATIONS PAGE ══ -->
+  <div class="page" id="page-integrations">
+    <div class="page-body">
+      <div style="margin-bottom:1.5rem">
+        <h2 style="font-size:1.6rem;font-weight:600;margin-bottom:0.35rem">Integrations 🔌</h2>
+        <p style="font-size:0.875rem;color:var(--txt2)">Connect your tools so Zyra has all the information it needs</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem" id="integrations-grid"></div>
+    </div>
+  </div>
+
+  <!-- ══ SETTINGS PAGE ══ -->
+  <div class="page" id="page-settings">
+    <div class="page-body">
+      <div style="margin-bottom:1.5rem"><h2 style="font-size:1.6rem;font-weight:600;margin-bottom:0.35rem">Settings ⚙️</h2><p style="font-size:0.875rem;color:var(--txt2)">Manage your account, team, notifications and billing</p></div>
+      <div style="display:flex;gap:3px;margin-bottom:1.5rem;background:var(--bg1);padding:4px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);width:fit-content">
+        <button class="settings-tab active" onclick="switchSettingsTab(this,'account')">Account</button>
+        <button class="settings-tab" onclick="switchSettingsTab(this,'ai')">AI Behaviour</button>
+        <button class="settings-tab" onclick="switchSettingsTab(this,'notif')">Notifications</button>
+        <button class="settings-tab" onclick="switchSettingsTab(this,'billing')">Billing</button>
+      </div>
+
+      <!-- Account Tab -->
+      <div class="settings-panel active" id="stab-account">
+        <div class="grid-2" style="align-items:start">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Brand Profile</div><button class="card-action" onclick="showToast('✅','Profile saved!')">Save changes</button></div>
+            <div class="card-body">
+              <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+                <div style="width:64px;height:64px;border-radius:50%;background:var(--grd);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:#fff;flex-shrink:0">S</div>
+                <div><div style="font-size:0.875rem;font-weight:600;margin-bottom:4px">Sana's Closet</div><button style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:var(--txt2);padding:5px 12px;font-size:0.75rem;font-family:'DM Sans',sans-serif;cursor:pointer">Change photo</button></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Brand name</label><input type="text" value="Sana's Closet" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Owner name</label><input type="text" value="Priya Kapoor" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">WhatsApp number</label><input type="text" value="+91 98765 43210" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Instagram</label><input type="text" value="@sanas_closet" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+                <div style="grid-column:1/-1"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Return policy</label><input type="text" value="7 days from delivery, free exchange" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+                <div style="grid-column:1/-1"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Shipping timeline</label><input type="text" value="3-5 business days via Shiprocket" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Plan & Usage</div></div>
+              <div class="card-body">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                  <div><div style="font-size:1rem;font-weight:700">Growth Plan</div><div style="font-size:0.75rem;color:var(--txt3)">₹1,999/month · Renews 30 Apr</div></div>
+                  <span style="background:rgba(124,58,237,0.15);color:var(--acc3);font-size:0.72rem;font-weight:600;padding:3px 10px;border-radius:100px">ACTIVE</span>
+                </div>
+                <div style="margin-bottom:0.5rem"><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:5px"><span style="color:var(--txt2)">AI replies used</span><span style="color:var(--txt);font-weight:600">1,284 / 2,500</span></div><div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:5px;width:51%;background:var(--grd);border-radius:3px"></div></div></div>
+                <div style="font-size:0.72rem;color:var(--txt3);margin-bottom:1.25rem">12 days left in billing period</div>
+                <button style="width:100%;background:var(--grd);border:none;border-radius:9px;color:#fff;padding:10px;font-size:0.85rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="showToast('🚀','Redirecting to upgrade page...')">Upgrade to Pro →</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Danger Zone</div></div>
+              <div class="card-body">
+                <div style="display:flex;flex-direction:column;gap:0.75rem">
+                  <button style="width:100%;background:transparent;border:1px solid rgba(248,113,113,0.3);border-radius:9px;color:var(--err);padding:10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="showToast('⚠️','Please contact support to cancel')">Cancel Subscription</button>
+                  <button style="width:100%;background:transparent;border:1px solid rgba(248,113,113,0.2);border-radius:9px;color:rgba(248,113,113,0.6);padding:10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="showToast('⚠️','Account deletion requires email confirmation')">Delete Account</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Tab -->
+      <div class="settings-panel" id="stab-ai" style="display:none">
+        <div class="grid-2" style="align-items:start">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Reply Behaviour</div><button class="card-action" onclick="showToast('✅','AI settings saved!')">Save</button></div>
+            <div class="card-body" id="ai-toggles"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Working Hours</div><button class="card-action" onclick="showToast('✅','Hours saved!')">Save</button></div>
+            <div class="card-body">
+              <p style="font-size:0.8rem;color:var(--txt2);margin-bottom:1.25rem;line-height:1.7">Zyra replies 24/7 by default. Set working hours to only auto-reply during your active hours.</p>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">From</label><input type="time" value="09:00" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">To</label><input type="time" value="22:00" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+              </div>
+              <div style="margin-top:1rem"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Outside hours message</label><textarea rows="2" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;resize:none">Hi! We're currently offline but will reply first thing in the morning 💕 — Sana's Closet</textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Tab -->
+      <div class="settings-panel" id="stab-notif" style="display:none">
+        <div class="card" style="max-width:600px">
+          <div class="card-header"><div class="card-title">Notification Preferences</div><button class="card-action" onclick="showToast('✅','Notifications saved!')">Save</button></div>
+          <div class="card-body" id="notif-settings"></div>
+        </div>
+      </div>
+
+      <!-- Billing Tab -->
+      <div class="settings-panel" id="stab-billing" style="display:none">
+        <div class="grid-2" style="align-items:start">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Payment Method</div></div>
+            <div class="card-body">
+              <div style="display:flex;align-items:center;gap:12px;padding:1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-bottom:1rem">
+                <div style="width:42px;height:28px;background:linear-gradient(135deg,#1A1F71,#00A6E0);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff">VISA</div>
+                <div><div style="font-size:0.875rem;font-weight:600">•••• •••• •••• 4242</div><div style="font-size:0.72rem;color:var(--txt3)">Expires 12/26</div></div>
+                <span style="margin-left:auto;font-size:0.72rem;color:var(--ok);background:rgba(16,185,129,0.1);padding:2px 8px;border-radius:100px">Default</span>
+              </div>
+              <button style="width:100%;background:transparent;border:1px dashed rgba(255,255,255,0.15);border-radius:10px;color:var(--txt2);padding:11px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="showToast('💳','Add new payment method')">+ Add payment method</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Billing History</div></div>
+            <div class="card-body">
+              <div style="display:flex;flex-direction:column;gap:0.6rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.82rem"><span style="color:var(--txt2)">1 Apr 2025 — Growth</span><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--txt);font-weight:600">₹1,999</span><span style="color:var(--ok);font-size:0.7rem">Paid</span></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.82rem"><span style="color:var(--txt2)">1 Mar 2025 — Growth</span><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--txt);font-weight:600">₹1,999</span><span style="color:var(--ok);font-size:0.7rem">Paid</span></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:0.82rem"><span style="color:var(--txt2)">1 Feb 2025 — Starter</span><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--txt);font-weight:600">₹799</span><span style="color:var(--ok);font-size:0.7rem">Paid</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+var convData=[
+  {name:"Priya Sharma",init:"P",num:"+91 98765 43210",color:"linear-gradient(135deg,#7C3AED,#EC4899)",
+   msgs:[{t:"in",txt:"Hi! I received my order but got the wrong size. I ordered M but got L. Very disappointed 😞",time:"10:42 AM"},{t:"in",txt:"Can you please help me with an exchange?",time:"10:43 AM"}],
+   draft:"Heyy Priya, so sorry about this! 😔 This is totally our mistake and we want to fix it right away! 💕\n\nPlease share your order number and a photo of the size tag received — we'll arrange a free pickup and send you the correct size M within 3-4 days.\n\nAgain, really sorry for the trouble! 🙏"},
+  {name:"Rahul Mehta",init:"R",num:"+91 87654 32109",color:"linear-gradient(135deg,#06B6D4,#10B981)",
+   msgs:[{t:"in",txt:"Kab tak aayega mera order? Track nahi ho raha hai kuch bhi",time:"10:15 AM"},{t:"out",txt:"Hi Rahul! 😊 Your order #4821 was shipped on 14th April via Shiprocket. Current status: Out for delivery today! You should receive it by 6 PM. Track here: shiprocket.in/track/4821",time:"10:16 AM",ai:true}],
+   draft:null},
+  {name:"Anjali Singh",init:"A",num:"+91 76543 21098",color:"linear-gradient(135deg,#F59E0B,#EC4899)",
+   msgs:[{t:"in",txt:"Do you have the blue printed kurta in size S? Saw it on your Instagram",time:"9:30 AM"},{t:"out",txt:"Heyy Anjali! 💙 Yes, the Indigo Block Print Kurta is available in S right now — only 2 left so grab it fast! 🏃‍♀️ Price: ₹1,499. Want me to reserve it for you?",time:"9:31 AM",ai:true}],
+   draft:null},
+  {name:"Meera Patel",init:"M",num:"+91 65432 10987",color:"linear-gradient(135deg,#10B981,#06B6D4)",
+   msgs:[{t:"in",txt:"Just received my order and the packaging was so beautiful 😍 Loved it!",time:"8:45 AM"},{t:"out",txt:"Aww this made our day!! 🥹💕 So happy you loved it Meera! We put a lot of love into every package 🎀 Would you be up for leaving us a quick Google review? It would mean the world to us! ⭐",time:"8:46 AM",ai:true},{t:"in",txt:"Of course! Will do right now 😊",time:"8:50 AM"}],
+   draft:null},
+  {name:"Sneha Gupta",init:"S",num:"+91 54321 09876",color:"linear-gradient(135deg,#EC4899,#F59E0B)",
+   msgs:[{t:"in",txt:"Mera refund kab milega? Order cancel kiya tha 2 weeks pehle abhi tak paisa nahi aaya",time:"7:20 AM"}],
+   draft:"Hi Sneha! 🙏 Pehle toh sorry for the delay — yeh bilkul nahi hona chahiye tha!\n\nAapka refund process mein hai — usually 5-7 business days lagte hain bank mein reflect hone mein. Aapka order number share karein, main abhi check karti hoon aur update deti hoon aaj hi! 💪"},
+  {name:"Kavya R.",init:"K",num:"+91 43210 98765",color:"linear-gradient(135deg,#7C3AED,#06B6D4)",
+   msgs:[{t:"in",txt:"Hi, can I exchange the green dupatta for a pink one?",time:"6:10 AM"},{t:"out",txt:"Hey Kavya! 💕 Yes absolutely — we have the same dupatta in rose pink and blush pink! Exchanges are easy — just share your order number and we'll arrange a pickup within 2 days. Which pink do you prefer? 🌸",time:"6:11 AM",ai:true}],
+   draft:null}
+];
+
+var currentConv=-1;
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  var titles={dashboard:'Dashboard',conversations:'Conversations',broadcasts:'Broadcasts 📢',analytics:'Analytics 📈',voice:'Brand Voice 🎙️',catalog:'Product Catalog 📦',integrations:'Integrations 🔌',settings:'Settings ⚙️'};
+  document.getElementById('topbar-title').textContent=titles[name]||'Dashboard';
+  if(name==='dashboard')buildChart();
+  if(name==='analytics')buildSparklines();
+}
+
+function openConversation(idx){
+  currentConv=idx;
+  var c=convData[idx];
+  document.getElementById('detail-name').textContent=c.name;
+  document.getElementById('detail-num').textContent=c.num+' · Last seen recently';
+  document.getElementById('detail-avatar').textContent=c.init;
+  document.getElementById('detail-avatar').style.background=c.color;
+  var area=document.getElementById('chat-area');
+  area.innerHTML='';
+  c.msgs.forEach(function(m){
+    var row=document.createElement('div');
+    row.className='msg-row '+(m.t==='out'?'outgoing':'');
+    var bubble=document.createElement('div');
+    bubble.className='msg-bubble '+(m.t==='out'?'outgoing':'incoming');
+    bubble.textContent=m.txt;
+    var meta=document.createElement('div');
+    meta.className='msg-meta'+(m.t==='out'?' right':'');
+    meta.innerHTML=m.time+(m.ai?' <span class="ai-label">✦ Zyra</span>':'');
+    var wrap=document.createElement('div');
+    wrap.appendChild(bubble);
+    wrap.appendChild(meta);
+    row.appendChild(wrap);
+    area.appendChild(row);
+  });
+  area.scrollTop=area.scrollHeight;
+  var draftBox=document.getElementById('ai-draft-box');
+  var draftText=document.getElementById('draft-text');
+  if(c.draft){
+    draftBox.style.display='block';
+    draftText.textContent=c.draft;
+  } else {
+    draftBox.style.display='none';
+  }
+  document.getElementById('conv-empty').style.display='none';
+  document.getElementById('conv-detail').classList.add('open');
+  if(window.innerWidth<900){
+    document.getElementById('conv-list-panel').style.display='none';
+  }
+}
+
+function approveDraft(){
+  var draft=document.getElementById('draft-text').textContent;
+  var c=convData[currentConv];
+  c.msgs.push({t:'out',txt:draft,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),ai:true});
+  c.draft=null;
+  openConversation(currentConv);
+  showToast('✅','Reply sent in your voice!');
+}
+
+function declineDraft(){
+  convData[currentConv].draft=null;
+  document.getElementById('ai-draft-box').style.display='none';
+  showToast('🗑️','Draft declined');
+}
+
+function focusDraft(){document.getElementById('draft-text').focus();}
+
+function regenDraft(){
+  var drafts=["Hey! 💕 So sorry for the trouble — let me sort this out for you right away! 🙏","Hi there! Really sorry about this 😔 Let me fix this immediately — could you share your order number?","Heyy! So sorry to hear this! We'll make it right, I promise 💪 Share your order ID and we'll process it today!"];
+  document.getElementById('draft-text').textContent=drafts[Math.floor(Math.random()*drafts.length)];
+  showToast('✦','New draft generated');
+}
+
+function sendManual(){
+  var input=document.getElementById('manual-input');
+  var txt=input.value.trim();
+  if(!txt)return;
+  convData[currentConv].msgs.push({t:'out',txt:txt,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});
+  input.value='';
+  input.style.height='auto';
+  openConversation(currentConv);
+  showToast('✅','Message sent!');
+}
+
+function markResolved(){
+  showToast('✓','Conversation marked as resolved');
+  document.getElementById('conv-detail').classList.remove('open');
+  document.getElementById('conv-empty').style.display='flex';
+}
+
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+function filterConvs(btn,type){
+  document.querySelectorAll('.bc-audience .audience-chip').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');
+}
+
+function buildChart(){
+  var wrap=document.getElementById('chart-wrap');
+  if(!wrap)return;
+  wrap.innerHTML='';
+  var days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var aiVals=[120,98,145,178,134,89,210];
+  var hmVals=[18,22,15,20,28,14,24];
+  var max=Math.max.apply(null,aiVals.map(function(v,i){return v+hmVals[i];}));
+  days.forEach(function(d,i){
+    var group=document.createElement('div');
+    group.className='bar-group';
+    var aiH=Math.round((aiVals[i]/max)*130);
+    var hmH=Math.round((hmVals[i]/max)*130);
+    var aiBar=document.createElement('div');
+    aiBar.className='bar ai';
+    aiBar.style.height=aiH+'px';
+    aiBar.title='AI: '+aiVals[i];
+    var hmBar=document.createElement('div');
+    hmBar.className='bar human';
+    hmBar.style.height=hmH+'px';
+    hmBar.title='Manual: '+hmVals[i];
+    var lbl=document.createElement('div');
+    lbl.className='bar-label';
+    lbl.textContent=d;
+    group.appendChild(aiBar);
+    group.appendChild(hmBar);
+    group.appendChild(lbl);
+    wrap.appendChild(group);
+  });
+}
+
+function buildSparklines(){
+  ['spark1','spark2','spark3','spark4'].forEach(function(id,si){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.innerHTML='';
+    var vals=[40,55,45,70,60,85,90,75,95,100].map(function(v){return v+Math.round(Math.random()*20-10);});
+    var max=Math.max.apply(null,vals);
+    vals.forEach(function(v){
+      var bar=document.createElement('div');
+      bar.className='spark-bar';
+      bar.style.height=Math.round((v/max)*36)+'px';
+      el.appendChild(bar);
+    });
+  });
+}
+
+function selectTemplate(el,type){
+  document.querySelectorAll('.bc-template').forEach(function(t){t.classList.remove('selected');});
+  el.classList.add('selected');
+  var msgs={
+    sale:"Heyy bestie! 💕 Big sale alert! Get flat 20% OFF on everything this weekend only! Use code SAVE20 at checkout 🛍️\n\n— Sana's Closet 👗",
+    restock:"Hey! 🎉 Great news — your favourite item is BACK IN STOCK! Limited pieces available so don't miss out 🏃‍♀️\n\n— Sana's Closet 👗",
+    festival:"Wishing you and your family a very Happy Diwali! 🪔✨\n\nTo celebrate, enjoy 15% OFF all orders this week with code DIWALI15 💕\n\n— Sana's Closet 👗",
+    newlaunch:"Introducing our new Summer Bloom Collection 🌸 Fresh prints, breezy fabrics, and tons of love in every piece! Shop now 👇\n\n— Sana's Closet 👗",
+    review:"Hey! Hope you're loving your recent order 💕 Would mean the world to us if you could leave a quick review — takes just 30 seconds! ⭐⭐⭐⭐⭐\n\nThank you so much! 🙏\n\n— Sana's Closet 👗",
+    custom:""
+  };
+  document.getElementById('bc-message').value=msgs[type]||'';
+}
+
+function toggleChip(btn){btn.classList.toggle('selected');}
+
+function generateBroadcast(){
+  var prompt=document.getElementById('bc-prompt').value;
+  if(!prompt.trim()){showToast('⚠️','Please describe what you want to say first');return;}
+  document.getElementById('bc-message').value='Generating in your voice…';
+  setTimeout(function(){
+    document.getElementById('bc-message').value="Heyy bestie! 💕 "+prompt.charAt(0).toUpperCase()+prompt.slice(1)+"!\n\nDon't miss out — limited time only! 🏃‍♀️✨\n\n— Sana's Closet 👗";
+    showToast('✦','Message generated in your voice!');
+  },1200);
+}
+
+function sendBroadcast(){
+  showToast('📢','Broadcast sent to 412 customers!');
+}
+
+function showToast(icon,msg){
+  document.getElementById('toast-icon').textContent=icon;
+  document.getElementById('toast-msg').textContent=msg;
+  var t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3500);
+}
+function hideToast(){document.getElementById('toast').classList.remove('show');}
+
+
+// ── BRAND VOICE PAGE ──
+var toneSliders=[
+  {label:'Casual ↔ Formal',val:25,left:'Casual',right:'Formal'},
+  {label:'Minimal ↔ Emoji-heavy',val:75,left:'Minimal',right:'Emoji-heavy 💕'},
+  {label:'Brief ↔ Detailed',val:40,left:'Brief',right:'Detailed'},
+  {label:'Hindi ↔ English',val:50,left:'More Hindi',right:'More English'},
+];
+var phrases=["heyy bestie!","💕","grab it fast 🏃‍♀️","so sorry!","will sort this out","don't miss out","our lovely customers","happy shopping","made with love","limited pieces"];
+var previewMsgs=[
+  {q:"Do you have this in size S?",a:"Heyy bestie! 💕 Yes the Ivory Embroidered Kurta is available in S right now — only 3 pieces left so grab it fast! 🏃‍♀️ Want me to hold one for you?"},
+  {q:"What's your return policy?",a:"Returns are super easy 💕 — 7 days from delivery, just WhatsApp us your order number and we'll arrange a free pickup! 🤍"},
+  {q:"Where is my order?",a:"Hey! 😊 Your order is on its way! Let me check the tracking for you — share your order number and I'll get you the exact status right away 📦"},
+];
+
+function initVoicePage(){
+  var sliderContainer=document.getElementById('tone-sliders');
+  if(!sliderContainer||sliderContainer.children.length>0)return;
+  toneSliders.forEach(function(s,i){
+    var wrap=document.createElement('div');
+    wrap.style.marginBottom='1.25rem';
+    wrap.innerHTML='<div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px"><span style="color:var(--txt3)">'+s.left+'</span><span style="color:var(--txt2);font-weight:500">'+s.label+'</span><span style="color:var(--txt3)">'+s.right+'</span></div><input type="range" min="0" max="100" value="'+s.val+'" style="width:100%;accent-color:var(--acc)"/>';
+    sliderContainer.appendChild(wrap);
+  });
+  var phraseContainer=document.getElementById('phrase-tags');
+  if(phraseContainer&&phraseContainer.children.length===0){
+    phrases.forEach(function(p){
+      var tag=document.createElement('span');
+      tag.style.cssText='background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);border-radius:100px;padding:4px 12px;font-size:0.78rem;color:var(--acc3);cursor:pointer';
+      tag.textContent=p;
+      phraseContainer.appendChild(tag);
+    });
+  }
+  var previewContainer=document.getElementById('preview-prompts');
+  if(previewContainer&&previewContainer.children.length===0){
+    previewMsgs.forEach(function(m,i){
+      var btn=document.createElement('button');
+      btn.style.cssText='background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:5px 13px;font-size:0.75rem;color:var(--txt2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s';
+      btn.textContent=m.q;
+      btn.onclick=function(){document.getElementById('voice-preview-text').textContent=m.a;};
+      previewContainer.appendChild(btn);
+    });
+  }
+}
+
+function handleVoiceUpload(e){
+  var container=document.getElementById('voice-files');
+  Array.from(e.target.files).forEach(function(f){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:7px 11px;font-size:0.8rem;color:var(--txt2)';
+    row.innerHTML='<span>✅</span><span style="flex:1">'+f.name+'</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--txt3);cursor:pointer;font-size:15px">×</button>';
+    container.appendChild(row);
+  });
+  showToast('✦','Analysing voice patterns...');
+}
+
+// ── CATALOG PAGE ──
+var products=[
+  {name:'Ivory Embroidered Kurta',cat:'Kurtas',price:'₹1,499',sizes:'XS,S,M,L,XL',stock:'in',queries:38},
+  {name:'Indigo Block Print Kurta',cat:'Kurtas',price:'₹1,299',sizes:'S,M,L',stock:'in',queries:24},
+  {name:'Rose Co-ord Set',cat:'Co-ord Sets',price:'₹2,499',sizes:'S,M,L,XL',stock:'in',queries:19},
+  {name:'Mint Linen Co-ord',cat:'Co-ord Sets',price:'₹2,199',sizes:'XS,S,M',stock:'low',queries:14},
+  {name:'Bandhani Dupatta',cat:'Dupattas',price:'₹699',sizes:'Free size',stock:'in',queries:11},
+  {name:'Sequin Potli Bag',cat:'Accessories',price:'₹899',sizes:'One size',stock:'out',queries:8},
+];
+
+function renderProducts(){
+  var tbody=document.getElementById('product-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  products.forEach(function(p,i){
+    var stockBadge=p.stock==='in'?'<span style="font-size:0.7rem;padding:2px 8px;border-radius:100px;background:rgba(16,185,129,0.1);color:var(--ok)">In stock</span>':p.stock==='low'?'<span style="font-size:0.7rem;padding:2px 8px;border-radius:100px;background:rgba(251,191,36,0.1);color:var(--warn)">Low stock</span>':'<span style="font-size:0.7rem;padding:2px 8px;border-radius:100px;background:rgba(248,113,113,0.1);color:var(--err)">Out of stock</span>';
+    var tr=document.createElement('tr');
+    tr.style.borderTop='1px solid rgba(255,255,255,0.04)';
+    tr.innerHTML='<td style="padding:12px 16px;font-size:0.875rem;font-weight:600">'+p.name+'</td><td style="padding:12px 16px;font-size:0.82rem;color:var(--txt2)">'+p.cat+'</td><td style="padding:12px 16px;font-size:0.875rem;font-weight:600;color:var(--acc3)">'+p.price+'</td><td style="padding:12px 16px;font-size:0.78rem;color:var(--txt2)">'+p.sizes+'</td><td style="padding:12px 16px">'+stockBadge+'</td><td style="padding:12px 16px;font-size:0.82rem;color:var(--txt2)">'+p.queries+' this week</td><td style="padding:12px 16px"><button onclick="deleteProduct('+i+')" style="background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px;padding:4px 8px;border-radius:6px;transition:color .2s" onmouseenter="this.style.color='var(--err)'" onmouseleave="this.style.color='var(--txt3)'">✕</button></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function addProductModal(){
+  var m=document.getElementById('product-modal');
+  m.style.display='flex';
+}
+function closeProductModal(){
+  document.getElementById('product-modal').style.display='none';
+}
+function saveProduct(){
+  var name=document.getElementById('new-prod-name').value.trim();
+  var price=document.getElementById('new-prod-price').value.trim();
+  var cat=document.getElementById('new-prod-cat').value;
+  var sizes=document.getElementById('new-prod-sizes').value||'One size';
+  if(!name||!price){showToast('⚠️','Please fill in name and price');return;}
+  products.unshift({name:name,cat:cat,price:'₹'+price,sizes:sizes,stock:'in',queries:0});
+  renderProducts();
+  closeProductModal();
+  showToast('✅','Product added! Zyra can now answer questions about it.');
+  document.getElementById('new-prod-name').value='';
+  document.getElementById('new-prod-price').value='';
+  document.getElementById('new-prod-sizes').value='';
+}
+function deleteProduct(i){
+  products.splice(i,1);
+  renderProducts();
+  showToast('🗑️','Product removed');
+}
+
+// ── INTEGRATIONS PAGE ──
+var integrationsData=[
+  {icon:'💬',name:'WhatsApp Business',desc:'Receive and send messages through your WhatsApp Business number',status:'connected',color:'#25D366'},
+  {icon:'📦',name:'Shiprocket',desc:'Auto-reply to order tracking queries with live shipment status',status:'connected',color:'#F59E0B'},
+  {icon:'🛍️',name:'Shopify',desc:'Import your product catalog and sync inventory automatically',status:'disconnected',color:'#96BF48'},
+  {icon:'📸',name:'Instagram DMs',desc:'Handle customer messages from your Instagram business account',status:'coming',color:'#E1306C'},
+  {icon:'🚚',name:'Delhivery',desc:'Track Delhivery shipments and reply with real-time updates',status:'disconnected',color:'#E63946'},
+  {icon:'💳',name:'Razorpay',desc:'Answer payment status and refund queries automatically',status:'coming',color:'#2B6CB0'},
+  {icon:'🔔',name:'Slack Alerts',desc:'Get notified in Slack when urgent messages need your attention',status:'disconnected',color:'#4A154B'},
+  {icon:'📊',name:'Google Sheets',desc:'Log all conversations and customer data to Google Sheets',status:'coming',color:'#0F9D58'},
+  {icon:'📧',name:'Email / SMTP',desc:'Route support emails through Zyra for AI-powered replies',status:'disconnected',color:'#EA4335'},
+];
+
+function renderIntegrations(){
+  var grid=document.getElementById('integrations-grid');
+  if(!grid||grid.children.length>0)return;
+  integrationsData.forEach(function(intg){
+    var card=document.createElement('div');
+    card.style.cssText='background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;transition:all .2s';
+    var statusHtml=intg.status==='connected'?'<span style="font-size:0.7rem;padding:3px 9px;border-radius:100px;background:rgba(16,185,129,0.1);color:var(--ok);font-weight:600">● Connected</span>':intg.status==='coming'?'<span style="font-size:0.7rem;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.06);color:var(--txt3)">Coming soon</span>':'<span style="font-size:0.7rem;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.04);color:var(--txt3)">Not connected</span>';
+    var btnHtml=intg.status==='connected'?'<button onclick="showToast('⚙️','Opening '+intg.name+' settings...')" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:9px;color:var(--txt2);padding:9px;font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1rem">Configure</button>':intg.status==='coming'?'<button disabled style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.06);border-radius:9px;color:var(--txt3);padding:9px;font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:not-allowed;margin-top:1rem;opacity:0.5">Coming soon</button>':'<button onclick="showToast('🔌','Connecting '+intg.name+'...')" style="width:100%;background:var(--grd);border:none;border-radius:9px;color:#fff;padding:9px;font-size:0.8rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1rem">Connect</button>';
+    card.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem"><div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:1.4rem">'+intg.icon+'</div>'+statusHtml+'</div><div style="font-size:0.9rem;font-weight:600;margin-bottom:0.4rem">'+intg.name+'</div><div style="font-size:0.78rem;color:var(--txt2);line-height:1.65">'+intg.desc+'</div>'+btnHtml;
+    grid.appendChild(card);
+  });
+}
+
+// ── SETTINGS PAGE ──
+var aiToggles=[
+  {label:'Auto-send safe replies',desc:'Automatically send replies for order tracking and FAQ questions without your approval',on:false},
+  {label:'Approval mode for complaints',desc:'Always require your approval before sending replies to upset customers',on:true},
+  {label:'Abandoned cart follow-up',desc:'Send a gentle follow-up 3 hours after a customer shows interest but goes silent',on:true},
+  {label:'Review request after delivery',desc:'Automatically ask for a review 2 days after delivery confirmation',on:true},
+  {label:'Daily business pulse on WhatsApp',desc:'Receive your daily summary at 9am on your personal WhatsApp',on:true},
+  {label:'Hinglish auto-detection',desc:'Automatically detect and reply in Hindi when customers message in Hindi',on:true},
+];
+var notifSettings=[
+  {label:'Urgent message alerts',desc:'Notify immediately when an angry or urgent message arrives',on:true},
+  {label:'Daily digest',desc:'Morning summary of all conversations from the previous day',on:true},
+  {label:'Weekly performance report',desc:'Weekly email with your analytics and insights',on:false},
+  {label:'Broadcast results',desc:'Notify when a broadcast is sent and show open rate stats',on:true},
+  {label:'New review collected',desc:'Alert when a customer submits a review via Zyra',on:false},
+];
+
+function initSettingsPage(){
+  var aiContainer=document.getElementById('ai-toggles');
+  if(aiContainer&&aiContainer.children.length===0){
+    aiToggles.forEach(function(t){
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04)';
+      row.innerHTML='<div style="flex:1;padding-right:1rem"><div style="font-size:0.875rem;font-weight:500;margin-bottom:2px">'+t.label+'</div><div style="font-size:0.75rem;color:var(--txt3);line-height:1.5">'+t.desc+'</div></div><button onclick="this.style.background=this.getAttribute('data-on')==='1'?'var(--bdr)':'var(--ok)';this.setAttribute('data-on',this.getAttribute('data-on')==='1'?'0':'1');this.querySelector('div').style.left=this.getAttribute('data-on')==='1'?'19px':'2.5px'" data-on="'+(t.on?'1':'0')+'" style="width:38px;height:21px;border-radius:10.5px;background:'+(t.on?'var(--ok)':'var(--bdr)')+';border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0"><div style="position:absolute;top:2.5px;left:'+(t.on?'19':'2.5')+'px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s"></div></button>';
+      aiContainer.appendChild(row);
+    });
+  }
+  var notifContainer=document.getElementById('notif-settings');
+  if(notifContainer&&notifContainer.children.length===0){
+    notifSettings.forEach(function(t){
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04)';
+      row.innerHTML='<div style="flex:1;padding-right:1rem"><div style="font-size:0.875rem;font-weight:500;margin-bottom:2px">'+t.label+'</div><div style="font-size:0.75rem;color:var(--txt3);line-height:1.5">'+t.desc+'</div></div><button onclick="this.style.background=this.getAttribute('data-on')==='1'?'var(--bdr)':'var(--ok)';this.setAttribute('data-on',this.getAttribute('data-on')==='1'?'0':'1');this.querySelector('div').style.left=this.getAttribute('data-on')==='1'?'19px':'2.5px'" data-on="'+(t.on?'1':'0')+'" style="width:38px;height:21px;border-radius:10.5px;background:'+(t.on?'var(--ok)':'var(--bdr)')+';border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0"><div style="position:absolute;top:2.5px;left:'+(t.on?'19':'2.5')+'px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s"></div></button>';
+      notifContainer.appendChild(row);
+    });
+  }
+}
+
+function switchSettingsTab(btn,id){
+  document.querySelectorAll('.settings-tab').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.settings-panel').forEach(function(p){p.style.display='none';});
+  btn.classList.add('active');
+  document.getElementById('stab-'+id).style.display='block';
+  if(id==='ai'||id==='notif')initSettingsPage();
+}
+
+// Override showPage to init pages
+var _origShowPage = showPage;
+showPage = function(name){
+  _origShowPage(name);
+  if(name==='voice')initVoicePage();
+  if(name==='catalog')renderProducts();
+  if(name==='integrations')renderIntegrations();
+  if(name==='settings')initSettingsPage();
+};
+
+window.addEventListener('DOMContentLoaded',function(){
+  buildChart();
+  buildSparklines();
+});
+</script>
+</body>
+</html>
