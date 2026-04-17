@@ -204,6 +204,143 @@ h1,h2,h3,h4,.logo{font-family:'Cormorant Garamond',serif}
 </style>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+async function handleLogin(){
+  var em=document.getElementById('login-email');
+  var pw=document.getElementById('login-password');
+  if(!em.value||!pw.value){alert('Please enter your email and password.');return;}
+
+  var btn=document.querySelectorAll('.btn-submit')[1];
+  btn.textContent='Signing in...';
+  btn.disabled=true;
+
+  try {
+    var result = await _supabase.auth.signInWithPassword({
+      email: em.value.trim(),
+      password: pw.value
+    });
+
+    if(result.error){
+      btn.textContent='Sign in →';
+      btn.disabled=false;
+      alert('Login error: ' + result.error.message);
+      return;
+    }
+
+    window._zyraUser = result.data.user;
+    window.location.href = 'zyra_dashboard.html';
+
+  } catch(e) {
+    btn.textContent='Sign in →';
+    btn.disabled=false;
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+async function saveBrandToSupabase(brandData){
+  if(!window._zyraUser) return;
+  try {
+    var result = await _supabase.from('brands').insert({
+      user_id: window._zyraUser.id,
+      brand_name: brandData.name || 'My Brand',
+      owner_name: brandData.owner || '',
+      whatsapp_number: brandData.whatsapp || '',
+      instagram_handle: brandData.instagram || '',
+      what_we_sell: brandData.whatSell || '',
+      category: brandData.category || '',
+      return_policy: brandData.returns || '7 days from delivery',
+      shipping_timeline: brandData.shipping || '3-5 business days',
+      plan: 'starter'
+    });
+    if(result.error) console.error('Brand save error:', result.error);
+  } catch(e) {
+    console.error('Error saving brand:', e);
+  }
+}
+
+// Check if user is already logged in on page load
+window.addEventListener('DOMContentLoaded', async function(){
+  var session = await _supabase.auth.getSession();
+  if(session.data.session){
+    // User already logged in - redirect to dashboard
+    var currentPage = document.getElementById('page-signup');
+    if(currentPage && currentPage.classList.contains('active')){
+      window.location.href = 'zyra_dashboard.html';
+    }
+  }
+});
+</script>
+<script>
+const SUPABASE_URL = 'https://qobsbbfjjgwgfmgxwinn.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DtsDbj5_Bgx9QwtjvEoPyw_pJzpOF8C';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function handleLogin(){
+  var em=document.getElementById('login-email');
+  var pw=document.getElementById('login-password');
+  if(!em.value||!pw.value){alert('Please enter your email and password.');return;}
+
+  var btn=document.querySelectorAll('.btn-submit')[1];
+  btn.textContent='Signing in...';
+  btn.disabled=true;
+
+  try {
+    var result = await _supabase.auth.signInWithPassword({
+      email: em.value.trim(),
+      password: pw.value
+    });
+
+    if(result.error){
+      btn.textContent='Sign in →';
+      btn.disabled=false;
+      alert('Login error: ' + result.error.message);
+      return;
+    }
+
+    window._zyraUser = result.data.user;
+    window.location.href = 'zyra_dashboard.html';
+
+  } catch(e) {
+    btn.textContent='Sign in →';
+    btn.disabled=false;
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+async function saveBrandToSupabase(brandData){
+  if(!window._zyraUser) return;
+  try {
+    var result = await _supabase.from('brands').insert({
+      user_id: window._zyraUser.id,
+      brand_name: brandData.name || 'My Brand',
+      owner_name: brandData.owner || '',
+      whatsapp_number: brandData.whatsapp || '',
+      instagram_handle: brandData.instagram || '',
+      what_we_sell: brandData.whatSell || '',
+      category: brandData.category || '',
+      return_policy: brandData.returns || '7 days from delivery',
+      shipping_timeline: brandData.shipping || '3-5 business days',
+      plan: 'starter'
+    });
+    if(result.error) console.error('Brand save error:', result.error);
+  } catch(e) {
+    console.error('Error saving brand:', e);
+  }
+}
+
+// Check if user is already logged in on page load
+window.addEventListener('DOMContentLoaded', async function(){
+  var session = await _supabase.auth.getSession();
+  if(session.data.session){
+    // User already logged in - redirect to dashboard
+    var currentPage = document.getElementById('page-signup');
+    if(currentPage && currentPage.classList.contains('active')){
+      window.location.href = 'zyra_dashboard.html';
+    }
+  }
+});
+</script>
+
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 
@@ -319,7 +456,7 @@ h1,h2,h3,h4,.logo{font-family:'Cormorant Garamond',serif}
           </div>
           <div style="text-align:right;margin-top:6px"><a href="#" style="font-size:0.78rem;color:var(--txt3);text-decoration:none">Forgot password?</a></div>
         </div>
-        <button class="btn-submit" onclick="showPage('page-onboard-1')">Sign in →</button>
+        <button class="btn-submit" onclick="handleLogin()">Sign in →</button>
         <p class="terms">Protected by 256-bit SSL encryption.</p>
       </div>
     </div>
@@ -656,7 +793,7 @@ function showPage(id){
 }
 
 // Signup validation
-function handleSignup(){
+async function handleSignup(){
   var ok=true;
   var fn=document.getElementById('fname');
   var ln=document.getElementById('lname');
@@ -667,7 +804,42 @@ function handleSignup(){
   });
   if(!em.value.includes('@')||!em.value.includes('.')){em.closest('.field').classList.add('has-error');ok=false;}
   if(pw.value.length<8){pw.closest('.field').classList.add('has-error');ok=false;}
-  if(ok)showPage('page-onboard-1');
+  if(!ok)return;
+
+  // Show loading state
+  var btn=document.querySelector('.btn-submit');
+  btn.textContent='Creating account...';
+  btn.disabled=true;
+
+  try {
+    var result = await _supabase.auth.signUp({
+      email: em.value.trim(),
+      password: pw.value,
+      options: {
+        data: {
+          first_name: fn.value.trim(),
+          last_name: ln.value.trim(),
+          full_name: fn.value.trim() + ' ' + ln.value.trim()
+        }
+      }
+    });
+
+    if(result.error) {
+      btn.textContent='Create free account →';
+      btn.disabled=false;
+      alert('Signup error: ' + result.error.message);
+      return;
+    }
+
+    // Store user info for onboarding
+    window._zyraUser = result.data.user;
+    showPage('page-onboard-1');
+
+  } catch(e) {
+    btn.textContent='Create free account →';
+    btn.disabled=false;
+    alert('Something went wrong. Please try again.');
+  }
 }
 function clearError(input){input.closest('.field').classList.remove('has-error');}
 
@@ -778,6 +950,71 @@ function setTrialDate(){
   var opts={day:'numeric',month:'long',year:'numeric'};
   document.getElementById('trial-end').textContent=d.toLocaleDateString('en-IN',opts);
 }
+
+async function handleLogin(){
+  var em=document.getElementById('login-email');
+  var pw=document.getElementById('login-password');
+  if(!em.value||!pw.value){alert('Please enter your email and password.');return;}
+
+  var btn=document.querySelectorAll('.btn-submit')[1];
+  btn.textContent='Signing in...';
+  btn.disabled=true;
+
+  try {
+    var result = await _supabase.auth.signInWithPassword({
+      email: em.value.trim(),
+      password: pw.value
+    });
+
+    if(result.error){
+      btn.textContent='Sign in →';
+      btn.disabled=false;
+      alert('Login error: ' + result.error.message);
+      return;
+    }
+
+    window._zyraUser = result.data.user;
+    window.location.href = 'zyra_dashboard.html';
+
+  } catch(e) {
+    btn.textContent='Sign in →';
+    btn.disabled=false;
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+async function saveBrandToSupabase(brandData){
+  if(!window._zyraUser) return;
+  try {
+    var result = await _supabase.from('brands').insert({
+      user_id: window._zyraUser.id,
+      brand_name: brandData.name || 'My Brand',
+      owner_name: brandData.owner || '',
+      whatsapp_number: brandData.whatsapp || '',
+      instagram_handle: brandData.instagram || '',
+      what_we_sell: brandData.whatSell || '',
+      category: brandData.category || '',
+      return_policy: brandData.returns || '7 days from delivery',
+      shipping_timeline: brandData.shipping || '3-5 business days',
+      plan: 'starter'
+    });
+    if(result.error) console.error('Brand save error:', result.error);
+  } catch(e) {
+    console.error('Error saving brand:', e);
+  }
+}
+
+// Check if user is already logged in on page load
+window.addEventListener('DOMContentLoaded', async function(){
+  var session = await _supabase.auth.getSession();
+  if(session.data.session){
+    // User already logged in - redirect to dashboard
+    var currentPage = document.getElementById('page-signup');
+    if(currentPage && currentPage.classList.contains('active')){
+      window.location.href = 'zyra_dashboard.html';
+    }
+  }
+});
 </script>
 </body>
 </html>
