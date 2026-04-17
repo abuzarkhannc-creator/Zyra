@@ -271,6 +271,47 @@ h1,h2,h3,h4{font-family:'Cormorant Garamond',serif}
 </style>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://qobsbbfjjgwgfmgxwinn.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DtsDbj5_Bgx9QwtjvEoPyw_pJzpOF8C';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Check auth on load - redirect to login if not logged in
+window.addEventListener('DOMContentLoaded', async function(){
+  var session = await _supabase.auth.getSession();
+  if(!session.data.session){
+    window.location.href = 'zyra_auth.html';
+    return;
+  }
+  var user = session.data.session.user;
+
+  // Load brand data
+  var brand = await _supabase.from('brands').select('*').eq('user_id', user.id).single();
+  if(brand.data){
+    // Update sidebar brand name
+    var brandEl = document.querySelector('.sidebar-brand');
+    if(brandEl) brandEl.textContent = brand.data.brand_name + ' 👗';
+    // Update user name
+    var nameEl = document.querySelector('.user-name');
+    if(nameEl) nameEl.textContent = brand.data.owner_name || user.email;
+    // Update plan
+    var planEl = document.querySelector('.user-plan');
+    if(planEl){
+      var trialEnd = brand.data.trial_ends_at ? new Date(brand.data.trial_ends_at) : null;
+      var daysLeft = trialEnd ? Math.max(0, Math.ceil((trialEnd - new Date()) / (1000*60*60*24))) : 0;
+      planEl.textContent = (brand.data.plan.charAt(0).toUpperCase() + brand.data.plan.slice(1)) + ' Plan · ' + daysLeft + ' days left';
+    }
+  }
+});
+
+// Logout function
+async function logout(){
+  await _supabase.auth.signOut();
+  window.location.href = 'zyra_auth.html';
+}
+</script>
+
 
 <!-- MOBILE OVERLAY -->
 <div id="sidebar-overlay" onclick="document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:49;backdrop-filter:blur(4px)"></div>
@@ -302,7 +343,7 @@ h1,h2,h3,h4{font-family:'Cormorant Garamond',serif}
     <a class="nav-item" href="zyra_landing.html"><span class="nav-icon">🌐</span> View Landing Page</a>
   </nav>
   <div class="sidebar-bottom">
-    <div class="sidebar-user">
+    <div class="sidebar-user" onclick="logout()" title="Click to logout">
       <div class="user-avatar">P</div>
       <div>
         <div class="user-name">Priya Kapoor</div>
@@ -480,7 +521,7 @@ h1,h2,h3,h4{font-family:'Cormorant Garamond',serif}
       <!-- LIST -->
       <div style="width:360px;border-right:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;flex-shrink:0" id="conv-list-panel">
         <div style="padding:1rem;border-bottom:1px solid rgba(255,255,255,0.05)">
-          <input placeholder="🔍  Search conversations..." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none"/>
+          <input placeholder="🔍  Search conversations..." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.85rem;font-family:sans-serif,sans-serif;outline:none"/>
           <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
             <button class="audience-chip selected" onclick="filterConvs(this,'all')">All</button>
             <button class="audience-chip" onclick="filterConvs(this,'pending')">⚡ Needs reply</button>
@@ -637,7 +678,7 @@ h1,h2,h3,h4{font-family:'Cormorant Garamond',serif}
           <div class="card-body">
             <div style="margin-bottom:1rem">
               <div style="font-size:0.78rem;color:var(--txt3);margin-bottom:6px;font-weight:500">Tell Zyra what to say (plain English)</div>
-              <textarea id="bc-prompt" rows="2" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;resize:none" placeholder="e.g. Send a Diwali discount of 20% to customers who bought in the last 3 months"></textarea>
+              <textarea id="bc-prompt" rows="2" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none;resize:none" placeholder="e.g. Send a Diwali discount of 20% to customers who bought in the last 3 months"></textarea>
             </div>
             <div class="compose-box">
               <div class="compose-header">📱 Message preview</div>
@@ -659,8 +700,8 @@ Valid till 31st October. Happy shopping! 🛍️
               </div>
             </div>
             <div style="display:flex;gap:0.75rem;margin-top:1.25rem">
-              <button style="flex:1;background:var(--grd);border:none;border-radius:10px;color:#fff;padding:11px;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="sendBroadcast()">Send Broadcast →</button>
-              <button style="background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--txt2);padding:11px 18px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer">Schedule</button>
+              <button style="flex:1;background:var(--grd);border:none;border-radius:10px;color:#fff;padding:11px;font-size:0.9rem;font-weight:600;font-family:sans-serif,sans-serif;cursor:pointer" onclick="sendBroadcast()">Send Broadcast →</button>
+              <button style="background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--txt2);padding:11px 18px;font-size:0.85rem;font-family:sans-serif,sans-serif;cursor:pointer">Schedule</button>
             </div>
           </div>
         </div>
@@ -851,11 +892,11 @@ Valid till 31st October. Happy shopping! 🛍️
 
       <!-- Search + Filter -->
       <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
-        <input placeholder="🔍  Search products..." style="flex:1;min-width:200px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none"/>
-        <select style="background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt2);font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none">
+        <input placeholder="🔍  Search products..." style="flex:1;min-width:200px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt);font-size:0.85rem;font-family:sans-serif,sans-serif;outline:none"/>
+        <select style="background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt2);font-size:0.85rem;font-family:sans-serif,sans-serif;outline:none">
           <option>All categories</option><option>Kurtas</option><option>Co-ord Sets</option><option>Dupattas</option><option>Accessories</option>
         </select>
-        <select style="background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt2);font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none">
+        <select style="background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 14px;color:var(--txt2);font-size:0.85rem;font-family:sans-serif,sans-serif;outline:none">
           <option>All stock</option><option>In stock</option><option>Low stock</option><option>Out of stock</option>
         </select>
       </div>
@@ -865,13 +906,13 @@ Valid till 31st October. Happy shopping! 🛍️
         <table style="width:100%;border-collapse:collapse" id="product-table">
           <thead>
             <tr style="background:var(--bg2)">
-              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Product</th>
-              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Category</th>
-              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Price</th>
-              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Sizes</th>
-              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Stock</th>
-              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif">Queries</th>
-              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:'DM Sans',sans-serif"></th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:sans-serif,sans-serif">Product</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:sans-serif,sans-serif">Category</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:sans-serif,sans-serif">Price</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:sans-serif,sans-serif">Sizes</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:sans-serif,sans-serif">Stock</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:sans-serif,sans-serif">Queries</th>
+              <th style="padding:11px 16px;text-align:left;font-size:0.75rem;color:var(--txt3);font-weight:500;font-family:sans-serif,sans-serif"></th>
             </tr>
           </thead>
           <tbody id="product-tbody"></tbody>
@@ -884,15 +925,15 @@ Valid till 31st October. Happy shopping! 🛍️
           <button onclick="closeProductModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--txt3);font-size:1.5rem;cursor:pointer">×</button>
           <h3 style="font-size:1.3rem;font-weight:600;margin-bottom:1.5rem">Add Product</h3>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-            <div style="grid-column:1/-1"><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Product name *</label><input id="new-prod-name" type="text" placeholder="e.g. Ivory Embroidered Kurta" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Price (₹) *</label><input id="new-prod-price" type="text" placeholder="1,299" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Category</label><select id="new-prod-cat" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"><option>Kurtas</option><option>Co-ord Sets</option><option>Dupattas</option><option>Accessories</option></select></div>
-            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Available sizes</label><input id="new-prod-sizes" type="text" placeholder="XS, S, M, L, XL" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-            <div style="grid-column:1/-1"><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Description (helps AI answer questions)</label><textarea id="new-prod-desc" rows="2" placeholder="e.g. Handcrafted ivory kurta with floral embroidery, suitable for casual and festive occasions" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;resize:none"></textarea></div>
+            <div style="grid-column:1/-1"><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Product name *</label><input id="new-prod-name" type="text" placeholder="e.g. Ivory Embroidered Kurta" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Price (₹) *</label><input id="new-prod-price" type="text" placeholder="1,299" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Category</label><select id="new-prod-cat" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"><option>Kurtas</option><option>Co-ord Sets</option><option>Dupattas</option><option>Accessories</option></select></div>
+            <div><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Available sizes</label><input id="new-prod-sizes" type="text" placeholder="XS, S, M, L, XL" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+            <div style="grid-column:1/-1"><label style="font-size:0.78rem;color:var(--txt3);display:block;margin-bottom:5px">Description (helps AI answer questions)</label><textarea id="new-prod-desc" rows="2" placeholder="e.g. Handcrafted ivory kurta with floral embroidery, suitable for casual and festive occasions" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none;resize:none"></textarea></div>
           </div>
           <div style="display:flex;gap:0.75rem;margin-top:1.5rem">
-            <button onclick="saveProduct()" style="flex:1;background:var(--grd);border:none;border-radius:10px;color:#fff;padding:11px;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer">Add Product</button>
-            <button onclick="closeProductModal()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--txt2);padding:11px 18px;font-size:0.875rem;font-family:'DM Sans',sans-serif;cursor:pointer">Cancel</button>
+            <button onclick="saveProduct()" style="flex:1;background:var(--grd);border:none;border-radius:10px;color:#fff;padding:11px;font-size:0.9rem;font-weight:600;font-family:sans-serif,sans-serif;cursor:pointer">Add Product</button>
+            <button onclick="closeProductModal()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--txt2);padding:11px 18px;font-size:0.875rem;font-family:sans-serif,sans-serif;cursor:pointer">Cancel</button>
           </div>
         </div>
       </div>
@@ -929,15 +970,15 @@ Valid till 31st October. Happy shopping! 🛍️
             <div class="card-body">
               <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
                 <div style="width:64px;height:64px;border-radius:50%;background:var(--grd);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:#fff;flex-shrink:0">S</div>
-                <div><div style="font-size:0.875rem;font-weight:600;margin-bottom:4px">Sana's Closet</div><button style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:var(--txt2);padding:5px 12px;font-size:0.75rem;font-family:'DM Sans',sans-serif;cursor:pointer">Change photo</button></div>
+                <div><div style="font-size:0.875rem;font-weight:600;margin-bottom:4px">Sana's Closet</div><button style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:var(--txt2);padding:5px 12px;font-size:0.75rem;font-family:sans-serif,sans-serif;cursor:pointer">Change photo</button></div>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Brand name</label><input type="text" value="Sana's Closet" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Owner name</label><input type="text" value="Priya Kapoor" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">WhatsApp number</label><input type="text" value="+91 98765 43210" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Instagram</label><input type="text" value="@sanas_closet" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-                <div style="grid-column:1/-1"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Return policy</label><input type="text" value="7 days from delivery, free exchange" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-                <div style="grid-column:1/-1"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Shipping timeline</label><input type="text" value="3-5 business days via Shiprocket" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Brand name</label><input type="text" value="Sana's Closet" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Owner name</label><input type="text" value="Priya Kapoor" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">WhatsApp number</label><input type="text" value="+91 98765 43210" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Instagram</label><input type="text" value="@sanas_closet" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+                <div style="grid-column:1/-1"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Return policy</label><input type="text" value="7 days from delivery, free exchange" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+                <div style="grid-column:1/-1"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Shipping timeline</label><input type="text" value="3-5 business days via Shiprocket" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
               </div>
             </div>
           </div>
@@ -951,15 +992,15 @@ Valid till 31st October. Happy shopping! 🛍️
                 </div>
                 <div style="margin-bottom:0.5rem"><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:5px"><span style="color:var(--txt2)">AI replies used</span><span style="color:var(--txt);font-weight:600">1,284 / 2,500</span></div><div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:5px;width:51%;background:var(--grd);border-radius:3px"></div></div></div>
                 <div style="font-size:0.72rem;color:var(--txt3);margin-bottom:1.25rem">12 days left in billing period</div>
-                <button style="width:100%;background:var(--grd);border:none;border-radius:9px;color:#fff;padding:10px;font-size:0.85rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="showToast('🚀','Redirecting to upgrade page...')">Upgrade to Pro →</button>
+                <button style="width:100%;background:var(--grd);border:none;border-radius:9px;color:#fff;padding:10px;font-size:0.85rem;font-weight:600;font-family:sans-serif,sans-serif;cursor:pointer" onclick="showToast('🚀','Redirecting to upgrade page...')">Upgrade to Pro →</button>
               </div>
             </div>
             <div class="card">
               <div class="card-header"><div class="card-title">Danger Zone</div></div>
               <div class="card-body">
                 <div style="display:flex;flex-direction:column;gap:0.75rem">
-                  <button style="width:100%;background:transparent;border:1px solid rgba(248,113,113,0.3);border-radius:9px;color:var(--err);padding:10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="showToast('⚠️','Please contact support to cancel')">Cancel Subscription</button>
-                  <button style="width:100%;background:transparent;border:1px solid rgba(248,113,113,0.2);border-radius:9px;color:rgba(248,113,113,0.6);padding:10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="showToast('⚠️','Account deletion requires email confirmation')">Delete Account</button>
+                  <button style="width:100%;background:transparent;border:1px solid rgba(248,113,113,0.3);border-radius:9px;color:var(--err);padding:10px;font-size:0.85rem;font-family:sans-serif,sans-serif;cursor:pointer" onclick="showToast('⚠️','Please contact support to cancel')">Cancel Subscription</button>
+                  <button style="width:100%;background:transparent;border:1px solid rgba(248,113,113,0.2);border-radius:9px;color:rgba(248,113,113,0.6);padding:10px;font-size:0.85rem;font-family:sans-serif,sans-serif;cursor:pointer" onclick="showToast('⚠️','Account deletion requires email confirmation')">Delete Account</button>
                 </div>
               </div>
             </div>
@@ -979,10 +1020,10 @@ Valid till 31st October. Happy shopping! 🛍️
             <div class="card-body">
               <p style="font-size:0.8rem;color:var(--txt2);margin-bottom:1.25rem;line-height:1.7">Zyra replies 24/7 by default. Set working hours to only auto-reply during your active hours.</p>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">From</label><input type="time" value="09:00" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
-                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">To</label><input type="time" value="22:00" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">From</label><input type="time" value="09:00" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
+                <div><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">To</label><input type="time" value="22:00" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none"/></div>
               </div>
-              <div style="margin-top:1rem"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Outside hours message</label><textarea rows="2" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;resize:none">Hi! We're currently offline but will reply first thing in the morning 💕 — Sana's Closet</textarea></div>
+              <div style="margin-top:1rem"><label style="font-size:0.75rem;color:var(--txt3);display:block;margin-bottom:4px">Outside hours message</label><textarea rows="2" style="width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px 12px;color:var(--txt);font-size:0.875rem;font-family:sans-serif,sans-serif;outline:none;resize:none">Hi! We're currently offline but will reply first thing in the morning 💕 — Sana's Closet</textarea></div>
             </div>
           </div>
         </div>
@@ -1007,7 +1048,7 @@ Valid till 31st October. Happy shopping! 🛍️
                 <div><div style="font-size:0.875rem;font-weight:600">•••• •••• •••• 4242</div><div style="font-size:0.72rem;color:var(--txt3)">Expires 12/26</div></div>
                 <span style="margin-left:auto;font-size:0.72rem;color:var(--ok);background:rgba(16,185,129,0.1);padding:2px 8px;border-radius:100px">Default</span>
               </div>
-              <button style="width:100%;background:transparent;border:1px dashed rgba(255,255,255,0.15);border-radius:10px;color:var(--txt2);padding:11px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer" onclick="showToast('💳','Add new payment method')">+ Add payment method</button>
+              <button style="width:100%;background:transparent;border:1px dashed rgba(255,255,255,0.15);border-radius:10px;color:var(--txt2);padding:11px;font-size:0.85rem;font-family:sans-serif,sans-serif;cursor:pointer" onclick="showToast('💳','Add new payment method')">+ Add payment method</button>
             </div>
           </div>
           <div class="card">
@@ -1271,7 +1312,7 @@ function initVoicePage(){
   if(previewContainer&&previewContainer.children.length===0){
     previewMsgs.forEach(function(m,i){
       var btn=document.createElement('button');
-      btn.style.cssText='background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:5px 13px;font-size:0.75rem;color:var(--txt2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s';
+      btn.style.cssText='background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:5px 13px;font-size:0.75rem;color:var(--txt2);cursor:pointer;font-family:sans-serif,sans-serif;transition:all .2s';
       btn.textContent=m.q;
       btn.onclick=function(){document.getElementById('voice-preview-text').textContent=m.a;};
       previewContainer.appendChild(btn);
@@ -1360,7 +1401,7 @@ function renderIntegrations(){
     var card=document.createElement('div');
     card.style.cssText='background:var(--bg1);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;transition:all .2s';
     var statusHtml=intg.status==='connected'?'<span style="font-size:0.7rem;padding:3px 9px;border-radius:100px;background:rgba(16,185,129,0.1);color:var(--ok);font-weight:600">● Connected</span>':intg.status==='coming'?'<span style="font-size:0.7rem;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.06);color:var(--txt3)">Coming soon</span>':'<span style="font-size:0.7rem;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.04);color:var(--txt3)">Not connected</span>';
-    var btnHtml=intg.status==='connected'?'<button onclick="showToast('⚙️','Opening '+intg.name+' settings...')" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:9px;color:var(--txt2);padding:9px;font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1rem">Configure</button>':intg.status==='coming'?'<button disabled style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.06);border-radius:9px;color:var(--txt3);padding:9px;font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:not-allowed;margin-top:1rem;opacity:0.5">Coming soon</button>':'<button onclick="showToast('🔌','Connecting '+intg.name+'...')" style="width:100%;background:var(--grd);border:none;border-radius:9px;color:#fff;padding:9px;font-size:0.8rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1rem">Connect</button>';
+    var btnHtml=intg.status==='connected'?'<button onclick="showToast('⚙️','Opening '+intg.name+' settings...')" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:9px;color:var(--txt2);padding:9px;font-size:0.8rem;font-family:sans-serif;cursor:pointer;margin-top:1rem">Configure</button>':intg.status==='coming'?'<button disabled style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.06);border-radius:9px;color:var(--txt3);padding:9px;font-size:0.8rem;font-family:sans-serif;cursor:not-allowed;margin-top:1rem;opacity:0.5">Coming soon</button>':'<button onclick="showToast('🔌','Connecting '+intg.name+'...')" style="width:100%;background:var(--grd);border:none;border-radius:9px;color:#fff;padding:9px;font-size:0.8rem;font-weight:600;font-family:sans-serif;cursor:pointer;margin-top:1rem">Connect</button>';
     card.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem"><div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:1.4rem">'+intg.icon+'</div>'+statusHtml+'</div><div style="font-size:0.9rem;font-weight:600;margin-bottom:0.4rem">'+intg.name+'</div><div style="font-size:0.78rem;color:var(--txt2);line-height:1.65">'+intg.desc+'</div>'+btnHtml;
     grid.appendChild(card);
   });
