@@ -204,141 +204,11 @@ h1,h2,h3,h4,.logo{font-family:'Cormorant Garamond',serif}
 </style>
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-async function handleLogin(){
-  var em=document.getElementById('login-email');
-  var pw=document.getElementById('login-password');
-  if(!em.value||!pw.value){alert('Please enter your email and password.');return;}
-
-  var btn=document.querySelectorAll('.btn-submit')[1];
-  btn.textContent='Signing in...';
-  btn.disabled=true;
-
-  try {
-    var result = await _supabase.auth.signInWithPassword({
-      email: em.value.trim(),
-      password: pw.value
-    });
-
-    if(result.error){
-      btn.textContent='Sign in →';
-      btn.disabled=false;
-      alert('Login error: ' + result.error.message);
-      return;
-    }
-
-    window._zyraUser = result.data.user;
-    window.location.href = 'zyra_dashboard.html';
-
-  } catch(e) {
-    btn.textContent='Sign in →';
-    btn.disabled=false;
-    alert('Something went wrong. Please try again.');
-  }
-}
-
-async function saveBrandToSupabase(brandData){
-  if(!window._zyraUser) return;
-  try {
-    var result = await _supabase.from('brands').insert({
-      user_id: window._zyraUser.id,
-      brand_name: brandData.name || 'My Brand',
-      owner_name: brandData.owner || '',
-      whatsapp_number: brandData.whatsapp || '',
-      instagram_handle: brandData.instagram || '',
-      what_we_sell: brandData.whatSell || '',
-      category: brandData.category || '',
-      return_policy: brandData.returns || '7 days from delivery',
-      shipping_timeline: brandData.shipping || '3-5 business days',
-      plan: 'starter'
-    });
-    if(result.error) console.error('Brand save error:', result.error);
-  } catch(e) {
-    console.error('Error saving brand:', e);
-  }
-}
-
-// Check if user is already logged in on page load
-window.addEventListener('DOMContentLoaded', async function(){
-  var session = await _supabase.auth.getSession();
-  if(session.data.session){
-    // User already logged in - redirect to dashboard
-    var currentPage = document.getElementById('page-signup');
-    if(currentPage && currentPage.classList.contains('active')){
-      window.location.href = 'zyra_dashboard.html';
-    }
-  }
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://qobsbbfjjgwgfmgxwinn.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DtsDbj5_Bgx9QwtjvEoPyw_pJzpOF8C';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-async function handleLogin(){
-  var em=document.getElementById('login-email');
-  var pw=document.getElementById('login-password');
-  if(!em.value||!pw.value){alert('Please enter your email and password.');return;}
-
-  var btn=document.querySelectorAll('.btn-submit')[1];
-  btn.textContent='Signing in...';
-  btn.disabled=true;
-
-  try {
-    var result = await _supabase.auth.signInWithPassword({
-      email: em.value.trim(),
-      password: pw.value
-    });
-
-    if(result.error){
-      btn.textContent='Sign in →';
-      btn.disabled=false;
-      alert('Login error: ' + result.error.message);
-      return;
-    }
-
-    window._zyraUser = result.data.user;
-    window.location.href = 'zyra_dashboard.html';
-
-  } catch(e) {
-    btn.textContent='Sign in →';
-    btn.disabled=false;
-    alert('Something went wrong. Please try again.');
-  }
-}
-
-async function saveBrandToSupabase(brandData){
-  if(!window._zyraUser) return;
-  try {
-    var result = await _supabase.from('brands').insert({
-      user_id: window._zyraUser.id,
-      brand_name: brandData.name || 'My Brand',
-      owner_name: brandData.owner || '',
-      whatsapp_number: brandData.whatsapp || '',
-      instagram_handle: brandData.instagram || '',
-      what_we_sell: brandData.whatSell || '',
-      category: brandData.category || '',
-      return_policy: brandData.returns || '7 days from delivery',
-      shipping_timeline: brandData.shipping || '3-5 business days',
-      plan: 'starter'
-    });
-    if(result.error) console.error('Brand save error:', result.error);
-  } catch(e) {
-    console.error('Error saving brand:', e);
-  }
-}
-
-// Check if user is already logged in on page load
-window.addEventListener('DOMContentLoaded', async function(){
-  var session = await _supabase.auth.getSession();
-  if(session.data.session){
-    // User already logged in - redirect to dashboard
-    var currentPage = document.getElementById('page-signup');
-    if(currentPage && currentPage.classList.contains('active')){
-      window.location.href = 'zyra_dashboard.html';
-    }
-  }
-});
 </script>
 
 <div class="orb orb1"></div>
@@ -654,7 +524,7 @@ window.addEventListener('DOMContentLoaded', async function(){
             <div class="status-dot pulse" style="background:var(--warn)"></div>
             Waiting for QR scan…
           </div>
-          <button style="margin-top:1rem;background:none;border:none;color:var(--acc3);font-size:0.82rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline" onclick="simulateConnect()">Simulate connection (demo)</button>
+          <button style="margin-top:1rem;background:none;border:none;color:var(--acc3);font-size:0.82rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline" onclick="simulateConnect()">Skip — WhatsApp will be connected from your dashboard</button>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:1rem">
           <div class="qr-box">
@@ -775,7 +645,7 @@ window.addEventListener('DOMContentLoaded', async function(){
           <div style="font-size:0.85rem;color:var(--txt2);line-height:1.8">When a customer messages you on WhatsApp, Zyra will draft a reply in your voice. You'll see it in your dashboard and can approve, edit, or decline before it sends. You're always in control.</div>
         </div>
         <div class="golive-actions">
-          <button class="btn-dashboard" onclick="window.location.href='zyra_dashboard.html'">Go to my Dashboard →</button>
+          <button class="btn-dashboard" onclick="completedOnboarding()">Go to my Dashboard →</button>
           <button class="btn-tour">Take a quick tour</button>
         </div>
       </div>
@@ -793,7 +663,7 @@ function showPage(id){
 }
 
 // Signup validation
-async function handleSignup(){
+async async function handleSignup(){
   var ok=true;
   var fn=document.getElementById('fname');
   var ln=document.getElementById('lname');
@@ -833,6 +703,9 @@ async function handleSignup(){
 
     // Store user info for onboarding
     window._zyraUser = result.data.user;
+    // Store in sessionStorage so it persists through onboarding
+    sessionStorage.setItem('zyra_user_id', result.data.user.id);
+    sessionStorage.setItem('zyra_user_email', result.data.user.email);
     showPage('page-onboard-1');
 
   } catch(e) {
@@ -954,67 +827,84 @@ function setTrialDate(){
 async function handleLogin(){
   var em=document.getElementById('login-email');
   var pw=document.getElementById('login-password');
-  if(!em.value||!pw.value){alert('Please enter your email and password.');return;}
-
-  var btn=document.querySelectorAll('.btn-submit')[1];
-  btn.textContent='Signing in...';
-  btn.disabled=true;
-
-  try {
-    var result = await _supabase.auth.signInWithPassword({
-      email: em.value.trim(),
-      password: pw.value
-    });
-
-    if(result.error){
-      btn.textContent='Sign in →';
-      btn.disabled=false;
-      alert('Login error: ' + result.error.message);
-      return;
-    }
-
-    window._zyraUser = result.data.user;
-    window.location.href = 'zyra_dashboard.html';
-
-  } catch(e) {
-    btn.textContent='Sign in →';
-    btn.disabled=false;
-    alert('Something went wrong. Please try again.');
-  }
+  if(!em||!pw||!em.value||!pw.value){alert('Please enter your email and password.');return;}
+  var btns=document.querySelectorAll('.btn-submit');
+  var btn=btns[btns.length-1];
+  btn.textContent='Signing in...';btn.disabled=true;
+  try{
+    var r=await _supabase.auth.signInWithPassword({email:em.value.trim(),password:pw.value});
+    if(r.error){btn.textContent='Sign in →';btn.disabled=false;alert('Error: '+r.error.message);return;}
+    window.location.href='zyra_dashboard.html';
+  }catch(e){btn.textContent='Sign in →';btn.disabled=false;alert('Something went wrong.');}
 }
 
-async function saveBrandToSupabase(brandData){
-  if(!window._zyraUser) return;
-  try {
-    var result = await _supabase.from('brands').insert({
-      user_id: window._zyraUser.id,
-      brand_name: brandData.name || 'My Brand',
-      owner_name: brandData.owner || '',
-      whatsapp_number: brandData.whatsapp || '',
-      instagram_handle: brandData.instagram || '',
-      what_we_sell: brandData.whatSell || '',
-      category: brandData.category || '',
-      return_policy: brandData.returns || '7 days from delivery',
-      shipping_timeline: brandData.shipping || '3-5 business days',
-      plan: 'starter'
+async function saveBrandToSupabase(data){
+  try{
+    var s=await _supabase.auth.getSession();
+    if(!s.data.session)return;
+    await _supabase.from('brands').insert({
+      user_id:s.data.session.user.id,
+      brand_name:data.name||'My Brand',
+      owner_name:data.owner||'',
+      whatsapp_number:data.whatsapp||'',
+      instagram_handle:data.instagram||'',
+      what_we_sell:data.whatSell||'',
+      category:data.category||'',
+      return_policy:data.returns||'7 days from delivery',
+      shipping_timeline:data.shipping||'3-5 business days',
+      plan:'starter'
     });
-    if(result.error) console.error('Brand save error:', result.error);
-  } catch(e) {
-    console.error('Error saving brand:', e);
-  }
+  }catch(e){console.error('Brand save error:',e);}
 }
 
-// Check if user is already logged in on page load
-window.addEventListener('DOMContentLoaded', async function(){
-  var session = await _supabase.auth.getSession();
-  if(session.data.session){
-    // User already logged in - redirect to dashboard
-    var currentPage = document.getElementById('page-signup');
-    if(currentPage && currentPage.classList.contains('active')){
-      window.location.href = 'zyra_dashboard.html';
+window.addEventListener('DOMContentLoaded',async function(){
+  try{
+    var s=await _supabase.auth.getSession();
+    if(s.data.session){
+      // Only auto-redirect from login page, not signup page
+      var loginPage=document.getElementById('page-login');
+      if(loginPage&&loginPage.classList.contains('active')){
+        window.location.href='zyra_dashboard.html';
+      }
     }
-  }
+  }catch(e){console.log('Session check:',e);}
 });
+
+async function completedOnboarding(){
+  // Save brand data to Supabase
+  var brandName = document.getElementById('brand-name') ? document.getElementById('brand-name').value : '';
+  var ownerName = document.getElementById('owner-name') ? document.getElementById('owner-name').value : '';
+  var whatsapp = document.getElementById('whatsapp-num') ? document.getElementById('whatsapp-num').value : '';
+  var instagram = document.getElementById('instagram') ? document.getElementById('instagram').value : '';
+  var whatSell = document.getElementById('what-sell') ? document.getElementById('what-sell').value : '';
+  var returns = document.getElementById('returns') ? document.getElementById('returns').value : '7 days from delivery';
+  var shipping = document.getElementById('shipping') ? document.getElementById('shipping').value : '3-5 business days';
+  var selectedCat = document.querySelector('.category-btn.selected');
+  var category = selectedCat ? selectedCat.querySelector('.cat-name').textContent : '';
+
+  try {
+    var s = await _supabase.auth.getSession();
+    if(s.data.session && brandName) {
+      await _supabase.from('brands').upsert({
+        user_id: s.data.session.user.id,
+        brand_name: brandName || 'My Brand',
+        owner_name: ownerName || '',
+        whatsapp_number: whatsapp || '',
+        instagram_handle: instagram || '',
+        what_we_sell: whatSell || '',
+        category: category || '',
+        return_policy: returns || '7 days from delivery',
+        shipping_timeline: shipping || '3-5 business days',
+        plan: 'starter'
+      }, {onConflict: 'user_id'});
+    }
+  } catch(e) {
+    console.log('Brand save error:', e);
+  }
+  
+  // Go to dashboard regardless
+  window.location.href = 'zyra_dashboard.html';
+}
 </script>
 </body>
 </html>
