@@ -1,2 +1,2 @@
-# Zyra
-AI customer support for D2C brands
+# Nuzy AI
+AI customer support
