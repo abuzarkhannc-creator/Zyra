@@ -2,908 +2,256 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Zyra — Sign Up</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sign In — Nuzy AI</title>
+<meta name="description" content="Sign in to your Nuzy AI account and start automating customer support."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#050510;--bg1:#080818;--bg2:#0d0d22;--bg3:#12122e;
-  --acc:#7C3AED;--acc2:#A855F7;--acc3:#C084FC;
-  --pink:#EC4899;--teal:#06B6D4;--green:#10B981;
-  --txt:#F1F0FF;--txt2:#A8A4C8;--txt3:#5C587A;
-  --bdr:rgba(124,58,237,0.2);--bdr2:rgba(124,58,237,0.4);
-  --grd:linear-gradient(135deg,#7C3AED,#EC4899);
-  --grd2:linear-gradient(135deg,#06B6D4,#7C3AED);
-  --err:#F87171;--warn:#FBBF24;
+--bg:#050508;--s1:#08080e;--s2:#0c0c15;--s3:#10101c;
+--txt:#f5f5f7;--t2:#94949e;--t3:#5c5c6f;
+--pri:#7C3AED;--pri2:#8B5CF6;--pri3:#C4B5FD;--pg:rgba(124,58,237,0.1);
+--pink:#EC4899;--pink2:#F472B6;
+--gn:#22c55e;--rd:#ef4444;
+--b1:rgba(255,255,255,0.04);--b2:rgba(255,255,255,0.07);--b3:rgba(255,255,255,0.12);
+--r:14px;--r2:20px;
+--h:'Sora',sans-serif;--f:'Figtree',sans-serif;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
-h1,h2,h3,h4,.logo{font-family:'Cormorant Garamond',serif}
+body{background:var(--bg);color:var(--txt);font-family:var(--f);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.02;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
-.orb1{width:500px;height:500px;background:rgba(124,58,237,0.12);top:-150px;right:-100px}
-.orb2{width:400px;height:400px;background:rgba(236,72,153,0.08);bottom:0;left:-100px}
+.aurora{position:fixed;top:-50%;left:-20%;width:140%;height:200%;z-index:0;pointer-events:none;background:
+  radial-gradient(ellipse at 20% 50%,rgba(124,58,237,0.15),transparent 50%),
+  radial-gradient(ellipse at 80% 30%,rgba(236,72,153,0.1),transparent 45%);
+  animation:aurora 15s ease-in-out infinite alternate}
+@keyframes aurora{0%{transform:scale(1) rotate(0deg);opacity:.8}50%{transform:scale(1.1) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(-1deg);opacity:.85}}
 
-/* PAGE WRAPPER */
-.page{display:none;min-height:100vh;position:relative;z-index:1}
-.page.active{display:flex}
+.container{position:relative;z-index:1;width:100%;max-width:460px}
 
-/* ── AUTH LAYOUT ── */
-.auth-layout{width:100%;display:grid;grid-template-columns:1fr 1fr}
-.auth-left{background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(236,72,153,0.1));border-right:1px solid rgba(124,58,237,0.2);display:flex;flex-direction:column;justify-content:space-between;padding:3rem;position:relative;overflow:hidden}
-.auth-left-orb{position:absolute;width:400px;height:400px;border-radius:50%;background:rgba(124,58,237,0.15);filter:blur(80px);bottom:-100px;right:-100px}
-.auth-logo{font-size:2rem;font-weight:700;background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;display:inline-block}
-.auth-left-content{position:relative;z-index:1}
-.auth-left-content h2{font-size:2.6rem;font-weight:600;line-height:1.15;margin-bottom:1rem;letter-spacing:-0.5px}
-.auth-left-content p{color:var(--txt2);font-size:0.95rem;line-height:1.8;max-width:380px}
-.auth-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem}
-.auth-stat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1rem}
-.auth-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--txt)}
-.auth-stat-lbl{font-size:0.75rem;color:var(--txt3);margin-top:2px}
-.auth-testimonial{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.25rem;position:relative;z-index:1}
-.auth-testimonial p{font-size:0.85rem;color:var(--txt2);line-height:1.75;font-style:italic;margin-bottom:0.75rem}
-.auth-testimonial-author{display:flex;align-items:center;gap:10px}
-.testi-av{width:34px;height:34px;border-radius:50%;background:var(--grd);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff}
-.testi-name{font-size:0.8rem;font-weight:600}
-.testi-handle{font-size:0.72rem;color:var(--txt3)}
+.logo{text-align:center;margin-bottom:40px}
+.logo-text{font-family:var(--h);font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
+.logo-badge{font-size:0.5rem;background:linear-gradient(135deg,var(--pri),var(--pink));padding:2px 8px;border-radius:100px;color:#fff;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:8px}
 
-.auth-right{display:flex;align-items:center;justify-content:center;padding:3rem 2rem}
-.auth-form-wrap{width:100%;max-width:420px}
-.auth-form-wrap h1{font-size:2rem;font-weight:600;margin-bottom:0.5rem;letter-spacing:-0.5px}
-.auth-form-wrap .sub{font-size:0.9rem;color:var(--txt2);margin-bottom:2rem}
-.auth-form-wrap .sub a{color:var(--acc3);text-decoration:none}
-.auth-form-wrap .sub a:hover{text-decoration:underline}
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border:1px solid var(--b2);border-radius:var(--r2);padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.4);position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
 
-/* FORM ELEMENTS */
-.field{margin-bottom:1rem}
-.field label{display:block;font-size:0.8rem;font-weight:500;color:var(--txt2);margin-bottom:6px}
-.field input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:var(--txt);font-size:0.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
-.field input:focus{border-color:var(--acc2)}
-.field input::placeholder{color:var(--txt3)}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
-.field-hint{font-size:0.72rem;color:var(--txt3);margin-top:5px}
-.field-error{font-size:0.72rem;color:var(--err);margin-top:5px;display:none}
-.field.has-error input{border-color:var(--err)}
-.field.has-error .field-error{display:block}
+.tabs{display:flex;gap:8px;margin-bottom:32px;background:var(--s2);padding:4px;border-radius:12px;border:1px solid var(--b1)}
+.tab{flex:1;padding:10px;text-align:center;font-family:var(--h);font-size:0.85rem;font-weight:600;border-radius:8px;cursor:pointer;transition:all 0.3s;border:none;background:transparent;color:var(--t2)}
+.tab.active{background:linear-gradient(135deg,#7C3AED,#EC4899);color:#fff;box-shadow:0 4px 12px rgba(124,58,237,0.3)}
 
-.btn-submit{width:100%;padding:13px;background:var(--grd);border:none;border-radius:10px;color:#fff;font-size:0.95rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity .2s;margin-top:0.5rem}
-.btn-submit:hover{opacity:0.9}
-.btn-submit:disabled{opacity:0.5;cursor:not-allowed}
+.form-group{margin-bottom:20px}
+label{display:block;font-size:0.8rem;font-weight:600;color:var(--t2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
+input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid var(--b2);background:var(--s2);color:var(--txt);font-family:var(--f);font-size:0.95rem;transition:all 0.2s}
+input:focus{outline:none;border-color:var(--pri);box-shadow:0 0 20px rgba(124,58,237,0.15)}
+input::placeholder{color:var(--t3)}
 
-.divider{display:flex;align-items:center;gap:1rem;margin:1.25rem 0;color:var(--txt3);font-size:0.8rem}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07)}
+.checkbox-group{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.checkbox{width:18px;height:18px;border-radius:4px;border:1px solid var(--b2);background:var(--s2);cursor:pointer;appearance:none;position:relative;transition:all 0.2s}
+.checkbox:checked{background:linear-gradient(135deg,var(--pri),var(--pink));border-color:var(--pri)}
+.checkbox:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:0.7rem;font-weight:700}
+.checkbox-label{font-size:0.85rem;color:var(--t2);cursor:pointer}
 
-.btn-google{width:100%;padding:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--txt2);font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s}
-.btn-google:hover{background:rgba(255,255,255,0.07);color:var(--txt)}
-.google-icon{width:18px;height:18px}
+.btn{width:100%;padding:14px;border-radius:10px;border:none;font-family:var(--h);font-weight:600;font-size:0.9rem;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
+.btn-primary{background:linear-gradient(135deg,#7C3AED,#EC4899);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,0.25)}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent);opacity:0;transition:opacity 0.3s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,58,237,0.4),0 0 40px rgba(236,72,153,0.3)}
+.btn-primary:hover::before{opacity:1}
 
-.terms{font-size:0.72rem;color:var(--txt3);text-align:center;margin-top:1rem;line-height:1.6}
-.terms a{color:var(--txt3);text-decoration:underline}
+.divider{display:flex;align-items:center;gap:16px;margin:28px 0;color:var(--t3);font-size:0.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--b1)}
 
-.password-wrap{position:relative}
-.password-wrap input{padding-right:44px}
-.password-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--txt3);cursor:pointer;font-size:16px;padding:4px}
+.social-btn{width:100%;padding:12px;border-radius:10px;border:1px solid var(--b2);background:rgba(255,255,255,0.02);color:var(--t2);font-family:var(--f);font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
+.social-btn:hover{border-color:var(--pri);background:rgba(124,58,237,0.05);color:var(--txt)}
+.social-icon{width:20px;height:20px}
 
-.strength-bar{height:3px;border-radius:3px;background:rgba(255,255,255,0.08);margin-top:8px;overflow:hidden}
-.strength-fill{height:100%;border-radius:3px;transition:width .3s,background .3s;width:0}
+.link{color:var(--pri3);text-decoration:none;font-size:0.85rem;transition:color 0.2s}
+.link:hover{color:var(--txt)}
 
-/* ── ONBOARDING LAYOUT ── */
-.onboard-layout{width:100%;flex-direction:column;align-items:center;padding:2rem 1.5rem 4rem}
-.onboard-nav{width:100%;max-width:780px;display:flex;align-items:center;justify-content:space-between;margin-bottom:3rem}
-.onboard-logo{font-size:1.8rem;font-weight:700;background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
-.onboard-step-label{font-size:0.8rem;color:var(--txt3)}
-.onboard-step-label span{color:var(--acc3);font-weight:600}
+.text-center{text-align:center;margin-top:24px;font-size:0.85rem;color:var(--t2)}
 
-.progress-bar{width:100%;max-width:780px;height:3px;background:rgba(255,255,255,0.07);border-radius:3px;margin-bottom:3rem;overflow:hidden}
-.progress-fill{height:100%;background:var(--grd);border-radius:3px;transition:width .5s ease}
+.error{display:none;padding:12px 16px;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ef4444;font-size:0.8rem;margin-bottom:20px}
+.error.show{display:block}
 
-.onboard-card{width:100%;max-width:780px;background:var(--bg1);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:3rem;position:relative}
-.onboard-card h2{font-size:2.2rem;font-weight:600;letter-spacing:-0.5px;margin-bottom:0.5rem}
-.onboard-card .step-sub{font-size:0.95rem;color:var(--txt2);margin-bottom:2.5rem;line-height:1.7}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--t2);font-size:0.85rem;text-decoration:none;margin-bottom:24px;transition:color 0.2s}
+.back-link:hover{color:var(--txt)}
 
-.step-footer{display:flex;justify-content:space-between;align-items:center;margin-top:2.5rem}
-.btn-back{background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--txt2);padding:11px 24px;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
-.btn-back:hover{border-color:rgba(255,255,255,0.2);color:var(--txt)}
-.btn-next{background:var(--grd);border:none;border-radius:10px;color:#fff;padding:11px 32px;font-size:0.9rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;gap:8px}
-.btn-next:hover{opacity:0.9}
-.btn-skip{background:none;border:none;color:var(--txt3);font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline}
-.btn-skip:hover{color:var(--txt2)}
-
-/* STEP 1 — Brand Info */
-.brand-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.field-full{grid-column:1/-1}
-.category-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-top:0.25rem}
-.category-btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.875rem 0.5rem;text-align:center;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;color:var(--txt2)}
-.category-btn:hover{border-color:var(--bdr2);color:var(--txt)}
-.category-btn.selected{background:rgba(124,58,237,0.15);border-color:var(--acc);color:var(--acc3)}
-.category-btn .cat-icon{font-size:1.5rem;display:block;margin-bottom:0.4rem}
-.category-btn .cat-name{font-size:0.75rem;font-weight:500}
-
-/* STEP 2 — Voice Upload */
-.upload-area{border:2px dashed rgba(124,58,237,0.3);border-radius:16px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all .3s;position:relative}
-.upload-area:hover,.upload-area.dragover{border-color:var(--acc);background:rgba(124,58,237,0.05)}
-.upload-icon{font-size:3rem;margin-bottom:1rem}
-.upload-area h3{font-size:1.1rem;font-weight:600;margin-bottom:0.5rem;font-family:'Cormorant Garamond',serif}
-.upload-area p{font-size:0.85rem;color:var(--txt2);line-height:1.7}
-.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
-.uploaded-files{display:flex;flex-direction:column;gap:0.5rem;margin-top:1.5rem}
-.uploaded-file{display:flex;align-items:center;gap:10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:8px 12px;font-size:0.82rem;color:var(--txt2)}
-.uploaded-file .file-icon{font-size:16px}
-.uploaded-file .file-name{flex:1}
-.uploaded-file .file-remove{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:16px;padding:0 4px}
-.voice-tip{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:12px;padding:1rem 1.25rem;margin-top:1.5rem;font-size:0.82rem;color:var(--txt2);line-height:1.7}
-.voice-tip strong{color:var(--acc3)}
-
-/* STEP 3 — Catalog */
-.catalog-intro{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
-.catalog-option{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.5rem;cursor:pointer;transition:all .2s;text-align:center}
-.catalog-option:hover{border-color:var(--bdr2)}
-.catalog-option.selected{background:rgba(124,58,237,0.12);border-color:var(--acc)}
-.catalog-option .opt-icon{font-size:2rem;margin-bottom:0.75rem}
-.catalog-option h3{font-size:0.95rem;font-weight:600;margin-bottom:0.4rem;font-family:'DM Sans',sans-serif}
-.catalog-option p{font-size:0.78rem;color:var(--txt2)}
-.product-row{display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;align-items:end;margin-bottom:0.75rem}
-.btn-add-product{background:transparent;border:1px dashed rgba(124,58,237,0.3);border-radius:8px;color:var(--acc3);padding:9px 16px;font-size:0.82rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
-.btn-add-product:hover{background:rgba(124,58,237,0.08);border-color:var(--acc)}
-.btn-remove-row{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:18px;padding:8px;line-height:1}
-.btn-remove-row:hover{color:var(--err)}
-
-/* STEP 4 — WhatsApp Connect */
-.connect-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
-.qr-box{background:rgba(255,255,255,0.97);border-radius:16px;padding:1.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem}
-.qr-placeholder{width:180px;height:180px;background:#fff;border:2px solid #e5e7eb;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.qr-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:2px;width:160px;height:160px}
-.qr-cell{border-radius:1px}
-.qr-label{font-size:0.78rem;color:#6b7280;font-family:'DM Sans',sans-serif}
-.connect-steps{display:flex;flex-direction:column;gap:1rem}
-.connect-step{display:flex;gap:14px;align-items:flex-start}
-.connect-step-num{width:32px;height:32px;border-radius:50%;background:rgba(124,58,237,0.15);border:1px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:var(--acc3);flex-shrink:0;margin-top:2px}
-.connect-step-text h4{font-size:0.9rem;font-weight:600;margin-bottom:3px}
-.connect-step-text p{font-size:0.8rem;color:var(--txt2);line-height:1.6}
-.connect-status{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;font-size:0.82rem;font-weight:500;margin-top:1.5rem}
-.connect-status.waiting{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);color:var(--warn)}
-.connect-status.connected{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--green)}
-.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.status-dot.pulse{animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-
-/* STEP 5 — Go Live */
-.golive-center{text-align:center;padding:1rem 0}
-.golive-icon{font-size:5rem;margin-bottom:1.5rem;display:block;animation:pop .5s ease}
-@keyframes pop{0%{transform:scale(0.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
-.golive-center h2{font-size:2.8rem;font-weight:600;margin-bottom:0.75rem;letter-spacing:-1px}
-.golive-center p{font-size:1rem;color:var(--txt2);max-width:480px;margin:0 auto 2.5rem;line-height:1.8}
-.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:2rem 0;text-align:left}
-.summary-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem}
-.summary-card .s-label{font-size:0.72rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem}
-.summary-card .s-val{font-size:0.95rem;font-weight:600;color:var(--txt)}
-.summary-card .s-icon{font-size:1.5rem;margin-bottom:0.5rem}
-.golive-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem}
-.btn-dashboard{background:var(--grd);border:none;border-radius:12px;color:#fff;padding:14px 36px;font-size:1rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity .2s}
-.btn-dashboard:hover{opacity:0.9}
-.btn-tour{background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:var(--txt2);padding:14px 36px;font-size:1rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
-.btn-tour:hover{border-color:rgba(255,255,255,0.25);color:var(--txt)}
-
-/* CONFETTI */
-.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:999;animation:confettiFall linear forwards}
-@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-
-@media(max-width:768px){
-  .auth-layout{grid-template-columns:1fr}
-  .auth-left{display:none}
-  .brand-grid{grid-template-columns:1fr}
-  .category-grid{grid-template-columns:repeat(2,1fr)}
-  .connect-grid{grid-template-columns:1fr}
-  .summary-grid{grid-template-columns:1fr}
-  .catalog-intro{grid-template-columns:1fr}
-  .onboard-card{padding:2rem 1.25rem}
+@media(max-width:600px){
+.card{padding:28px 24px}
+.logo{margin-bottom:32px}
 }
 </style>
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = 'https://qobsbbfjjgwgfmgxwinn.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_DtsDbj5_Bgx9QwtjvEoPyw_pJzpOF8C';
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-</script>
+<div class="aurora"></div>
 
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
+<div class="container">
+  <a href="index.html" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back to home
+  </a>
 
-<!-- ══ SIGNUP PAGE ══ -->
-<div class="page active" id="page-signup">
-  <div class="auth-layout">
-    <div class="auth-left">
-      <div class="auth-left-orb"></div>
-      <a href="zyra_landing.html" class="auth-logo" style="text-decoration:none">Zyra</a>
-      <div class="auth-left-content">
-        <h2>Join 500+ D2C founders on autopilot.</h2>
-        <p>Set up in 10 minutes. Your brand's voice, your customers, handled automatically — while you focus on growth.</p>
-        <div class="auth-stats">
-          <div class="auth-stat"><div class="auth-stat-val">89%</div><div class="auth-stat-lbl">Messages handled by AI</div></div>
-          <div class="auth-stat"><div class="auth-stat-val">3hrs</div><div class="auth-stat-lbl">Saved per day on average</div></div>
-          <div class="auth-stat"><div class="auth-stat-val">4.9★</div><div class="auth-stat-lbl">Average customer rating</div></div>
-          <div class="auth-stat"><div class="auth-stat-val">₹0</div><div class="auth-stat-lbl">To get started today</div></div>
-        </div>
-      </div>
-      <div class="auth-testimonial">
-        <p>"I was spending 3 hours every day just replying to WhatsApp. Now Zyra handles 90% of it — and my customers can't tell the difference. 💕"</p>
-        <div class="auth-testimonial-author">
-          <div class="testi-av">P</div>
-          <div><div class="testi-name">Priya Kapoor</div><div class="testi-handle">@sanas_closet · Fashion, Mumbai</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="auth-right">
-      <div class="auth-form-wrap">
-        <h1>Create your account</h1>
-        <p class="sub">Already have one? <a href="#" onclick="showPage('page-login')">Sign in →</a></p>
-        <button class="btn-google" onclick="showPage('page-onboard-1')">
-          <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Continue with Google
-        </button>
-        <div class="divider">or sign up with email</div>
-        <div class="field-row">
-          <div class="field">
-            <label>First name</label>
-            <input type="text" id="fname" placeholder="Priya" oninput="clearError(this)"/>
-            <div class="field-error">Required</div>
-          </div>
-          <div class="field">
-            <label>Last name</label>
-            <input type="text" id="lname" placeholder="Kapoor" oninput="clearError(this)"/>
-            <div class="field-error">Required</div>
-          </div>
-        </div>
-        <div class="field">
-          <label>Email address</label>
-          <input type="email" id="email" placeholder="priya@sanas-closet.com" oninput="clearError(this)"/>
-          <div class="field-error">Enter a valid email</div>
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <div class="password-wrap">
-            <input type="password" id="password" placeholder="Min. 8 characters" oninput="checkStrength(this)"/>
-            <button class="password-toggle" onclick="togglePwd()" type="button">👁</button>
-          </div>
-          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
-          <div class="field-hint" id="strength-label">Enter a password</div>
-          <div class="field-error">Min. 8 characters required</div>
-        </div>
-        <button class="btn-submit" onclick="handleSignup()">Create free account →</button>
-        <p class="terms">By signing up you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. No credit card required.</p>
-      </div>
-    </div>
+  <div class="logo">
+    <span class="logo-text">Nuzy AI</span>
+    <span class="logo-badge">Beta</span>
   </div>
-</div>
 
-<!-- ══ LOGIN PAGE ══ -->
-<div class="page" id="page-login">
-  <div class="auth-layout">
-    <div class="auth-left">
-      <div class="auth-left-orb"></div>
-      <a href="zyra_landing.html" class="auth-logo" style="text-decoration:none">Zyra</a>
-      <div class="auth-left-content">
-        <h2>Welcome back. Your customers missed you.</h2>
-        <p>Your Zyra AI has been working while you were away. Log in to see what happened.</p>
-        <div class="auth-stats">
-          <div class="auth-stat"><div class="auth-stat-val">247</div><div class="auth-stat-lbl">Messages handled today</div></div>
-          <div class="auth-stat"><div class="auth-stat-val">₹38,400</div><div class="auth-stat-lbl">Revenue recovered</div></div>
-          <div class="auth-stat"><div class="auth-stat-val">12</div><div class="auth-stat-lbl">Carts saved today</div></div>
-          <div class="auth-stat"><div class="auth-stat-val">3</div><div class="auth-stat-lbl">Need your attention</div></div>
-        </div>
-      </div>
-      <div class="auth-testimonial">
-        <p>"The complaint recovery feature is a game changer. One angry customer last week — Zyra offered a 10% discount automatically and she ordered again the same day."</p>
-        <div class="auth-testimonial-author">
-          <div class="testi-av" style="background:linear-gradient(135deg,#06B6D4,#10B981)">R</div>
-          <div><div class="testi-name">Rohan Mehta</div><div class="testi-handle">@earthroots.in · Skincare, Pune</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="auth-right">
-      <div class="auth-form-wrap">
-        <h1>Welcome back</h1>
-        <p class="sub">Don't have an account? <a href="#" onclick="showPage('page-signup')">Sign up free →</a></p>
-        <button class="btn-google">
-          <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Continue with Google
-        </button>
-        <div class="divider">or sign in with email</div>
-        <div class="field">
-          <label>Email address</label>
-          <input type="email" id="login-email" placeholder="priya@sanas-closet.com"/>
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <div class="password-wrap">
-            <input type="password" id="login-password" placeholder="Your password"/>
-            <button class="password-toggle" onclick="toggleLoginPwd()" type="button">👁</button>
-          </div>
-          <div style="text-align:right;margin-top:6px"><a href="#" style="font-size:0.78rem;color:var(--txt3);text-decoration:none">Forgot password?</a></div>
-        </div>
-        <button class="btn-submit" onclick="handleLogin()">Sign in →</button>
-        <p class="terms">Protected by 256-bit SSL encryption.</p>
-      </div>
-    </div>
-  </div>
-</div>
+  <div class="card">
+    <!-- Error Message -->
+    <div class="error" id="errorMsg"></div>
 
-<!-- ══ ONBOARDING STEP 1 — Brand Info ══ -->
-<div class="page" id="page-onboard-1">
-  <div class="onboard-layout">
-    <div class="onboard-nav">
-      <a class="onboard-logo">Zyra</a>
-      <div class="onboard-step-label">Step <span>1</span> of 5</div>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('signin')">Sign In</button>
+      <button class="tab" onclick="showTab('signup')">Sign Up</button>
     </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
-    <div class="onboard-card">
-      <h2>Tell us about your brand ✨</h2>
-      <p class="step-sub">This helps Zyra understand your business and answer customer questions accurately.</p>
-      <div class="brand-grid">
-        <div class="field">
-          <label>Brand name *</label>
-          <input type="text" id="brand-name" placeholder="e.g. Sana's Closet"/>
-        </div>
-        <div class="field">
-          <label>Your name *</label>
-          <input type="text" id="owner-name" placeholder="e.g. Priya Kapoor"/>
-        </div>
-        <div class="field">
-          <label>WhatsApp Business number *</label>
-          <input type="tel" id="whatsapp-num" placeholder="+91 98765 43210"/>
-        </div>
-        <div class="field">
-          <label>Instagram handle</label>
-          <input type="text" id="instagram" placeholder="@sanas_closet"/>
-        </div>
-        <div class="field field-full">
-          <label>What do you sell? (one line) *</label>
-          <input type="text" id="what-sell" placeholder="e.g. Handmade ethnic wear and fusion kurtas for women"/>
-        </div>
-        <div class="field">
-          <label>Return policy (days)</label>
-          <input type="text" id="returns" placeholder="e.g. 7 days from delivery"/>
-        </div>
-        <div class="field">
-          <label>Shipping timeline</label>
-          <input type="text" id="shipping" placeholder="e.g. 3-5 business days"/>
-        </div>
-        <div class="field field-full">
-          <label>What category best describes you?</label>
-          <div class="category-grid">
-            <button class="category-btn" onclick="selectCat(this)"><span class="cat-icon">👗</span><span class="cat-name">Fashion</span></button>
-            <button class="category-btn" onclick="selectCat(this)"><span class="cat-icon">💄</span><span class="cat-name">Beauty</span></button>
-            <button class="category-btn" onclick="selectCat(this)"><span class="cat-icon">🍱</span><span class="cat-name">Food</span></button>
-            <button class="category-btn" onclick="selectCat(this)"><span class="cat-icon">🌿</span><span class="cat-name">Wellness</span></button>
-            <button class="category-btn" onclick="selectCat(this)"><span class="cat-icon">🏠</span><span class="cat-name">Home Decor</span></button>
-            <button class="category-btn" onclick="selectCat(this)"><span class="cat-icon">📿</span><span class="cat-name">Jewellery</span></button>
-            <button class="category-btn" onclick="selectCat(this)"><span class="cat-icon">🧸</span><span class="cat-name">Kids</span></button>
-            <button class="category-btn" onclick="selectCat(this)"><span class="cat-icon">✨</span><span class="cat-name">Other</span></button>
-          </div>
-        </div>
-      </div>
-      <div class="step-footer">
-        <div></div>
-        <button class="btn-next" onclick="showPage('page-onboard-2')">Continue <span>→</span></button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- ══ ONBOARDING STEP 2 — Voice Upload ══ -->
-<div class="page" id="page-onboard-2">
-  <div class="onboard-layout">
-    <div class="onboard-nav">
-      <a class="onboard-logo">Zyra</a>
-      <div class="onboard-step-label">Step <span>2</span> of 5</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
-    <div class="onboard-card">
-      <h2>Teach Zyra your voice 🎙️</h2>
-      <p class="step-sub">Upload 15–30 of your past WhatsApp conversations with customers. Zyra will learn exactly how you talk — your tone, your phrases, even your emojis.</p>
-      <div class="upload-area" id="upload-area" ondragover="handleDrag(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-        <input type="file" multiple accept=".txt,.pdf,.docx" onchange="handleFileSelect(event)"/>
-        <div class="upload-icon">💬</div>
-        <h3>Drop your WhatsApp chats here</h3>
-        <p>Export chats from WhatsApp as .txt files<br/>or drag & drop them here<br/><br/><strong style="color:var(--acc3)">Click to browse files</strong></p>
+    <!-- Sign In Form -->
+    <form id="signinForm" onsubmit="handleSignIn(event)">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="signinEmail" placeholder="you@company.com" required/>
       </div>
-      <div class="uploaded-files" id="uploaded-files"></div>
-      <div class="voice-tip">
-        <strong>How to export WhatsApp chats:</strong> Open a chat → tap ⋮ Menu → More → Export Chat → Without Media → share the .txt file here. Do this for 15–20 different customer conversations for best results.
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signinPassword" placeholder="Enter your password" required/>
       </div>
-      <div class="step-footer">
-        <button class="btn-back" onclick="showPage('page-onboard-1')">← Back</button>
-        <div style="display:flex;align-items:center;gap:1rem">
-          <button class="btn-skip" onclick="showPage('page-onboard-3')">Skip for now</button>
-          <button class="btn-next" onclick="showPage('page-onboard-3')">Continue →</button>
-        </div>
+      <div style="text-align:right;margin-bottom:24px">
+        <a href="#" class="link" onclick="showForgotPassword(event)">Forgot password?</a>
       </div>
-    </div>
-  </div>
-</div>
+      <button type="submit" class="btn btn-primary">Sign In</button>
+    </form>
 
-<!-- ══ ONBOARDING STEP 3 — Product Catalog ══ -->
-<div class="page" id="page-onboard-3">
-  <div class="onboard-layout">
-    <div class="onboard-nav">
-      <a class="onboard-logo">Zyra</a>
-      <div class="onboard-step-label">Step <span>3</span> of 5</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
-    <div class="onboard-card">
-      <h2>Add your products 📦</h2>
-      <p class="step-sub">So Zyra can answer questions like "Do you have this in size M?" or "What's the price of the blue kurta?" accurately.</p>
-      <div class="catalog-intro">
-        <div class="catalog-option selected" id="cat-manual" onclick="selectCatalog('manual')">
-          <div class="opt-icon">✍️</div>
-          <h3>Add manually</h3>
-          <p>Type in your top products one by one. Takes 3 minutes.</p>
-        </div>
-        <div class="catalog-option" id="cat-shopify" onclick="selectCatalog('shopify')">
-          <div class="opt-icon">🛍️</div>
-          <h3>Import from Shopify</h3>
-          <p>Connect your store and import all products automatically.</p>
-        </div>
+    <!-- Sign Up Form -->
+    <form id="signupForm" style="display:none" onsubmit="handleSignUp(event)">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signupName" placeholder="Your name" required/>
       </div>
-      <div id="manual-products">
-        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;margin-bottom:0.5rem">
-          <div style="font-size:0.75rem;color:var(--txt3);font-weight:500">Product name</div>
-          <div style="font-size:0.75rem;color:var(--txt3);font-weight:500">Price (₹)</div>
-          <div></div>
-        </div>
-        <div id="product-rows">
-          <div class="product-row">
-            <div class="field" style="margin:0"><input type="text" placeholder="e.g. Ivory Embroidered Kurta"/></div>
-            <div class="field" style="margin:0"><input type="text" placeholder="e.g. 1,299"/></div>
-            <button class="btn-remove-row" onclick="removeRow(this)">×</button>
-          </div>
-          <div class="product-row">
-            <div class="field" style="margin:0"><input type="text" placeholder="e.g. Printed Co-ord Set"/></div>
-            <div class="field" style="margin:0"><input type="text" placeholder="e.g. 2,499"/></div>
-            <button class="btn-remove-row" onclick="removeRow(this)">×</button>
-          </div>
-        </div>
-        <button class="btn-add-product" onclick="addProductRow()">+ Add another product</button>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="signupEmail" placeholder="you@company.com" required/>
       </div>
-      <div id="shopify-connect" style="display:none;text-align:center;padding:2rem">
-        <div style="font-size:2.5rem;margin-bottom:1rem">🛍️</div>
-        <p style="color:var(--txt2);font-size:0.9rem;margin-bottom:1.5rem">Enter your Shopify store URL to import your catalog automatically</p>
-        <div class="field" style="max-width:360px;margin:0 auto">
-          <input type="text" placeholder="yourstore.myshopify.com"/>
-        </div>
-        <button class="btn-next" style="margin:1rem auto 0;display:inline-flex">Connect Shopify →</button>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="Create a strong password" required minlength="8"/>
       </div>
-      <div class="step-footer">
-        <button class="btn-back" onclick="showPage('page-onboard-2')">← Back</button>
-        <div style="display:flex;align-items:center;gap:1rem">
-          <button class="btn-skip" onclick="showPage('page-onboard-4')">Skip for now</button>
-          <button class="btn-next" onclick="showPage('page-onboard-4')">Continue →</button>
-        </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="agreeTerms" class="checkbox" required/>
+        <label for="agreeTerms" class="checkbox-label">I agree to the <a href="nuzy_terms.html" class="link" target="_blank">Terms</a> and <a href="nuzy_privacy.html" class="link" target="_blank">Privacy Policy</a></label>
       </div>
-    </div>
-  </div>
-</div>
+      <button type="submit" class="btn btn-primary">Create Account</button>
+    </form>
 
-<!-- ══ ONBOARDING STEP 4 — Connect WhatsApp ══ -->
-<div class="page" id="page-onboard-4">
-  <div class="onboard-layout">
-    <div class="onboard-nav">
-      <a class="onboard-logo">Zyra</a>
-      <div class="onboard-step-label">Step <span>4</span> of 5</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
-    <div class="onboard-card">
-      <h2>Connect WhatsApp 💬</h2>
-      <p class="step-sub">Scan the QR code with your WhatsApp Business app to link your number. This is how Zyra receives and sends messages on your behalf.</p>
-      <div class="connect-grid">
-        <div>
-          <div class="connect-steps">
-            <div class="connect-step">
-              <div class="connect-step-num">1</div>
-              <div class="connect-step-text"><h4>Open WhatsApp Business</h4><p>Make sure you're using WhatsApp Business, not regular WhatsApp.</p></div>
-            </div>
-            <div class="connect-step">
-              <div class="connect-step-num">2</div>
-              <div class="connect-step-text"><h4>Go to Linked Devices</h4><p>Tap the 3-dot menu (⋮) → Linked Devices → Link a Device.</p></div>
-            </div>
-            <div class="connect-step">
-              <div class="connect-step-num">3</div>
-              <div class="connect-step-text"><h4>Scan the QR code</h4><p>Point your phone camera at the QR code on the right. Done!</p></div>
-            </div>
-            <div class="connect-step">
-              <div class="connect-step-num">4</div>
-              <div class="connect-step-text"><h4>You're connected</h4><p>Zyra will start receiving your messages. You approve every reply before it sends.</p></div>
-            </div>
-          </div>
-          <div class="connect-status waiting" id="connect-status">
-            <div class="status-dot pulse" style="background:var(--warn)"></div>
-            Waiting for QR scan…
-          </div>
-          <button style="margin-top:1rem;background:none;border:none;color:var(--acc3);font-size:0.82rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline" onclick="simulateConnect()">Skip — WhatsApp will be connected from your dashboard</button>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:1rem">
-          <div class="qr-box">
-            <svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
-              <rect width="180" height="180" fill="white"/>
-              <rect x="10" y="10" width="60" height="60" fill="none" stroke="#111" stroke-width="4"/>
-              <rect x="18" y="18" width="44" height="44" fill="#111"/>
-              <rect x="26" y="26" width="28" height="28" fill="white"/>
-              <rect x="32" y="32" width="16" height="16" fill="#111"/>
-              <rect x="110" y="10" width="60" height="60" fill="none" stroke="#111" stroke-width="4"/>
-              <rect x="118" y="18" width="44" height="44" fill="#111"/>
-              <rect x="126" y="26" width="28" height="28" fill="white"/>
-              <rect x="132" y="32" width="16" height="16" fill="#111"/>
-              <rect x="10" y="110" width="60" height="60" fill="none" stroke="#111" stroke-width="4"/>
-              <rect x="18" y="118" width="44" height="44" fill="#111"/>
-              <rect x="26" y="126" width="28" height="28" fill="white"/>
-              <rect x="32" y="132" width="16" height="16" fill="#111"/>
-              <rect x="80" y="10" width="8" height="8" fill="#111"/>
-              <rect x="96" y="10" width="8" height="8" fill="#111"/>
-              <rect x="80" y="26" width="8" height="8" fill="#111"/>
-              <rect x="96" y="26" width="8" height="8" fill="#111"/>
-              <rect x="88" y="18" width="8" height="8" fill="#111"/>
-              <rect x="80" y="80" width="8" height="8" fill="#111"/>
-              <rect x="96" y="80" width="8" height="8" fill="#111"/>
-              <rect x="88" y="88" width="8" height="8" fill="#111"/>
-              <rect x="110" y="80" width="8" height="8" fill="#111"/>
-              <rect x="126" y="80" width="8" height="8" fill="#111"/>
-              <rect x="118" y="88" width="8" height="8" fill="#111"/>
-              <rect x="142" y="80" width="8" height="8" fill="#111"/>
-              <rect x="158" y="80" width="8" height="8" fill="#111"/>
-              <rect x="150" y="88" width="8" height="8" fill="#111"/>
-              <rect x="110" y="96" width="8" height="8" fill="#111"/>
-              <rect x="126" y="96" width="8" height="8" fill="#111"/>
-              <rect x="142" y="96" width="8" height="8" fill="#111"/>
-              <rect x="158" y="96" width="8" height="8" fill="#111"/>
-              <rect x="110" y="110" width="8" height="8" fill="#111"/>
-              <rect x="126" y="110" width="8" height="8" fill="#111"/>
-              <rect x="110" y="126" width="8" height="8" fill="#111"/>
-              <rect x="134" y="126" width="8" height="8" fill="#111"/>
-              <rect x="150" y="110" width="8" height="8" fill="#111"/>
-              <rect x="158" y="118" width="8" height="8" fill="#111"/>
-              <rect x="150" y="126" width="8" height="8" fill="#111"/>
-              <rect x="80" y="96" width="8" height="8" fill="#111"/>
-              <rect x="88" y="104" width="8" height="8" fill="#111"/>
-              <rect x="80" y="112" width="8" height="8" fill="#111"/>
-              <rect x="96" y="112" width="8" height="8" fill="#111"/>
-              <rect x="80" y="128" width="8" height="8" fill="#111"/>
-              <rect x="96" y="128" width="8" height="8" fill="#111"/>
-              <rect x="88" y="136" width="8" height="8" fill="#111"/>
-              <rect x="80" y="144" width="8" height="8" fill="#111"/>
-              <rect x="96" y="152" width="8" height="8" fill="#111"/>
-              <rect x="80" y="160" width="8" height="8" fill="#111"/>
-              <text x="90" y="174" font-size="6" fill="#7C3AED" text-anchor="middle" font-family="sans-serif" font-weight="bold">ZYRA</text>
-            </svg>
-            <div class="qr-label">Scan with WhatsApp Business</div>
-            <div style="font-size:0.7rem;color:#9ca3af;font-family:'DM Sans',sans-serif">QR refreshes every 60 seconds</div>
-          </div>
-        </div>
-      </div>
-      <div class="step-footer">
-        <button class="btn-back" onclick="showPage('page-onboard-3')">← Back</button>
-        <div style="display:flex;align-items:center;gap:1rem">
-          <button class="btn-skip" onclick="showPage('page-onboard-5')">Skip — connect later</button>
-          <button class="btn-next" id="btn-next-4" onclick="showPage('page-onboard-5')" style="opacity:0.5">Continue →</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    <!-- Social Login -->
+    <div class="divider">OR</div>
+    <button class="social-btn" onclick="handleGoogleAuth()">
+      <svg class="social-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <button class="social-btn" onclick="handleMicrosoftAuth()">
+      <svg class="social-icon" viewBox="0 0 24 24"><path fill="#F25022" d="M11.5 11.5H3v-8.5h8.5z"/><path fill="#00A4EF" d="M21 11.5h-8.5v-8.5H21z"/><path fill="#7FBA00" d="M11.5 21H3v-8.5h8.5z"/><path fill="#FFB900" d="M21 21h-8.5v-8.5H21z"/></svg>
+      Continue with Microsoft
+    </button>
 
-<!-- ══ ONBOARDING STEP 5 — Go Live ══ -->
-<div class="page" id="page-onboard-5">
-  <div class="onboard-layout">
-    <div class="onboard-nav">
-      <a class="onboard-logo">Zyra</a>
-      <div class="onboard-step-label">Step <span>5</span> of 5</div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
-    <div class="onboard-card">
-      <div class="golive-center">
-        <span class="golive-icon">🎉</span>
-        <h2>You're <span style="background:var(--grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">live!</span></h2>
-        <p>Zyra is set up and ready to handle your customer messages. Here's a summary of what's been configured.</p>
-        <div class="summary-grid">
-          <div class="summary-card">
-            <div class="s-icon">🎙️</div>
-            <div class="s-label">Brand Voice</div>
-            <div class="s-val" id="summary-voice">Learning in progress</div>
-          </div>
-          <div class="summary-card">
-            <div class="s-icon">📦</div>
-            <div class="s-label">Products added</div>
-            <div class="s-val" id="summary-products">2 products</div>
-          </div>
-          <div class="summary-card">
-            <div class="s-icon">💬</div>
-            <div class="s-label">WhatsApp</div>
-            <div class="s-val" id="summary-wa">Connected</div>
-          </div>
-          <div class="summary-card">
-            <div class="s-icon">⚡</div>
-            <div class="s-label">Auto-reply mode</div>
-            <div class="s-val">Approval mode</div>
-          </div>
-          <div class="summary-card">
-            <div class="s-icon">🌍</div>
-            <div class="s-label">Languages</div>
-            <div class="s-val">Hindi + English</div>
-          </div>
-          <div class="summary-card">
-            <div class="s-icon">📅</div>
-            <div class="s-label">Trial ends</div>
-            <div class="s-val" id="trial-end">—</div>
-          </div>
-        </div>
-        <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:14px;padding:1.25rem 1.5rem;margin:1.5rem 0;text-align:left">
-          <div style="font-size:0.8rem;font-weight:600;color:var(--acc3);margin-bottom:0.5rem">🚀 What happens next</div>
-          <div style="font-size:0.85rem;color:var(--txt2);line-height:1.8">When a customer messages you on WhatsApp, Zyra will draft a reply in your voice. You'll see it in your dashboard and can approve, edit, or decline before it sends. You're always in control.</div>
-        </div>
-        <div class="golive-actions">
-          <button class="btn-dashboard" onclick="completedOnboarding()">Go to my Dashboard →</button>
-          <button class="btn-tour">Take a quick tour</button>
-        </div>
-      </div>
+    <!-- Footer Text -->
+    <div class="text-center">
+      <span id="footerText">Don't have an account? <a href="#" class="link" onclick="showTab('signup');return false">Sign up</a></span>
     </div>
   </div>
 </div>
 
 <script>
-// Page navigation
-function showPage(id){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-  if(id==='page-onboard-5'){launchConfetti();setTrialDate();}
-}
-
-// Signup validation
-async async function handleSignup(){
-  var ok=true;
-  var fn=document.getElementById('fname');
-  var ln=document.getElementById('lname');
-  var em=document.getElementById('email');
-  var pw=document.getElementById('password');
-  [fn,ln].forEach(function(f){
-    if(!f.value.trim()){f.closest('.field').classList.add('has-error');ok=false;}
-  });
-  if(!em.value.includes('@')||!em.value.includes('.')){em.closest('.field').classList.add('has-error');ok=false;}
-  if(pw.value.length<8){pw.closest('.field').classList.add('has-error');ok=false;}
-  if(!ok)return;
-
-  // Show loading state
-  var btn=document.querySelector('.btn-submit');
-  btn.textContent='Creating account...';
-  btn.disabled=true;
-
-  try {
-    var result = await _supabase.auth.signUp({
-      email: em.value.trim(),
-      password: pw.value,
-      options: {
-        data: {
-          first_name: fn.value.trim(),
-          last_name: ln.value.trim(),
-          full_name: fn.value.trim() + ' ' + ln.value.trim()
-        }
-      }
-    });
-
-    if(result.error) {
-      btn.textContent='Create free account →';
-      btn.disabled=false;
-      alert('Signup error: ' + result.error.message);
-      return;
-    }
-
-    // Store user info for onboarding
-    window._zyraUser = result.data.user;
-    // Store in sessionStorage so it persists through onboarding
-    sessionStorage.setItem('zyra_user_id', result.data.user.id);
-    sessionStorage.setItem('zyra_user_email', result.data.user.email);
-    showPage('page-onboard-1');
-
-  } catch(e) {
-    btn.textContent='Create free account →';
-    btn.disabled=false;
-    alert('Something went wrong. Please try again.');
-  }
-}
-function clearError(input){input.closest('.field').classList.remove('has-error');}
-
-// Password strength
-function checkStrength(input){
-  var v=input.value;
-  var score=0;
-  if(v.length>=8)score++;
-  if(/[A-Z]/.test(v))score++;
-  if(/[0-9]/.test(v))score++;
-  if(/[^A-Za-z0-9]/.test(v))score++;
-  var fill=document.getElementById('strength-fill');
-  var lbl=document.getElementById('strength-label');
-  var colors=['','#EF4444','#F59E0B','#10B981','#7C3AED'];
-  var labels=['','Weak','Fair','Good','Strong 💪'];
-  fill.style.width=(score*25)+'%';
-  fill.style.background=colors[score]||'';
-  lbl.textContent=v.length?labels[score]:'Enter a password';
-  lbl.style.color=colors[score]||'var(--txt3)';
-}
-
-function togglePwd(){
-  var i=document.getElementById('password');
-  i.type=i.type==='password'?'text':'password';
-}
-function toggleLoginPwd(){
-  var i=document.getElementById('login-password');
-  i.type=i.type==='password'?'text':'password';
-}
-
-// Category selection
-function selectCat(btn){
-  document.querySelectorAll('.category-btn').forEach(function(b){b.classList.remove('selected');});
-  btn.classList.add('selected');
-}
-
-// File upload
-function handleFileSelect(e){
-  Array.from(e.target.files).forEach(addFile);
-}
-function handleDrag(e){e.preventDefault();document.getElementById('upload-area').classList.add('dragover');}
-function handleDragLeave(){document.getElementById('upload-area').classList.remove('dragover');}
-function handleDrop(e){
-  e.preventDefault();
-  document.getElementById('upload-area').classList.remove('dragover');
-  Array.from(e.dataTransfer.files).forEach(addFile);
-}
-function addFile(file){
-  var container=document.getElementById('uploaded-files');
-  var row=document.createElement('div');
-  row.className='uploaded-file';
-  row.innerHTML='<span class="file-icon">✅</span><span class="file-name">'+file.name+' <span style="color:var(--txt3)">('+Math.round(file.size/1024)+'KB)</span></span><button class="file-remove" onclick="this.parentElement.remove()">×</button>';
-  container.appendChild(row);
-}
-
-// Catalog
-function selectCatalog(type){
-  document.getElementById('cat-manual').classList.toggle('selected',type==='manual');
-  document.getElementById('cat-shopify').classList.toggle('selected',type==='shopify');
-  document.getElementById('manual-products').style.display=type==='manual'?'block':'none';
-  document.getElementById('shopify-connect').style.display=type==='shopify'?'block':'none';
-}
-function addProductRow(){
-  var container=document.getElementById('product-rows');
-  var row=document.createElement('div');
-  row.className='product-row';
-  row.innerHTML='<div class="field" style="margin:0"><input type="text" placeholder="Product name"/></div><div class="field" style="margin:0"><input type="text" placeholder="Price (₹)"/></div><button class="btn-remove-row" onclick="removeRow(this)">×</button>';
-  container.appendChild(row);
-}
-function removeRow(btn){
-  var rows=document.querySelectorAll('.product-row');
-  if(rows.length>1)btn.closest('.product-row').remove();
-}
-
-// WhatsApp connect simulation
-function simulateConnect(){
-  var status=document.getElementById('connect-status');
-  var btn=document.getElementById('btn-next-4');
-  status.className='connect-status';
-  status.innerHTML='<div class="status-dot" style="background:var(--green)"></div> WhatsApp connected ✓';
-  status.style.background='rgba(16,185,129,0.1)';
-  status.style.border='1px solid rgba(16,185,129,0.2)';
-  status.style.color='var(--green)';
-  btn.style.opacity='1';
-  document.getElementById('summary-wa').textContent='Connected ✓';
-}
-
-// Confetti
-function launchConfetti(){
-  var colors=['#7C3AED','#EC4899','#06B6D4','#10B981','#F59E0B','#F1F0FF'];
-  for(var i=0;i<60;i++){
-    var piece=document.createElement('div');
-    piece.className='confetti-piece';
-    piece.style.left=Math.random()*100+'vw';
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
-    piece.style.width=(Math.random()*8+4)+'px';
-    piece.style.height=(Math.random()*8+4)+'px';
-    piece.style.borderRadius=Math.random()>0.5?'50%':'2px';
-    piece.style.animationDuration=(Math.random()*2+1.5)+'s';
-    piece.style.animationDelay=(Math.random()*0.5)+'s';
-    document.body.appendChild(piece);
-    setTimeout(function(p){return function(){p.remove()};}(piece),(3000));
+function showTab(tab) {
+  const tabs = document.querySelectorAll('.tab');
+  const signinForm = document.getElementById('signinForm');
+  const signupForm = document.getElementById('signupForm');
+  const footerText = document.getElementById('footerText');
+  const errorMsg = document.getElementById('errorMsg');
+  
+  errorMsg.classList.remove('show');
+  
+  tabs.forEach(t => t.classList.remove('active'));
+  
+  if (tab === 'signin') {
+    tabs[0].classList.add('active');
+    signinForm.style.display = 'block';
+    signupForm.style.display = 'none';
+    footerText.innerHTML = 'Don\'t have an account? <a href="#" class="link" onclick="showTab(\'signup\');return false">Sign up</a>';
+  } else {
+    tabs[1].classList.add('active');
+    signinForm.style.display = 'none';
+    signupForm.style.display = 'block';
+    footerText.innerHTML = 'Already have an account? <a href="#" class="link" onclick="showTab(\'signin\');return false">Sign in</a>';
   }
 }
 
-function setTrialDate(){
-  var d=new Date();d.setDate(d.getDate()+14);
-  var opts={day:'numeric',month:'long',year:'numeric'};
-  document.getElementById('trial-end').textContent=d.toLocaleDateString('en-IN',opts);
+function showError(message) {
+  const errorMsg = document.getElementById('errorMsg');
+  errorMsg.textContent = message;
+  errorMsg.classList.add('show');
 }
 
-async function handleLogin(){
-  var em=document.getElementById('login-email');
-  var pw=document.getElementById('login-password');
-  if(!em||!pw||!em.value||!pw.value){alert('Please enter your email and password.');return;}
-  var btns=document.querySelectorAll('.btn-submit');
-  var btn=btns[btns.length-1];
-  btn.textContent='Signing in...';btn.disabled=true;
-  try{
-    var r=await _supabase.auth.signInWithPassword({email:em.value.trim(),password:pw.value});
-    if(r.error){btn.textContent='Sign in →';btn.disabled=false;alert('Error: '+r.error.message);return;}
-    window.location.href='zyra_dashboard.html';
-  }catch(e){btn.textContent='Sign in →';btn.disabled=false;alert('Something went wrong.');}
+function handleSignIn(event) {
+  event.preventDefault();
+  const email = document.getElementById('signinEmail').value;
+  const password = document.getElementById('signinPassword').value;
+  
+  // TODO: Replace with actual Supabase authentication
+  console.log('Sign in attempt:', { email, password });
+  
+  // Temporary: Show success message
+  showError('Authentication not yet implemented. This will connect to Supabase in Phase 3.');
+  
+  // After successful auth, redirect to onboarding:
+  // window.location.href = 'nuzy_onboarding.html';
 }
 
-async function saveBrandToSupabase(data){
-  try{
-    var s=await _supabase.auth.getSession();
-    if(!s.data.session)return;
-    await _supabase.from('brands').insert({
-      user_id:s.data.session.user.id,
-      brand_name:data.name||'My Brand',
-      owner_name:data.owner||'',
-      whatsapp_number:data.whatsapp||'',
-      instagram_handle:data.instagram||'',
-      what_we_sell:data.whatSell||'',
-      category:data.category||'',
-      return_policy:data.returns||'7 days from delivery',
-      shipping_timeline:data.shipping||'3-5 business days',
-      plan:'starter'
-    });
-  }catch(e){console.error('Brand save error:',e);}
-}
-
-window.addEventListener('DOMContentLoaded',async function(){
-  try{
-    var s=await _supabase.auth.getSession();
-    if(s.data.session){
-      // Only auto-redirect from login page, not signup page
-      var loginPage=document.getElementById('page-login');
-      if(loginPage&&loginPage.classList.contains('active')){
-        window.location.href='zyra_dashboard.html';
-      }
-    }
-  }catch(e){console.log('Session check:',e);}
-});
-
-async function completedOnboarding(){
-  // Save brand data to Supabase
-  var brandName = document.getElementById('brand-name') ? document.getElementById('brand-name').value : '';
-  var ownerName = document.getElementById('owner-name') ? document.getElementById('owner-name').value : '';
-  var whatsapp = document.getElementById('whatsapp-num') ? document.getElementById('whatsapp-num').value : '';
-  var instagram = document.getElementById('instagram') ? document.getElementById('instagram').value : '';
-  var whatSell = document.getElementById('what-sell') ? document.getElementById('what-sell').value : '';
-  var returns = document.getElementById('returns') ? document.getElementById('returns').value : '7 days from delivery';
-  var shipping = document.getElementById('shipping') ? document.getElementById('shipping').value : '3-5 business days';
-  var selectedCat = document.querySelector('.category-btn.selected');
-  var category = selectedCat ? selectedCat.querySelector('.cat-name').textContent : '';
-
-  try {
-    var s = await _supabase.auth.getSession();
-    if(s.data.session && brandName) {
-      await _supabase.from('brands').upsert({
-        user_id: s.data.session.user.id,
-        brand_name: brandName || 'My Brand',
-        owner_name: ownerName || '',
-        whatsapp_number: whatsapp || '',
-        instagram_handle: instagram || '',
-        what_we_sell: whatSell || '',
-        category: category || '',
-        return_policy: returns || '7 days from delivery',
-        shipping_timeline: shipping || '3-5 business days',
-        plan: 'starter'
-      }, {onConflict: 'user_id'});
-    }
-  } catch(e) {
-    console.log('Brand save error:', e);
+function handleSignUp(event) {
+  event.preventDefault();
+  const name = document.getElementById('signupName').value;
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+  const agreed = document.getElementById('agreeTerms').checked;
+  
+  if (!agreed) {
+    showError('Please agree to the Terms and Privacy Policy');
+    return;
   }
   
-  // Go to dashboard regardless
-  window.location.href = 'zyra_dashboard.html';
+  // TODO: Replace with actual Supabase authentication
+  console.log('Sign up attempt:', { name, email, password });
+  
+  // Temporary: Show success message
+  showError('Authentication not yet implemented. This will connect to Supabase in Phase 3.');
+  
+  // After successful signup, redirect to onboarding:
+  // window.location.href = 'nuzy_onboarding.html';
+}
+
+function handleGoogleAuth() {
+  // TODO: Implement Google OAuth with Supabase
+  console.log('Google auth requested');
+  showError('Google authentication will be implemented in Phase 3.');
+}
+
+function handleMicrosoftAuth() {
+  // TODO: Implement Microsoft OAuth with Supabase
+  console.log('Microsoft auth requested');
+  showError('Microsoft authentication will be implemented in Phase 3.');
+}
+
+function showForgotPassword(event) {
+  event.preventDefault();
+  const email = prompt('Enter your email address to reset your password:');
+  if (email) {
+    // TODO: Implement password reset with Supabase
+    console.log('Password reset requested for:', email);
+    showError('Password reset will be implemented in Phase 3. Check your email for instructions.');
+  }
 }
 </script>
 </body>
