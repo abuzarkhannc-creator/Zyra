@@ -34,7 +34,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opac
 
 .logo{text-align:center;margin-bottom:40px}
 .logo-text{font-family:var(--h);font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
-.logo-badge{font-size:0.5rem;background:linear-gradient(135deg,var(--pri),var(--pink));padding:2px 8px;border-radius:100px;color:#fff;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:8px}
 
 .card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border:1px solid var(--b2);border-radius:var(--r2);padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.4);position:relative}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
@@ -49,40 +48,43 @@ input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid var(--b2)
 input:focus{outline:none;border-color:var(--pri);box-shadow:0 0 20px rgba(124,58,237,0.15)}
 input::placeholder{color:var(--t3)}
 
-.checkbox-group{display:flex;align-items:center;gap:10px;margin-bottom:24px}
-.checkbox{width:18px;height:18px;border-radius:4px;border:1px solid var(--b2);background:var(--s2);cursor:pointer;appearance:none;position:relative;transition:all 0.2s}
-.checkbox:checked{background:linear-gradient(135deg,var(--pri),var(--pink));border-color:var(--pri)}
-.checkbox:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:0.7rem;font-weight:700}
-.checkbox-label{font-size:0.85rem;color:var(--t2);cursor:pointer}
+.checkbox-group{display:flex;align-items:start;gap:10px;margin-bottom:24px}
+.checkbox-group input[type="checkbox"]{width:auto;min-width:18px;height:18px;margin-top:2px;cursor:pointer}
+.checkbox-group label{margin:0;font-size:0.8rem;color:var(--t2);text-transform:none;letter-spacing:normal}
+.checkbox-group a{color:var(--pri3);text-decoration:none;transition:color 0.2s}
+.checkbox-group a:hover{color:var(--txt)}
 
-.btn{width:100%;padding:14px;border-radius:10px;border:none;font-family:var(--h);font-weight:600;font-size:0.9rem;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
-.btn-primary{background:linear-gradient(135deg,#7C3AED,#EC4899);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,0.25)}
-.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent);opacity:0;transition:opacity 0.3s}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,58,237,0.4),0 0 40px rgba(236,72,153,0.3)}
-.btn-primary:hover::before{opacity:1}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-family:var(--h);font-size:0.9rem;font-weight:700;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
+.btn-primary{background:linear-gradient(135deg,#7C3AED,#EC4899);color:#fff;box-shadow:0 8px 24px rgba(124,58,237,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(124,58,237,0.4)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 
-.divider{display:flex;align-items:center;gap:16px;margin:28px 0;color:var(--t3);font-size:0.8rem}
+.divider{display:flex;align-items:center;gap:16px;margin:24px 0;color:var(--t3);font-size:0.8rem}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--b1)}
 
-.social-btn{width:100%;padding:12px;border-radius:10px;border:1px solid var(--b2);background:rgba(255,255,255,0.02);color:var(--t2);font-family:var(--f);font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
-.social-btn:hover{border-color:var(--pri);background:rgba(124,58,237,0.05);color:var(--txt)}
-.social-icon{width:20px;height:20px}
+.social-btns{display:flex;gap:12px;margin-bottom:24px}
+.btn-social{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:10px;border:1px solid var(--b2);background:var(--s2);color:var(--txt);font-family:var(--f);font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s}
+.btn-social:hover{border-color:var(--b3);background:var(--s3)}
+.btn-social img{width:18px;height:18px}
 
-.link{color:var(--pri3);text-decoration:none;font-size:0.85rem;transition:color 0.2s}
-.link:hover{color:var(--txt)}
+.error-msg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:12px 16px;border-radius:10px;font-size:0.85rem;margin-bottom:20px;display:none}
+.error-msg.show{display:block}
 
-.text-center{text-align:center;margin-top:24px;font-size:0.85rem;color:var(--t2)}
+.success-msg{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#22c55e;padding:12px 16px;border-radius:10px;font-size:0.85rem;margin-bottom:20px;display:none}
+.success-msg.show{display:block}
 
-.error{display:none;padding:12px 16px;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ef4444;font-size:0.8rem;margin-bottom:20px}
-.error.show{display:block}
+.footer{text-align:center;margin-top:24px;color:var(--t3);font-size:0.85rem}
+.footer a{color:var(--pri3);text-decoration:none;transition:color 0.2s}
+.footer a:hover{color:var(--txt)}
 
-.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--t2);font-size:0.85rem;text-decoration:none;margin-bottom:24px;transition:color 0.2s}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--t3);font-size:0.85rem;text-decoration:none;margin-bottom:20px;transition:color 0.2s}
 .back-link:hover{color:var(--txt)}
 
-@media(max-width:600px){
-.card{padding:28px 24px}
-.logo{margin-bottom:32px}
-}
+.loading{display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.form-section{display:none}
+.form-section.active{display:block}
 </style>
 </head>
 <body>
@@ -99,159 +101,334 @@ input::placeholder{color:var(--t3)}
   </div>
 
   <div class="card">
-    <!-- Error Message -->
-    <div class="error" id="errorMsg"></div>
-
-    <!-- Tabs -->
     <div class="tabs">
-      <button class="tab active" onclick="showTab('signin')">Sign In</button>
-      <button class="tab" onclick="showTab('signup')">Sign Up</button>
+      <button class="tab active" data-tab="signin">Sign In</button>
+      <button class="tab" data-tab="signup">Sign Up</button>
     </div>
 
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+
     <!-- Sign In Form -->
-    <form id="signinForm" onsubmit="handleSignIn(event)">
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="signinEmail" placeholder="you@company.com" required/>
+    <div class="form-section active" id="signin-section">
+      <form id="signin-form">
+        <div class="form-group">
+          <label for="signin-email">Email</label>
+          <input type="email" id="signin-email" placeholder="you@company.com" required/>
+        </div>
+
+        <div class="form-group">
+          <label for="signin-password">Password</label>
+          <input type="password" id="signin-password" placeholder="••••••••" required/>
+        </div>
+
+        <div style="text-align:right;margin-bottom:20px">
+          <a href="#" style="font-size:0.85rem;color:var(--pri3);text-decoration:none" id="forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <span id="signin-btn-text">Sign In</span>
+          <div class="loading" id="signin-loading"></div>
+        </button>
+      </form>
+
+      <div class="divider">or continue with</div>
+
+      <div class="social-btns">
+        <button class="btn-social" id="google-signin">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18Z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17Z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07Z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3Z"/></svg>
+          Google
+        </button>
+        <button class="btn-social" id="microsoft-signin">
+          <svg width="18" height="18" viewBox="0 0 21 21"><path fill="#f25022" d="M0 0h10v10H0z"/><path fill="#00a4ef" d="M11 0h10v10H11z"/><path fill="#7fba00" d="M0 11h10v10H0z"/><path fill="#ffb900" d="M11 11h10v10H11z"/></svg>
+          Microsoft
+        </button>
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="signinPassword" placeholder="Enter your password" required/>
-      </div>
-      <div style="text-align:right;margin-bottom:24px">
-        <a href="#" class="link" onclick="showForgotPassword(event)">Forgot password?</a>
-      </div>
-      <button type="submit" class="btn btn-primary">Sign In</button>
-    </form>
+    </div>
 
     <!-- Sign Up Form -->
-    <form id="signupForm" style="display:none" onsubmit="handleSignUp(event)">
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="signupName" placeholder="Your name" required/>
-      </div>
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="signupEmail" placeholder="you@company.com" required/>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="signupPassword" placeholder="Create a strong password" required minlength="8"/>
-      </div>
-      <div class="checkbox-group">
-        <input type="checkbox" id="agreeTerms" class="checkbox" required/>
-        <label for="agreeTerms" class="checkbox-label">I agree to the <a href="nuzy_terms.html" class="link" target="_blank">Terms</a> and <a href="nuzy_privacy.html" class="link" target="_blank">Privacy Policy</a></label>
-      </div>
-      <button type="submit" class="btn btn-primary">Create Account</button>
-    </form>
+    <div class="form-section" id="signup-section">
+      <form id="signup-form">
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" placeholder="John Doe" required/>
+        </div>
 
-    <!-- Social Login -->
-    <div class="divider">OR</div>
-    <button class="social-btn" onclick="handleGoogleAuth()">
-      <svg class="social-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continue with Google
-    </button>
-    <button class="social-btn" onclick="handleMicrosoftAuth()">
-      <svg class="social-icon" viewBox="0 0 24 24"><path fill="#F25022" d="M11.5 11.5H3v-8.5h8.5z"/><path fill="#00A4EF" d="M21 11.5h-8.5v-8.5H21z"/><path fill="#7FBA00" d="M11.5 21H3v-8.5h8.5z"/><path fill="#FFB900" d="M21 21h-8.5v-8.5H21z"/></svg>
-      Continue with Microsoft
-    </button>
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" placeholder="you@company.com" required/>
+        </div>
 
-    <!-- Footer Text -->
-    <div class="text-center">
-      <span id="footerText">Don't have an account? <a href="#" class="link" onclick="showTab('signup');return false">Sign up</a></span>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="At least 8 characters" required minlength="8"/>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="terms" required/>
+          <label for="terms">I agree to the <a href="nuzy_terms.html" target="_blank">Terms</a> and <a href="nuzy_privacy.html" target="_blank">Privacy Policy</a></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <span id="signup-btn-text">Create Account</span>
+          <div class="loading" id="signup-loading"></div>
+        </button>
+      </form>
+
+      <div class="divider">or sign up with</div>
+
+      <div class="social-btns">
+        <button class="btn-social" id="google-signup">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18Z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17Z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07Z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3Z"/></svg>
+          Google
+        </button>
+        <button class="btn-social" id="microsoft-signup">
+          <svg width="18" height="18" viewBox="0 0 21 21"><path fill="#f25022" d="M0 0h10v10H0z"/><path fill="#00a4ef" d="M11 0h10v10H11z"/><path fill="#7fba00" d="M0 11h10v10H0z"/><path fill="#ffb900" d="M11 11h10v10H11z"/></svg>
+          Microsoft
+        </button>
+      </div>
+    </div>
+
+    <div class="footer" id="footer-text">
+      Don't have an account? <a href="#" class="switch-tab" data-target="signup">Sign up</a>
     </div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function showTab(tab) {
-  const tabs = document.querySelectorAll('.tab');
-  const signinForm = document.getElementById('signinForm');
-  const signupForm = document.getElementById('signupForm');
-  const footerText = document.getElementById('footerText');
-  const errorMsg = document.getElementById('errorMsg');
-  
-  errorMsg.classList.remove('show');
-  
+// Initialize Supabase client
+const SUPABASE_URL = 'https://qobsbbfjjgwgfmgxwinn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvYnNiYmZqamd3Z2ZtZ3h3aW5uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMzMDIwOTUsImV4cCI6MjAyODg3ODA5NX0.3lQP7KvI5zYXwq6xBNOjB5EsZ0IKZQyDUwDV2KqDVkM';
+
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Tab switching
+const tabs = document.querySelectorAll('.tab');
+const sections = document.querySelectorAll('.form-section');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    switchTab(target);
+  });
+});
+
+document.querySelectorAll('.switch-tab').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = e.target.dataset.target;
+    switchTab(target);
+  });
+});
+
+function switchTab(target) {
   tabs.forEach(t => t.classList.remove('active'));
+  sections.forEach(s => s.classList.remove('active'));
   
-  if (tab === 'signin') {
-    tabs[0].classList.add('active');
-    signinForm.style.display = 'block';
-    signupForm.style.display = 'none';
-    footerText.innerHTML = 'Don\'t have an account? <a href="#" class="link" onclick="showTab(\'signup\');return false">Sign up</a>';
+  document.querySelector(`[data-tab="${target}"]`).classList.add('active');
+  document.getElementById(`${target}-section`).classList.add('active');
+  
+  if (target === 'signup') {
+    document.getElementById('footer-text').innerHTML = 'Already have an account? <a href="#" class="switch-tab" data-target="signin">Sign in</a>';
   } else {
-    tabs[1].classList.add('active');
-    signinForm.style.display = 'none';
-    signupForm.style.display = 'block';
-    footerText.innerHTML = 'Already have an account? <a href="#" class="link" onclick="showTab(\'signin\');return false">Sign in</a>';
+    document.getElementById('footer-text').innerHTML = 'Don\'t have an account? <a href="#" class="switch-tab" data-target="signup">Sign up</a>';
   }
+  
+  document.querySelectorAll('.switch-tab').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchTab(e.target.dataset.target);
+    });
+  });
+  
+  hideMessage();
 }
 
-function showError(message) {
-  const errorMsg = document.getElementById('errorMsg');
-  errorMsg.textContent = message;
-  errorMsg.classList.add('show');
+// Error/Success message handling
+function showError(msg) {
+  const errorEl = document.getElementById('errorMsg');
+  errorEl.textContent = msg;
+  errorEl.classList.add('show');
+  document.getElementById('successMsg').classList.remove('show');
 }
 
-function handleSignIn(event) {
-  event.preventDefault();
-  const email = document.getElementById('signinEmail').value;
-  const password = document.getElementById('signinPassword').value;
-  
-  // TODO: Replace with actual Supabase authentication
-  console.log('Sign in attempt:', { email, password });
-  
-  // Temporary: Show success message
-  showError('Authentication not yet implemented. This will connect to Supabase in Phase 3.');
-  
-  // After successful auth, redirect to onboarding:
-  // window.location.href = 'nuzy_onboarding.html';
+function showSuccess(msg) {
+  const successEl = document.getElementById('successMsg');
+  successEl.textContent = msg;
+  successEl.classList.add('show');
+  document.getElementById('errorMsg').classList.remove('show');
 }
 
-function handleSignUp(event) {
-  event.preventDefault();
-  const name = document.getElementById('signupName').value;
-  const email = document.getElementById('signupEmail').value;
-  const password = document.getElementById('signupPassword').value;
-  const agreed = document.getElementById('agreeTerms').checked;
+function hideMessage() {
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('successMsg').classList.remove('show');
+}
+
+// Sign In
+document.getElementById('signin-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideMessage();
   
-  if (!agreed) {
+  const email = document.getElementById('signin-email').value;
+  const password = document.getElementById('signin-password').value;
+  const btnText = document.getElementById('signin-btn-text');
+  const loading = document.getElementById('signin-loading');
+  
+  btnText.style.display = 'none';
+  loading.style.display = 'block';
+  
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    if (error) throw error;
+    
+    showSuccess('Signed in successfully! Redirecting...');
+    setTimeout(() => {
+      window.location.href = '/onboarding.html'; // We'll create this next
+    }, 1000);
+    
+  } catch (error) {
+    showError(error.message || 'Failed to sign in. Please try again.');
+    btnText.style.display = 'block';
+    loading.style.display = 'none';
+  }
+});
+
+// Sign Up
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideMessage();
+  
+  const name = document.getElementById('signup-name').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const terms = document.getElementById('terms').checked;
+  const btnText = document.getElementById('signup-btn-text');
+  const loading = document.getElementById('signup-loading');
+  
+  if (!terms) {
     showError('Please agree to the Terms and Privacy Policy');
     return;
   }
   
-  // TODO: Replace with actual Supabase authentication
-  console.log('Sign up attempt:', { name, email, password });
+  btnText.style.display = 'none';
+  loading.style.display = 'block';
   
-  // Temporary: Show success message
-  showError('Authentication not yet implemented. This will connect to Supabase in Phase 3.');
-  
-  // After successful signup, redirect to onboarding:
-  // window.location.href = 'nuzy_onboarding.html';
-}
-
-function handleGoogleAuth() {
-  // TODO: Implement Google OAuth with Supabase
-  console.log('Google auth requested');
-  showError('Google authentication will be implemented in Phase 3.');
-}
-
-function handleMicrosoftAuth() {
-  // TODO: Implement Microsoft OAuth with Supabase
-  console.log('Microsoft auth requested');
-  showError('Microsoft authentication will be implemented in Phase 3.');
-}
-
-function showForgotPassword(event) {
-  event.preventDefault();
-  const email = prompt('Enter your email address to reset your password:');
-  if (email) {
-    // TODO: Implement password reset with Supabase
-    console.log('Password reset requested for:', email);
-    showError('Password reset will be implemented in Phase 3. Check your email for instructions.');
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+        }
+      }
+    });
+    
+    if (error) throw error;
+    
+    showSuccess('Account created! Please check your email to confirm your address.');
+    
+    // Clear form
+    document.getElementById('signup-form').reset();
+    btnText.style.display = 'block';
+    loading.style.display = 'none';
+    
+  } catch (error) {
+    showError(error.message || 'Failed to create account. Please try again.');
+    btnText.style.display = 'block';
+    loading.style.display = 'none';
   }
-}
+});
+
+// Google Sign In
+document.getElementById('google-signin').addEventListener('click', async () => {
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/onboarding.html`
+      }
+    });
+    if (error) throw error;
+  } catch (error) {
+    showError('Failed to sign in with Google');
+  }
+});
+
+document.getElementById('google-signup').addEventListener('click', async () => {
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/onboarding.html`
+      }
+    });
+    if (error) throw error;
+  } catch (error) {
+    showError('Failed to sign up with Google');
+  }
+});
+
+// Microsoft Sign In
+document.getElementById('microsoft-signin').addEventListener('click', async () => {
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'azure',
+      options: {
+        redirectTo: `${window.location.origin}/onboarding.html`
+      }
+    });
+    if (error) throw error;
+  } catch (error) {
+    showError('Failed to sign in with Microsoft');
+  }
+});
+
+document.getElementById('microsoft-signup').addEventListener('click', async () => {
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'azure',
+      options: {
+        redirectTo: `${window.location.origin}/onboarding.html`
+      }
+    });
+    if (error) throw error;
+  } catch (error) {
+    showError('Failed to sign up with Microsoft');
+  }
+});
+
+// Forgot Password
+document.getElementById('forgot-password').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const email = prompt('Enter your email address:');
+  
+  if (email) {
+    try {
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password.html`,
+      });
+      
+      if (error) throw error;
+      showSuccess('Password reset email sent! Check your inbox.');
+    } catch (error) {
+      showError('Failed to send reset email');
+    }
+  }
+});
+
+// Check if user is already logged in
+supabaseClient.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    window.location.href = '/onboarding.html';
+  }
+});
 </script>
 </body>
 </html>
