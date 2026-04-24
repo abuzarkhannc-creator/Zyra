@@ -1076,23 +1076,23 @@ async function completeOnboarding() {
   loading.style.display = 'block';
   
   try {
-    // Save to Supabase
+    // Save to Supabase with correct field names
     const { data, error } = await supabaseClient
       .from('brands')
       .insert({
         user_id: userData.user_id,
-        name: userData.business_name,
+        brand_name: userData.business_name,
         business_type: userData.business_type,
         business_sub_type: userData.business_sub_type,
         industry_category: userData.industry_category,
-        phone: userData.phone,
-        website: userData.website,
-        description: userData.description,
-        business_specific_data: {
-          tone: userData.tone,
-          emoji_usage: userData.emoji_usage,
-          ...userData.specific_data
-        }
+        whatsapp_number: userData.phone,
+        website_url: userData.website,
+        business_description: userData.description,
+        greeting_style: userData.tone,
+        emoji_usage: userData.emoji_usage,
+        business_specific_data: userData.specific_data,
+        onboarding_completed: true,
+        onboarding_progress: 100
       })
       .select();
     
