@@ -404,15 +404,15 @@ body{background:var(--bg);color:var(--txt);font-family:var(--f);-webkit-font-smo
         </div>
 
         <div class="ai-reply-actions">
-          <button class="btn btn-primary">
+          <button class="btn btn-primary" onclick="approveAndSend()">
             <span>✓</span>
             <span>Approve & Send</span>
           </button>
-          <button class="btn btn-secondary">
+          <button class="btn btn-secondary" onclick="editReply()">
             <span>✏️</span>
             <span>Edit</span>
           </button>
-          <button class="btn btn-outline">
+          <button class="btn btn-outline" onclick="takeOver()">
             <span>👤</span>
             <span>Take Over</span>
           </button>
@@ -433,6 +433,8 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
 let currentBrand = null;
+let currentConversationId = null;
+let currentQueueId = null;
 
 // Check authentication and load user data
 async function init() {
@@ -459,6 +461,10 @@ async function init() {
   
   currentBrand = brand;
   updateUI();
+  loadConversations();
+  
+  // Set up real-time subscription for new messages
+  setupRealtimeSubscriptions();
 }
 
 function updateUI() {
@@ -474,18 +480,342 @@ function updateUI() {
   document.getElementById('userAvatar').textContent = userInitial;
 }
 
+// Load real conversations from database
+async function loadConversations() {
+  const { data: conversations, error } = await supabaseClient
+    .from('conversations')
+    .select(`
+      *,
+      customer:customers(*)
+    `)
+    .eq('brand_id', currentBrand.id)
+    .eq('status', 'open')
+    .order('updated_at', { ascending: false })
+    .limit(20);
+  
+  if (error) {
+    console.error('Error loading conversations:', error);
+    return;
+  }
+  
+  const conversationList = document.getElementById('conversationList');
+  conversationList.innerHTML = '';
+  
+  if (!conversations || conversations.length === 0) {
+    conversationList.innerHTML = `
+      <div style="padding:40px;text-align:center;color:var(--t3)">
+        <div style="font-size:2rem;margin-bottom:12px">💬</div>
+        <div>No conversations yet</div>
+        <div style="font-size:0.85rem;margin-top:8px">Messages will appear here when customers reach out</div>
+      </div>
+    `;
+    return;
+  }
+  
+  conversations.forEach((conv, index) => {
+    const isActive = index === 0;
+    const item = document.createElement('div');
+    item.className = `conversation-item ${isActive ? 'active' : ''}`;
+    item.onclick = () => selectConversation(conv.id);
+    
+    const initial = (conv.customer?.name || conv.customer_phone || 'U').charAt(0).toUpperCase();
+    const gradients = [
+      'linear-gradient(135deg,#f59e0b,#f97316)',
+      'linear-gradient(135deg,#3b82f6,#2563eb)',
+      'linear-gradient(135deg,#22c55e,#16a34a)',
+      'linear-gradient(135deg,#ec4899,#db2777)',
+      'linear-gradient(135deg,#8b5cf6,#7c3aed)'
+    ];
+    const gradient = gradients[index % gradients.length];
+    
+    const timeAgo = getTimeAgo(conv.updated_at);
+    const sentiment = conv.sentiment || 'neutral';
+    const sentimentEmoji = sentiment === 'positive' ? '😊' : sentiment === 'negative' ? '😐' : '🙂';
+    
+    item.innerHTML = `
+      <div class="conv-avatar" style="background:${gradient}">${initial}</div>
+      <div class="conv-info">
+        <div class="conv-header">
+          <span class="conv-name">${conv.customer?.name || conv.customer_phone}</span>
+          <span class="conv-time">${timeAgo}</span>
+        </div>
+        <div class="conv-preview">
+          <span class="conv-sentiment">${sentimentEmoji}</span>
+          ${conv.last_message || 'No messages yet'}
+        </div>
+      </div>
+    `;
+    
+    conversationList.appendChild(item);
+    
+    // Load first conversation by default
+    if (isActive) {
+      loadConversation(conv.id);
+    }
+  });
+}
+
+// Load specific conversation with messages
+async function loadConversation(conversationId) {
+  currentConversationId = conversationId;
+  
+  // Load messages
+  const { data: messages, error } = await supabaseClient
+    .from('messages')
+    .select('*')
+    .eq('conversation_id', conversationId)
+    .order('sent_at', { ascending: true });
+  
+  if (error) {
+    console.error('Error loading messages:', error);
+    return;
+  }
+  
+  const chatMessages = document.getElementById('chatMessages');
+  chatMessages.innerHTML = '';
+  
+  if (messages && messages.length > 0) {
+    const groupedByDate = groupMessagesByDate(messages);
+    
+    Object.keys(groupedByDate).forEach(date => {
+      const group = document.createElement('div');
+      group.className = 'message-group';
+      group.innerHTML = `<div class="message-date">${date}</div>`;
+      
+      groupedByDate[date].forEach(msg => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${msg.direction === 'out' ? 'sent' : ''}`;
+        
+        const initial = msg.direction === 'out' ? 'N' : 'C';
+        const time = new Date(msg.sent_at).toLocaleTimeString('en-US', { 
+          hour: 'numeric', 
+          minute: '2-digit' 
+        });
+        const sentBy = msg.ai_generated && msg.direction === 'out' ? ' · Sent by Nuzy' : '';
+        
+        messageDiv.innerHTML = `
+          <div class="message-avatar">${initial}</div>
+          <div>
+            <div class="message-bubble">${msg.content}</div>
+            <div class="message-time">${time}${sentBy}</div>
+          </div>
+        `;
+        
+        group.appendChild(messageDiv);
+      });
+      
+      chatMessages.appendChild(group);
+    });
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  // Load pending AI reply if available
+  loadPendingAIReply(conversationId);
+}
+
+// Load pending AI reply from queue
+async function loadPendingAIReply(conversationId) {
+  const { data: queueItem, error } = await supabaseClient
+    .from('message_queue')
+    .select('*')
+    .eq('conversation_id', conversationId)
+    .eq('status', 'completed')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+  
+  const aiReplyBox = document.querySelector('.ai-reply-box');
+  
+  if (error || !queueItem || !queueItem.ai_reply) {
+    aiReplyBox.style.display = 'none';
+    return;
+  }
+  
+  currentQueueId = queueItem.id;
+  aiReplyBox.style.display = 'block';
+  
+  // Update AI reply content
+  document.querySelector('.ai-reply-content').textContent = queueItem.ai_reply;
+  
+  // Update voice match score
+  const voiceScore = Math.round((queueItem.voice_match_score || 0.96) * 100);
+  document.querySelector('.voice-match-score').textContent = `${voiceScore}%`;
+}
+
+// Approve and send AI reply
+async function approveAndSend() {
+  if (!currentQueueId || !currentConversationId) return;
+  
+  const btn = document.querySelector('.btn-primary');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span>Sending...</span>';
+  
+  try {
+    const { data: queueItem } = await supabaseClient
+      .from('message_queue')
+      .select('ai_reply')
+      .eq('id', currentQueueId)
+      .single();
+    
+    // Call send-whatsapp-message Edge Function
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/send-whatsapp-message`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          queue_id: currentQueueId,
+          message_content: queueItem.ai_reply,
+          conversation_id: currentConversationId
+        })
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to send message');
+    }
+    
+    // Reload conversation to show sent message
+    loadConversation(currentConversationId);
+    loadConversations();
+    
+  } catch (error) {
+    console.error('Error sending message:', error);
+    alert('Failed to send message. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+// Edit AI reply before sending
+function editReply() {
+  const content = document.querySelector('.ai-reply-content');
+  const currentText = content.textContent;
+  
+  content.contentEditable = true;
+  content.style.outline = '2px solid var(--pri)';
+  content.style.background = 'var(--s2)';
+  content.focus();
+  
+  // Change button to "Send Edited"
+  const btn = document.querySelector('.btn-secondary');
+  btn.textContent = '✓ Send Edited';
+  btn.onclick = async () => {
+    const editedText = content.textContent;
+    
+    // Update queue with edited text
+    await supabaseClient
+      .from('message_queue')
+      .update({ ai_reply: editedText })
+      .eq('id', currentQueueId);
+    
+    // Send the edited message
+    approveAndSend();
+  };
+}
+
+// Take over conversation (disable AI)
+async function takeOver() {
+  if (!currentConversationId) return;
+  
+  await supabaseClient
+    .from('conversations')
+    .update({ ai_handled: false })
+    .eq('id', currentConversationId);
+  
+  // Hide AI reply box
+  document.querySelector('.ai-reply-box').style.display = 'none';
+  
+  alert('AI disabled for this conversation. You can now reply manually.');
+}
+
+// Helper functions
+function getTimeAgo(timestamp) {
+  const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
+  
+  if (seconds < 60) return 'Just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+  return new Date(timestamp).toLocaleDateString();
+}
+
+function groupMessagesByDate(messages) {
+  const groups = {};
+  
+  messages.forEach(msg => {
+    const date = new Date(msg.sent_at).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+    
+    if (!groups[date]) groups[date] = [];
+    groups[date].push(msg);
+  });
+  
+  return groups;
+}
+
+// Real-time subscriptions
+function setupRealtimeSubscriptions() {
+  // Subscribe to new messages
+  supabaseClient
+    .channel('messages')
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'messages',
+      filter: `brand_id=eq.${currentBrand.id}`
+    }, (payload) => {
+      console.log('New message:', payload);
+      if (payload.new.conversation_id === currentConversationId) {
+        loadConversation(currentConversationId);
+      }
+      loadConversations();
+    })
+    .subscribe();
+  
+  // Subscribe to message queue updates (AI replies)
+  supabaseClient
+    .channel('message_queue')
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'message_queue',
+      filter: `brand_id=eq.${currentBrand.id}`
+    }, (payload) => {
+      console.log('Queue updated:', payload);
+      if (payload.new.conversation_id === currentConversationId && 
+          payload.new.status === 'completed') {
+        loadPendingAIReply(currentConversationId);
+      }
+    })
+    .subscribe();
+}
+
 // Mobile sidebar toggle
 function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('active');
 }
 
-// Conversation selection (mock for now)
+// Conversation selection
 function selectConversation(id) {
   // Update active state
   document.querySelectorAll('.conversation-item').forEach(item => {
     item.classList.remove('active');
   });
   event.currentTarget.classList.add('active');
+  
+  // Load conversation
+  loadConversation(id);
   
   // On mobile, show chat
   document.querySelector('.chat').classList.add('active');
