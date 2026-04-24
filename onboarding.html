@@ -322,7 +322,7 @@ input[type="file"]{display:none}
       <div class="summary-grid" id="summaryGrid"></div>
 
       <div class="btn-group">
-        <button class="btn btn-primary" onclick="completedOnboarding()" id="completeBtn">
+        <button class="btn btn-primary" onclick="completeOnboarding()" id="completeBtn">
           <span id="completeBtnText">Go to Dashboard →</span>
           <div class="loading" id="completeLoading"></div>
         </button>
@@ -364,6 +364,19 @@ async function checkAuth() {
     return;
   }
   userData.user_id = session.user.id;
+  
+  // Check if user already has a business (already onboarded)
+  const { data: existingBrand, error } = await supabaseClient
+    .from('brands')
+    .select('id')
+    .eq('user_id', session.user.id)
+    .single();
+  
+  if (existingBrand && !error) {
+    // User already completed onboarding, redirect to dashboard
+    window.location.href = '/dashboard.html';
+    return;
+  }
 }
 
 // Initialize
