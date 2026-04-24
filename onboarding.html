@@ -165,49 +165,86 @@ input[type="file"]{display:none}
       </div>
     </div>
 
-    <!-- Step 2: Business Type Selection -->
+    <!-- Step 2: Business Category Selection -->
     <div class="step" id="step2">
       <h2>What type of business do you run?</h2>
-      <p class="step-desc">This helps Nuzy understand your needs and customize the setup.</p>
+      <p class="step-desc">Select your main category - we'll get more specific in the next step.</p>
 
       <div class="industry-grid" id="industryGrid">
-        <div class="industry-card" data-industry="ecommerce">
+        <div class="industry-card" data-industry="ecommerce" data-category="E-Commerce & Retail">
           <div class="industry-icon">🛍️</div>
-          <div class="industry-name">E-Commerce</div>
+          <div class="industry-name">E-Commerce & Retail</div>
         </div>
-        <div class="industry-card" data-industry="food">
+        <div class="industry-card" data-industry="food" data-category="Food & Beverage">
           <div class="industry-icon">🍽️</div>
           <div class="industry-name">Food & Beverage</div>
         </div>
-        <div class="industry-card" data-industry="health">
+        <div class="industry-card" data-industry="health" data-category="Health & Wellness">
           <div class="industry-icon">🏥</div>
           <div class="industry-name">Health & Wellness</div>
         </div>
-        <div class="industry-card" data-industry="beauty">
+        <div class="industry-card" data-industry="beauty" data-category="Beauty & Personal Care">
           <div class="industry-icon">💇</div>
-          <div class="industry-name">Beauty & Salon</div>
+          <div class="industry-name">Beauty & Personal Care</div>
         </div>
-        <div class="industry-card" data-industry="education">
+        <div class="industry-card" data-industry="education" data-category="Education & Training">
           <div class="industry-icon">📚</div>
-          <div class="industry-name">Education</div>
+          <div class="industry-name">Education & Training</div>
         </div>
-        <div class="industry-card" data-industry="travel">
+        <div class="industry-card" data-industry="travel" data-category="Travel & Hospitality">
           <div class="industry-icon">✈️</div>
-          <div class="industry-name">Travel</div>
+          <div class="industry-name">Travel & Hospitality</div>
         </div>
-        <div class="industry-card" data-industry="professional">
+        <div class="industry-card" data-industry="realestate" data-category="Real Estate & Property">
+          <div class="industry-icon">🏠</div>
+          <div class="industry-name">Real Estate & Property</div>
+        </div>
+        <div class="industry-card" data-industry="professional" data-category="Professional Services">
           <div class="industry-icon">💼</div>
           <div class="industry-name">Professional Services</div>
         </div>
-        <div class="industry-card" data-industry="tech">
+        <div class="industry-card" data-industry="homeservices" data-category="Home Services">
+          <div class="industry-icon">🔧</div>
+          <div class="industry-name">Home Services</div>
+        </div>
+        <div class="industry-card" data-industry="automotive" data-category="Automotive">
+          <div class="industry-icon">🚗</div>
+          <div class="industry-name">Automotive</div>
+        </div>
+        <div class="industry-card" data-industry="tech" data-category="Technology & Digital">
           <div class="industry-icon">💻</div>
-          <div class="industry-name">Technology</div>
+          <div class="industry-name">Technology & Digital</div>
+        </div>
+        <div class="industry-card" data-industry="creative" data-category="Creative & Entertainment">
+          <div class="industry-icon">🎨</div>
+          <div class="industry-name">Creative & Entertainment</div>
+        </div>
+        <div class="industry-card" data-industry="subscription" data-category="Subscription & Membership">
+          <div class="industry-icon">📦</div>
+          <div class="industry-name">Subscription & Membership</div>
+        </div>
+        <div class="industry-card" data-industry="other" data-category="Other Business">
+          <div class="industry-icon">🌟</div>
+          <div class="industry-name">Other Business</div>
         </div>
       </div>
 
       <div class="btn-group">
         <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
-        <button class="btn btn-primary" onclick="nextStep()" id="step2Next" disabled>Continue →</button>
+        <button class="btn btn-primary" onclick="showSubCategories()" id="step2Next" disabled>Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 2.5: Sub-Category Selection -->
+    <div class="step" id="step2b">
+      <h2>What specifically do you do?</h2>
+      <p class="step-desc" id="subcategoryDesc">Select the option that best matches your business.</p>
+
+      <div class="industry-grid" id="subCategoryGrid"></div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="backToMainCategory()">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep()" id="step2bNext" disabled>Continue →</button>
       </div>
     </div>
 
@@ -344,9 +381,12 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // State
 let currentStep = 1;
 const totalSteps = 6;
+let selectedMainCategory = '';
 let userData = {
   user_id: null,
   business_type: '',
+  business_sub_type: '',
+  industry_category: '',
   business_name: '',
   website: '',
   phone: '',
@@ -354,6 +394,140 @@ let userData = {
   tone: 'friendly',
   emoji_usage: 'moderate',
   specific_data: {}
+};
+
+// Comprehensive sub-categories for all industries
+const subCategories = {
+  ecommerce: [
+    {id: 'd2c', name: 'D2C Brands', icon: '🏷️'},
+    {id: 'fashion', name: 'Fashion & Apparel', icon: '👗'},
+    {id: 'beauty_products', name: 'Beauty & Cosmetics', icon: '💄'},
+    {id: 'jewelry', name: 'Jewelry & Accessories', icon: '💍'},
+    {id: 'electronics', name: 'Electronics & Gadgets', icon: '📱'},
+    {id: 'home_decor', name: 'Home Decor & Furniture', icon: '🛋️'},
+    {id: 'gifts', name: 'Gift Shops', icon: '🎁'},
+    {id: 'books', name: 'Books & Stationery', icon: '📚'},
+    {id: 'art_crafts', name: 'Art & Crafts Supplies', icon: '🎨'},
+    {id: 'pet_supplies', name: 'Pet Supplies', icon: '🐾'}
+  ],
+  food: [
+    {id: 'restaurant', name: 'Restaurant (Dine-in)', icon: '🍽️'},
+    {id: 'cafe', name: 'Café & Coffee Shop', icon: '☕'},
+    {id: 'bakery', name: 'Bakery & Desserts', icon: '🍰'},
+    {id: 'cloud_kitchen', name: 'Cloud Kitchen (Delivery Only)', icon: '🍕'},
+    {id: 'meal_prep', name: 'Meal Prep & Subscriptions', icon: '🥗'},
+    {id: 'catering', name: 'Catering Services', icon: '🍱'},
+    {id: 'bar', name: 'Bar & Beverages', icon: '🍷'}
+  ],
+  health: [
+    {id: 'clinic', name: 'Medical Clinic', icon: '🏥'},
+    {id: 'dental', name: 'Dental Practice', icon: '🦷'},
+    {id: 'eyecare', name: 'Eye Care & Optometry', icon: '👁️'},
+    {id: 'pharmacy', name: 'Pharmacy & Drug Store', icon: '💊'},
+    {id: 'yoga', name: 'Yoga Studio', icon: '🧘'},
+    {id: 'gym', name: 'Gym & Fitness Center', icon: '💪'},
+    {id: 'personal_training', name: 'Personal Training', icon: '🏋️'},
+    {id: 'spa', name: 'Spa & Wellness Center', icon: '🧖'},
+    {id: 'telemedicine', name: 'Telemedicine Platform', icon: '🩺'},
+    {id: 'mental_health', name: 'Therapy & Mental Health', icon: '🧠'}
+  ],
+  beauty: [
+    {id: 'hair_salon', name: 'Hair Salon', icon: '💇'},
+    {id: 'nail_salon', name: 'Nail Salon', icon: '💅'},
+    {id: 'beauty_parlor', name: 'Beauty Parlor', icon: '💄'},
+    {id: 'massage', name: 'Massage Therapy', icon: '💆'},
+    {id: 'skincare', name: 'Skincare Clinic', icon: '🧴'},
+    {id: 'barbershop', name: 'Barbershop', icon: '✂️'},
+    {id: 'bridal', name: 'Bridal Services', icon: '👰'}
+  ],
+  education: [
+    {id: 'coaching', name: 'Coaching Center (Academic)', icon: '📖'},
+    {id: 'online_courses', name: 'Online Courses & EdTech', icon: '💻'},
+    {id: 'art_music', name: 'Art & Music Classes', icon: '🎵'},
+    {id: 'sports_coaching', name: 'Sports Coaching', icon: '⚽'},
+    {id: 'professional_dev', name: 'Professional Development', icon: '💼'},
+    {id: 'daycare', name: 'Daycare & Preschool', icon: '👶'},
+    {id: 'admissions', name: 'University Admissions Consulting', icon: '🎓'},
+    {id: 'tutoring', name: 'Tutoring Services', icon: '📝'},
+    {id: 'skill_training', name: 'Skill-Based Training (Coding, Design)', icon: '🎯'}
+  ],
+  travel: [
+    {id: 'travel_agency', name: 'Travel Agency', icon: '✈️'},
+    {id: 'hotel', name: 'Hotel & Resort', icon: '🏨'},
+    {id: 'vacation_rental', name: 'Vacation Rentals (Airbnb)', icon: '🏡'},
+    {id: 'car_rental', name: 'Car Rentals', icon: '🚗'},
+    {id: 'tour_operator', name: 'Tour Operator', icon: '🗺️'},
+    {id: 'cruise', name: 'Cruise Lines', icon: '🛳️'},
+    {id: 'adventure', name: 'Adventure & Experience Booking', icon: '🎫'}
+  ],
+  realestate: [
+    {id: 'agent', name: 'Real Estate Agent', icon: '🏠'},
+    {id: 'property_mgmt', name: 'Property Management', icon: '🏢'},
+    {id: 'interior_design', name: 'Interior Design', icon: '🎨'},
+    {id: 'home_staging', name: 'Home Staging', icon: '🔨'},
+    {id: 'vacation_mgmt', name: 'Vacation Rental Management', icon: '🏘️'}
+  ],
+  professional: [
+    {id: 'legal', name: 'Legal Services & Law Firms', icon: '⚖️'},
+    {id: 'accounting', name: 'Accounting & Tax Services', icon: '💰'},
+    {id: 'financial', name: 'Financial Advisors', icon: '📊'},
+    {id: 'insurance', name: 'Insurance Agents', icon: '📝'},
+    {id: 'consulting', name: 'Business Consulting', icon: '💡'},
+    {id: 'recruitment', name: 'Recruitment & Staffing', icon: '💼'},
+    {id: 'marketing', name: 'Marketing Agencies', icon: '📈'},
+    {id: 'design_studio', name: 'Design Studios', icon: '🎨'},
+    {id: 'photography', name: 'Photography & Videography', icon: '📸'},
+    {id: 'event_planning', name: 'Event Planning & Management', icon: '🎥'}
+  ],
+  homeservices: [
+    {id: 'plumbing', name: 'Plumbing Services', icon: '🔧'},
+    {id: 'electrical', name: 'Electrical Services', icon: '⚡'},
+    {id: 'hvac', name: 'HVAC & Air Conditioning', icon: '❄️'},
+    {id: 'cleaning', name: 'Cleaning Services (Home/Office)', icon: '🧹'},
+    {id: 'landscaping', name: 'Landscaping & Gardening', icon: '🌿'},
+    {id: 'moving', name: 'Moving & Relocation', icon: '🚚'},
+    {id: 'locksmith', name: 'Locksmith Services', icon: '🔒'},
+    {id: 'painting', name: 'Painting Services', icon: '🎨'},
+    {id: 'window_door', name: 'Window & Door Installation', icon: '🪟'}
+  ],
+  automotive: [
+    {id: 'dealership', name: 'Car Dealerships', icon: '🚗'},
+    {id: 'repair', name: 'Auto Repair Shops', icon: '🔧'},
+    {id: 'car_wash', name: 'Car Wash & Detailing', icon: '🧼'},
+    {id: 'tire', name: 'Tire Shops', icon: '🛞'},
+    {id: 'rental', name: 'Vehicle Rental Services', icon: '🚙'}
+  ],
+  tech: [
+    {id: 'saas', name: 'SaaS Companies', icon: '💻'},
+    {id: 'app_dev', name: 'App Development Agencies', icon: '📱'},
+    {id: 'web_hosting', name: 'Web Hosting & IT Services', icon: '🌐'},
+    {id: 'gaming', name: 'Gaming Studios', icon: '🎮'},
+    {id: 'computer_repair', name: 'Computer Repair', icon: '🖥️'},
+    {id: 'telecom', name: 'Telecommunications', icon: '📡'}
+  ],
+  creative: [
+    {id: 'artists', name: 'Artists & Creators', icon: '🎨'},
+    {id: 'music_studio', name: 'Music Studios', icon: '🎵'},
+    {id: 'event_venues', name: 'Event Venues', icon: '🎭'},
+    {id: 'entertainment', name: 'Entertainment Services', icon: '🎪'},
+    {id: 'stock_photos', name: 'Stock Photo Platforms', icon: '📷'}
+  ],
+  subscription: [
+    {id: 'subscription_box', name: 'Subscription Boxes', icon: '📦'},
+    {id: 'membership', name: 'Membership Clubs (Gym, Coworking)', icon: '🏋️'},
+    {id: 'streaming', name: 'Streaming Services', icon: '🎮'},
+    {id: 'content', name: 'Content Platforms (Newsletters, Courses)', icon: '📰'}
+  ],
+  other: [
+    {id: 'plant_store', name: 'Plant & Garden Stores', icon: '🌱'},
+    {id: 'pet_grooming', name: 'Pet Grooming & Boarding', icon: '🐕'},
+    {id: 'esports', name: 'Esports & Gaming Lounges', icon: '🎮'},
+    {id: 'wellness_coaching', name: 'Wellness & Life Coaching', icon: '🧘'},
+    {id: 'alternative_health', name: 'Alternative Health (CBD, Supplements)', icon: '🍄'},
+    {id: 'eco_products', name: 'Sustainability & Eco Products', icon: '♻️'},
+    {id: 'personalized_gifts', name: 'Personalized Gifts', icon: '🎁'},
+    {id: 'dropshipping', name: 'Dropshipping Stores', icon: '📦'}
+  ]
 };
 
 // Check authentication
@@ -430,11 +604,65 @@ function setupEventListeners() {
 function selectIndustry(card) {
   document.querySelectorAll('.industry-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
-  userData.business_type = card.dataset.industry;
+  selectedMainCategory = card.dataset.industry;
+  userData.industry_category = card.dataset.category;
   document.getElementById('step2Next').disabled = false;
+}
+
+function showSubCategories() {
+  const subCats = subCategories[selectedMainCategory];
+  if (!subCats) {
+    // No sub-categories, proceed directly
+    userData.business_type = selectedMainCategory;
+    userData.business_sub_type = selectedMainCategory;
+    generateDynamicContent(selectedMainCategory);
+    document.getElementById('step2').classList.remove('active');
+    currentStep = 3;
+    document.getElementById(`step${currentStep}`).classList.add('active');
+    updateProgress();
+    updateStepIndicator();
+    return;
+  }
   
-  // Generate dynamic content for step 4
-  generateDynamicContent(userData.business_type);
+  // Show sub-category step
+  const grid = document.getElementById('subCategoryGrid');
+  grid.innerHTML = '';
+  
+  subCats.forEach(sub => {
+    const card = document.createElement('div');
+    card.className = 'industry-card';
+    card.dataset.subtype = sub.id;
+    card.innerHTML = `
+      <div class="industry-icon">${sub.icon}</div>
+      <div class="industry-name">${sub.name}</div>
+    `;
+    card.onclick = () => selectSubCategory(card);
+    grid.appendChild(card);
+  });
+  
+  document.getElementById('subcategoryDesc').textContent = 
+    `Select the type of ${userData.industry_category.toLowerCase()} business you run.`;
+  
+  // Move to sub-category step
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('step2b').classList.add('active');
+}
+
+function selectSubCategory(card) {
+  document.querySelectorAll('#subCategoryGrid .industry-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  userData.business_type = selectedMainCategory;
+  userData.business_sub_type = card.dataset.subtype;
+  document.getElementById('step2bNext').disabled = false;
+  
+  // Generate dynamic content based on sub-category
+  generateDynamicContent(selectedMainCategory, card.dataset.subtype);
+}
+
+function backToMainCategory() {
+  document.getElementById('step2b').classList.remove('active');
+  document.getElementById('step2').classList.add('active');
+  document.getElementById('step2bNext').disabled = true;
 }
 
 function generateDynamicContent(industry) {
@@ -734,8 +962,8 @@ function handleFiles(files) {
 
 function nextStep() {
   // Validate current step
-  if (currentStep === 2 && !userData.business_type) {
-    showError('Please select your business type');
+  if (currentStep === 2 && !selectedMainCategory) {
+    showError('Please select your business category');
     return;
   }
   
@@ -755,6 +983,16 @@ function nextStep() {
   if (currentStep === 5) {
     userData.tone = document.querySelector('input[name="tone"]:checked').value;
     userData.emoji_usage = document.getElementById('emojiUsage').value;
+  }
+  
+  // Special handling for step 2b (sub-categories)
+  if (document.getElementById('step2b').classList.contains('active')) {
+    document.getElementById('step2b').classList.remove('active');
+    currentStep = 3;
+    document.getElementById(`step${currentStep}`).classList.add('active');
+    updateProgress();
+    updateStepIndicator();
+    return;
   }
   
   // Move to next step
@@ -799,21 +1037,18 @@ function updateStepIndicator() {
 function showSummary() {
   const grid = document.getElementById('summaryGrid');
   
-  const industryNames = {
-    ecommerce: 'E-Commerce & Retail',
-    food: 'Food & Beverage',
-    health: 'Health & Wellness',
-    beauty: 'Beauty & Salon',
-    education: 'Education & Training',
-    travel: 'Travel & Tourism',
-    professional: 'Professional Services',
-    tech: 'Technology & Digital'
-  };
+  // Get readable sub-category name
+  const subCatData = subCategories[userData.business_type]?.find(s => s.id === userData.business_sub_type);
+  const subCatName = subCatData ? subCatData.name : userData.industry_category;
   
   grid.innerHTML = `
     <div class="summary-item">
+      <div class="summary-label">Business Category</div>
+      <div class="summary-value">${userData.industry_category}</div>
+    </div>
+    <div class="summary-item">
       <div class="summary-label">Business Type</div>
-      <div class="summary-value">${industryNames[userData.business_type] || userData.business_type}</div>
+      <div class="summary-value">${subCatName}</div>
     </div>
     <div class="summary-item">
       <div class="summary-label">Business Name</div>
@@ -848,6 +1083,8 @@ async function completeOnboarding() {
         user_id: userData.user_id,
         name: userData.business_name,
         business_type: userData.business_type,
+        business_sub_type: userData.business_sub_type,
+        industry_category: userData.industry_category,
         phone: userData.phone,
         website: userData.website,
         description: userData.description,
@@ -861,7 +1098,7 @@ async function completeOnboarding() {
     
     if (error) throw error;
     
-    // Redirect to dashboard (will be built in next phase)
+    // Redirect to dashboard
     setTimeout(() => {
       window.location.href = '/dashboard.html';
     }, 1000);
