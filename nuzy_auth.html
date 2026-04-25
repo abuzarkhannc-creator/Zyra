@@ -289,7 +289,7 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
     
     showSuccess('Signed in successfully! Redirecting...');
     setTimeout(() => {
-      window.location.href = '/onboarding.html'; // We'll create this next
+      window.location.href = '/onboarding_d2c.html';
     }, 1000);
     
   } catch (error) {
@@ -352,7 +352,7 @@ document.getElementById('google-signin').addEventListener('click', async () => {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/onboarding.html`
+        redirectTo: `${window.location.origin}/onboarding_d2c.html`
       }
     });
     if (error) throw error;
@@ -366,7 +366,7 @@ document.getElementById('google-signup').addEventListener('click', async () => {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/onboarding.html`
+        redirectTo: `${window.location.origin}/onboarding_d2c.html`
       }
     });
     if (error) throw error;
@@ -381,7 +381,7 @@ document.getElementById('microsoft-signin').addEventListener('click', async () =
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'azure',
       options: {
-        redirectTo: `${window.location.origin}/onboarding.html`
+        redirectTo: `${window.location.origin}/onboarding_d2c.html`
       }
     });
     if (error) throw error;
@@ -395,7 +395,7 @@ document.getElementById('microsoft-signup').addEventListener('click', async () =
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'azure',
       options: {
-        redirectTo: `${window.location.origin}/onboarding.html`
+        redirectTo: `${window.location.origin}/onboarding_d2c.html`
       }
     });
     if (error) throw error;
@@ -426,7 +426,7 @@ document.getElementById('forgot-password').addEventListener('click', async (e) =
 // Check if user is already logged in
 supabaseClient.auth.getSession().then(({ data: { session } }) => {
   if (session) {
-    window.location.href = '/onboarding.html';
+    window.location.href = '/onboarding_d2c.html';
   }
 });
 </script>
