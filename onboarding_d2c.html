@@ -347,6 +347,19 @@ const SUPABASE_URL = 'https://qobsbbfjjgwgfmgxwinn.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvYnNiYmZqamdmZ2ZtZ3h3aW5uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1Nzk5NTUsImV4cCI6MjA2MTE1NTk1NX0.ZlIB8o9wqJYcLEHRPmvg7wGVNAEbSzPfBAp6aYU6lnE';
 const nuzySupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// CHECK AUTHENTICATION - Redirect if not logged in
+(async function checkAuth() {
+  const { data: { user }, error } = await nuzySupabase.auth.getUser();
+  
+  if (error || !user) {
+    console.log('No authenticated user found, redirecting to auth page...');
+    window.location.href = '/nuzy_auth.html';
+    return;
+  }
+  
+  console.log('User authenticated:', user.email);
+})();
+
 let currentStep = 1;
 const totalSteps = 6;
 
