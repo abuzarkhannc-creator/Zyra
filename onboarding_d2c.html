@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Setup Your Store — Nuzy AI</title>
+<meta name="description" content="Set up Nuzy AI for your D2C/e-commerce store in 5 minutes."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#050508;--s1:#08080e;--s2:#0c0c15;--s3:#10101c;
+--txt:#f5f5f7;--t2:#94949e;--t3:#5c5c6f;
+--pri:#7C3AED;--pri2:#8B5CF6;--pri3:#C4B5FD;--pg:rgba(124,58,237,0.1);
+--pink:#EC4899;--pink2:#F472B6;
+--gn:#22c55e;--rd:#ef4444;--or:#f59e0b;
+--b1:rgba(255,255,255,0.04);--b2:rgba(255,255,255,0.07);--b3:rgba(255,255,255,0.12);
+--r:14px;--r2:20px;
+--h:'Sora',sans-serif;--f:'Figtree',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--f);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;padding:20px}
+
+.aurora{position:fixed;top:-50%;left:-20%;width:140%;height:200%;z-index:0;pointer-events:none;background:
+  radial-gradient(ellipse at 20% 50%,rgba(124,58,237,0.15),transparent 50%),
+  radial-gradient(ellipse at 80% 30%,rgba(236,72,153,0.1),transparent 45%);
+  animation:aurora 15s ease-in-out infinite alternate}
+@keyframes aurora{0%{transform:scale(1) rotate(0deg);opacity:.8}50%{transform:scale(1.1) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(-1deg);opacity:.85}}
+
+.container{position:relative;z-index:1;max-width:700px;margin:0 auto}
+
+.header{text-align:center;margin-bottom:32px}
+.logo-text{font-family:var(--h);font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;margin-bottom:4px}
+.company-tag{color:var(--t3);font-size:0.75rem;margin-bottom:12px}
+.company-tag strong{color:var(--pri3);font-weight:600}
+.subtitle{color:var(--t2);font-size:0.9rem}
+
+.progress-bar{background:var(--s2);border-radius:100px;height:6px;margin:24px 0;overflow:hidden;border:1px solid var(--b1)}
+.progress-fill{height:100%;background:linear-gradient(90deg,#7C3AED,#EC4899);transition:width 0.4s;border-radius:100px}
+
+.step-indicator{display:flex;justify-content:center;gap:8px;margin-bottom:24px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--b2);transition:all 0.3s}
+.step-dot.active{background:linear-gradient(135deg,#7C3AED,#EC4899);width:24px;border-radius:100px}
+
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border:1px solid var(--b2);border-radius:var(--r2);padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.4);position:relative;min-height:450px}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
+
+.step{display:none}
+.step.active{display:block;animation:fadeIn 0.4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+h2{font-family:var(--h);font-size:1.6rem;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,var(--txt),var(--t2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.step-desc{color:var(--t2);font-size:0.85rem;margin-bottom:24px;line-height:1.6}
+
+.form-group{margin-bottom:20px}
+label{display:block;font-size:0.8rem;font-weight:600;color:var(--t2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
+input,textarea,select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--b2);background:var(--s2);color:var(--txt);font-family:var(--f);font-size:0.9rem;transition:all 0.2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box-shadow:0 0 20px rgba(124,58,237,0.15)}
+input::placeholder,textarea::placeholder{color:var(--t3)}
+textarea{min-height:80px;resize:vertical}
+
+.radio-group{display:flex;flex-direction:column;gap:10px}
+.radio-option{display:flex;align-items:start;gap:12px;padding:12px;border-radius:10px;border:1px solid var(--b1);background:var(--s2);cursor:pointer;transition:all 0.2s}
+.radio-option:hover{border-color:var(--b3);background:var(--s3)}
+.radio-option.selected{border-color:var(--pri);background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(236,72,153,0.05))}
+.radio-option input{width:auto;min-width:18px;height:18px;cursor:pointer;margin-top:2px}
+.radio-label{flex:1}
+.radio-title{font-weight:600;font-size:0.9rem;margin-bottom:4px}
+.radio-desc{font-size:0.8rem;color:var(--t3);line-height:1.4}
+
+.tag-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tag{background:var(--s2);border:1px solid var(--b1);border-radius:100px;padding:6px 12px;font-size:0.8rem;cursor:pointer;transition:all 0.2s}
+.tag:hover{border-color:var(--pri);background:var(--s3)}
+.tag.selected{border-color:var(--pri);background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(236,72,153,0.1));color:var(--txt)}
+
+.btn-group{display:flex;gap:12px;margin-top:32px;justify-content:space-between}
+.btn{padding:12px 28px;border-radius:10px;font-family:var(--h);font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.3s;border:none}
+.btn-primary{background:linear-gradient(135deg,#7C3AED,#EC4899);color:#fff;box-shadow:0 8px 20px rgba(124,58,237,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(124,58,237,0.4)}
+.btn-secondary{background:var(--s2);color:var(--txt);border:1px solid var(--b2)}
+.btn-secondary:hover{background:var(--s3)}
+
+.example-box{background:var(--s3);border:1px solid var(--b1);border-radius:8px;padding:12px;margin-top:12px}
+.example-label{font-size:0.75rem;color:var(--t3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.example-text{font-size:0.85rem;color:var(--t2);line-height:1.5}
+
+.success-icon{font-size:3rem;text-align:center;margin-bottom:16px}
+
+@media (max-width: 768px){
+  body{padding:12px}
+  .card{padding:24px;min-height:auto}
+  h2{font-size:1.4rem}
+  .btn-group{flex-direction:column-reverse}
+  .btn{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+
+<div class="container">
+  <div class="header">
+    <div class="logo-text">Nuzy AI</div>
+    <div class="company-tag">by <strong>HighBridge Labs</strong></div>
+    <div class="subtitle">Tell us about your store so Nuzy can handle customer messages</div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div class="step-indicator" id="stepIndicator"></div>
+
+  <div class="card">
+    <!-- Step 1: Store Info -->
+    <div class="step active" id="step1">
+      <h2>👋 What's your store name?</h2>
+      <p class="step-desc">This helps Nuzy introduce your brand naturally in conversations</p>
+      
+      <div class="form-group">
+        <label>Store/Brand Name</label>
+        <input type="text" id="storeName" placeholder="e.g., Bloom Botanicals, Urban Threads, etc." autocomplete="off"/>
+      </div>
+
+      <div class="form-group">
+        <label>What do you sell?</label>
+        <input type="text" id="productType" placeholder="e.g., handmade jewelry, organic skincare, streetwear" autocomplete="off"/>
+      </div>
+
+      <div class="btn-group">
+        <div></div>
+        <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Product Details -->
+    <div class="step" id="step2">
+      <h2>📦 Tell us about your products</h2>
+      <p class="step-desc">Nuzy needs to know your product details to answer customer questions accurately</p>
+      
+      <div class="form-group">
+        <label>Product Categories (Select all that apply)</label>
+        <div class="tag-grid" id="categoryTags">
+          <div class="tag" onclick="toggleTag(this)">Clothing</div>
+          <div class="tag" onclick="toggleTag(this)">Accessories</div>
+          <div class="tag" onclick="toggleTag(this)">Jewelry</div>
+          <div class="tag" onclick="toggleTag(this)">Skincare</div>
+          <div class="tag" onclick="toggleTag(this)">Home Decor</div>
+          <div class="tag" onclick="toggleTag(this)">Food & Beverages</div>
+          <div class="tag" onclick="toggleTag(this)">Electronics</div>
+          <div class="tag" onclick="toggleTag(this)">Footwear</div>
+          <div class="tag" onclick="toggleTag(this)">Bags</div>
+          <div class="tag" onclick="toggleTag(this)">Other</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Price Range</label>
+        <select id="priceRange">
+          <option value="">Select price range</option>
+          <option value="under-500">Under ₹500</option>
+          <option value="500-2000">₹500 - ₹2,000</option>
+          <option value="2000-5000">₹2,000 - ₹5,000</option>
+          <option value="5000-plus">₹5,000+</option>
+        </select>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Shipping Policy -->
+    <div class="step" id="step3">
+      <h2>🚚 Shipping Details</h2>
+      <p class="step-desc">Customers ask about shipping all the time. Let's set it up once.</p>
+      
+      <div class="form-group">
+        <label>Delivery Time (in India)</label>
+        <input type="text" id="deliveryTime" placeholder="e.g., 3-5 business days, 5-7 days" autocomplete="off"/>
+      </div>
+
+      <div class="form-group">
+        <label>Do you offer free shipping?</label>
+        <div class="radio-group">
+          <label class="radio-option" onclick="selectRadio(this)">
+            <input type="radio" name="freeShipping" value="yes"/>
+            <div class="radio-label">
+              <div class="radio-title">Yes, on all orders</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio(this)">
+            <input type="radio" name="freeShipping" value="above"/>
+            <div class="radio-label">
+              <div class="radio-title">Yes, above a minimum amount</div>
+              <div class="radio-desc">E.g., Free shipping on orders above ₹999</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio(this)">
+            <input type="radio" name="freeShipping" value="no"/>
+            <div class="radio-label">
+              <div class="radio-title">No, we charge for shipping</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group" id="minOrderGroup" style="display:none">
+        <label>Minimum order for free shipping</label>
+        <input type="text" id="minOrder" placeholder="e.g., ₹999" autocomplete="off"/>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Return/Refund Policy -->
+    <div class="step" id="step4">
+      <h2>🔄 Returns & Refunds</h2>
+      <p class="step-desc">How do you handle returns? Nuzy will explain this to customers.</p>
+      
+      <div class="form-group">
+        <label>Return Window</label>
+        <select id="returnWindow">
+          <option value="">Select return period</option>
+          <option value="7">7 days</option>
+          <option value="14">14 days</option>
+          <option value="30">30 days</option>
+          <option value="no-returns">No returns accepted</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Return Conditions</label>
+        <textarea id="returnConditions" placeholder="e.g., Product must be unused with original tags, Damaged items accepted within 48 hours, etc."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Refund Processing Time</label>
+        <input type="text" id="refundTime" placeholder="e.g., 5-7 business days" autocomplete="off"/>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Brand Voice -->
+    <div class="step" id="step5">
+      <h2>💬 Your Brand Voice</h2>
+      <p class="step-desc">How do you usually talk to customers? Nuzy will match your exact tone.</p>
+      
+      <div class="form-group">
+        <label>Brand Tone</label>
+        <div class="radio-group">
+          <label class="radio-option" onclick="selectRadio(this)">
+            <input type="radio" name="brandTone" value="casual"/>
+            <div class="radio-label">
+              <div class="radio-title">Casual & Friendly</div>
+              <div class="radio-desc">"Hey! Yes, we ship to Mumbai 🚚 Takes about 3-4 days"</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio(this)">
+            <input type="radio" name="brandTone" value="professional"/>
+            <div class="radio-label">
+              <div class="radio-title">Professional & Polite</div>
+              <div class="radio-desc">"Yes, we offer shipping to Mumbai. Delivery takes 3-4 business days."</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio(this)">
+            <input type="radio" name="brandTone" value="warm"/>
+            <div class="radio-label">
+              <div class="radio-title">Warm & Personal</div>
+              <div class="radio-desc">"Absolutely! We'd love to ship to Mumbai 💜 It usually takes 3-4 days"</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Use Emojis?</label>
+        <div class="radio-group">
+          <label class="radio-option" onclick="selectRadio(this)">
+            <input type="radio" name="useEmojis" value="yes"/>
+            <div class="radio-label">
+              <div class="radio-title">Yes, use emojis</div>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio(this)">
+            <input type="radio" name="useEmojis" value="no"/>
+            <div class="radio-label">
+              <div class="radio-title">No emojis</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 6: Common Questions -->
+    <div class="step" id="step6">
+      <h2>❓ Common Customer Questions</h2>
+      <p class="step-desc">What do customers ask most often? This helps Nuzy answer better.</p>
+      
+      <div class="form-group">
+        <label>Top 3-5 questions you get</label>
+        <textarea id="commonQuestions" placeholder="Example:&#10;- Do you ship to Delhi?&#10;- What sizes do you have?&#10;- Do you have COD?&#10;- Can I exchange if it doesn't fit?&#10;- When will my order arrive?" rows="8"></textarea>
+      </div>
+
+      <div class="example-box">
+        <div class="example-label">💡 Tip</div>
+        <div class="example-text">Add the questions you answer 10+ times a day. Nuzy will handle these automatically.</div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+        <button class="btn btn-primary" onclick="submitOnboarding()">Finish Setup →</button>
+      </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="step" id="stepSuccess">
+      <div class="success-icon">🎉</div>
+      <h2 style="text-align:center">You're All Set!</h2>
+      <p class="step-desc" style="text-align:center">Nuzy is now ready to handle your customer messages. Let's connect your WhatsApp or Instagram.</p>
+      
+      <div style="margin-top:32px;text-align:center">
+        <a href="/dashboard.html" class="btn btn-primary">Go to Dashboard →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://qobsbbfjjgwgfmgxwinn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvYnNiYmZqamdmZ2ZtZ3h3aW5uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1Nzk5NTUsImV4cCI6MjA2MTE1NTk1NX0.ZlIB8o9wqJYcLEHRPmvg7wGVNAEbSzPfBAp6aYU6lnE';
+const nuzySupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentStep = 1;
+const totalSteps = 6;
+
+// Initialize step indicators
+function initStepIndicators() {
+  const indicator = document.getElementById('stepIndicator');
+  for (let i = 0; i < totalSteps; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot' + (i === 0 ? ' active' : '');
+    indicator.appendChild(dot);
+  }
+}
+
+// Update progress
+function updateProgress() {
+  const progress = (currentStep / totalSteps) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+  
+  const dots = document.querySelectorAll('.step-dot');
+  dots.forEach((dot, index) => {
+    if (index < currentStep) {
+      dot.classList.add('active');
+    } else {
+      dot.classList.remove('active');
+    }
+  });
+}
+
+// Next step
+function nextStep() {
+  if (currentStep < totalSteps) {
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep++;
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+}
+
+// Previous step
+function prevStep() {
+  if (currentStep > 1) {
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep--;
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+}
+
+// Toggle tag
+function toggleTag(tag) {
+  tag.classList.toggle('selected');
+}
+
+// Select radio
+function selectRadio(option) {
+  const radioGroup = option.closest('.radio-group');
+  radioGroup.querySelectorAll('.radio-option').forEach(opt => {
+    opt.classList.remove('selected');
+  });
+  option.classList.add('selected');
+  option.querySelector('input').checked = true;
+  
+  // Show/hide min order field
+  if (option.querySelector('input[value="above"]')) {
+    document.getElementById('minOrderGroup').style.display = 'block';
+  } else if (option.closest('[name="freeShipping"]')) {
+    document.getElementById('minOrderGroup').style.display = 'none';
+  }
+}
+
+// Submit onboarding
+async function submitOnboarding() {
+  const data = {
+    store_name: document.getElementById('storeName').value,
+    product_type: document.getElementById('productType').value,
+    categories: Array.from(document.querySelectorAll('#categoryTags .tag.selected')).map(t => t.textContent),
+    price_range: document.getElementById('priceRange').value,
+    delivery_time: document.getElementById('deliveryTime').value,
+    free_shipping: document.querySelector('input[name="freeShipping"]:checked')?.value,
+    min_order: document.getElementById('minOrder').value,
+    return_window: document.getElementById('returnWindow').value,
+    return_conditions: document.getElementById('returnConditions').value,
+    refund_time: document.getElementById('refundTime').value,
+    brand_tone: document.querySelector('input[name="brandTone"]:checked')?.value,
+    use_emojis: document.querySelector('input[name="useEmojis"]:checked')?.value === 'yes',
+    common_questions: document.getElementById('commonQuestions').value,
+  };
+
+  console.log('Onboarding data:', data);
+  localStorage.setItem('onboarding_data', JSON.stringify(data));
+  
+  // Show success
+  document.getElementById('step' + currentStep).classList.remove('active');
+  document.getElementById('stepSuccess').classList.add('active');
+  document.getElementById('progressFill').style.width = '100%';
+}
+
+// Initialize
+initStepIndicators();
+updateProgress();
+</script>
+</body>
+</html>
