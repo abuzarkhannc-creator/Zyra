@@ -433,17 +433,69 @@ const SUPABASE_URL = 'https://qobsbbfjjgwgfmgxwinn.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvYnNiYmZqamdmZ2ZtZ3h3aW5uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1Nzk5NTUsImV4cCI6MjA2MTE1NTk1NX0.ZlIB8o9wqJYcLEHRPmvg7wGVNAEbSzPfBAp6aYU6lnE';
 const nuzySupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Check auth and load user data
+async function loadUserData() {
+  const { data: { user }, error } = await nuzySupabase.auth.getUser();
+  
+  if (error || !user) {
+    console.error('Auth error:', error);
+    window.location.href = '/nuzy_auth.html';
+    return;
+  }
+  
+  // Update user display
+  const userNameEl = document.querySelector('.user-name');
+  const userEmailEl = document.querySelector('.user-email');
+  const userAvatarEl = document.querySelector('.user-avatar');
+  
+  if (userEmailEl) userEmailEl.textContent = user.email;
+  if (userNameEl) userNameEl.textContent = user.email.split('@')[0];
+  if (userAvatarEl) userAvatarEl.textContent = user.email[0].toUpperCase();
+}
+
 // Load onboarding data
 const onboardingData = JSON.parse(localStorage.getItem('onboarding_data') || '{}');
 if (onboardingData.store_name) {
   document.getElementById('businessName').textContent = onboardingData.store_name;
 }
 
+// Logout function
+async function logout() {
+  await nuzySupabase.auth.signOut();
+  window.location.href = '/';
+}
+
+// Initialize
+loadUserData();
+
 // Auto-scroll chat to bottom
 const chatMessages = document.getElementById('chatMessages');
 if (chatMessages) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
+// Add click handlers for navigation (coming soon features)
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function() {
+    const text = this.textContent.trim();
+    
+    // Active states
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+    
+    // Show coming soon for non-messages sections
+    if (!text.includes('Messages')) {
+      alert(`${text} feature coming soon! 🚀\n\nFor now, you can:\n- View customer messages\n- See AI auto-replies\n- Approve/edit suggested responses`);
+    }
+  });
+});
+
+// Logout on user profile click
+document.querySelector('.user-profile').addEventListener('click', function() {
+  if (confirm('Do you want to log out?')) {
+    logout();
+  }
+});
 </script>
 </body>
 </html>
