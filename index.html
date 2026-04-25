@@ -116,13 +116,167 @@ footer{padding:60px 0 40px;border-top:1px solid var(--b1)}
 .footer-links a:hover{color:var(--txt)}
 .footer-bottom{text-align:center;color:var(--t3);font-size:0.85rem;padding-top:32px;border-top:1px solid var(--b1)}
 
+/* Mobile Responsive */
 @media (max-width: 768px){
-  h1{font-size:2.5rem}
-  .hero-stats{gap:24px}
+  h1{font-size:2rem;line-height:1.2}
+  h2{font-size:1.8rem}
+  .container{padding:0 16px}
+  .hero{padding:60px 0 40px}
+  .hero-subtitle{font-size:1rem}
+  .hero-stats{gap:16px;flex-direction:column}
+  .stat-number{font-size:2rem}
   .solution-content{grid-template-columns:1fr}
   .nav-links{display:none}
-  .cta-group{flex-direction:column}
+  .cta-group{flex-direction:column;width:100%}
+  .btn-primary,.btn-secondary{width:100%;text-align:center}
+  .section{padding:60px 0}
+  .features-grid,.problem-grid{grid-template-columns:1fr}
+  .pricing-card,.feature-card,.problem-card{padding:24px}
+  .footer-content{grid-template-columns:1fr;gap:32px}
+  .big-number{font-size:3.5rem}
+  .chat-demo{max-width:100%}
 }
+
+@media (max-width: 480px){
+  h1{font-size:1.75rem}
+  h2{font-size:1.5rem}
+  .logo{font-size:1.2rem}
+  .hero{padding:40px 0 30px}
+  .section{padding:40px 0}
+  .pricing-card{padding:20px}
+}
+
+/* Live Chat Demo Styles */
+.chat-demo{
+  max-width:500px;
+  margin:0 auto 40px;
+  background:var(--s2);
+  border:1px solid var(--b2);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+
+.chat-header{
+  padding:16px 20px;
+  background:var(--s3);
+  border-bottom:1px solid var(--b1);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:0.9rem;
+}
+
+.chat-messages{
+  padding:20px;
+  min-height:280px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.chat-message{
+  display:flex;
+  animation:slideIn 0.4s ease-out;
+}
+
+.chat-message.customer{
+  justify-content:flex-end;
+}
+
+.chat-message.ai{
+  justify-content:flex-start;
+}
+
+.message-bubble{
+  max-width:75%;
+  padding:12px 16px;
+  border-radius:16px;
+  font-size:0.9rem;
+  line-height:1.5;
+}
+
+.chat-message.customer .message-bubble{
+  background:linear-gradient(135deg,#7C3AED,#8B5CF6);
+  color:#fff;
+  border-bottom-right-radius:4px;
+}
+
+.chat-message.ai .message-bubble{
+  background:var(--s3);
+  border:1px solid var(--b1);
+  color:var(--txt);
+  border-bottom-left-radius:4px;
+}
+
+.chat-message.ai.typing{
+  opacity:0;
+  animation:fadeIn 0.3s ease-out 0.5s forwards;
+}
+
+.typing-indicator{
+  display:flex;
+  gap:4px;
+  padding:4px 0;
+}
+
+.typing-indicator span{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--t3);
+  animation:typingDot 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2){
+  animation-delay:0.2s;
+}
+
+.typing-indicator span:nth-child(3){
+  animation-delay:0.4s;
+}
+
+.chat-footer{
+  padding:12px 20px;
+  background:var(--s3);
+  border-top:1px solid var(--b1);
+  text-align:center;
+}
+
+@keyframes slideIn{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes typingDot{
+  0%,60%,100%{
+    transform:translateY(0);
+    opacity:0.4;
+  }
+  30%{
+    transform:translateY(-8px);
+    opacity:1;
+  }
+}
+
+/* Animate chat messages sequentially */
+.chat-message:nth-child(1){animation-delay:0.2s}
+.chat-message:nth-child(2){animation-delay:1.5s;opacity:0;animation-fill-mode:forwards}
+.chat-message:nth-child(3){animation-delay:3s;opacity:0;animation-fill-mode:forwards}
+.chat-message:nth-child(4){animation-delay:5s;opacity:0;animation-fill-mode:forwards}
+.chat-message:nth-child(5){animation-delay:6.5s;opacity:0;animation-fill-mode:forwards}
+
 </style>
 </head>
 <body>
@@ -155,6 +309,43 @@ footer{padding:60px 0 40px;border-top:1px solid var(--b1)}
     <p class="hero-subtitle">
       Stop drowning in repetitive customer messages. Nuzy replies to your WhatsApp and Instagram DMs automatically—in your exact voice—so you can focus on growing your business.
     </p>
+
+    <p style="color:var(--t3);font-size:0.85rem;margin-top:8px;margin-bottom:32px">Built by <span style="color:var(--pri3);font-weight:600">HighBridge Labs</span></p>
+
+    <!-- Live Chat Demo -->
+    <div class="chat-demo">
+      <div class="chat-header">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--gn)"></div>
+          <span style="font-weight:600">Live Conversation</span>
+        </div>
+        <span style="color:var(--t3);font-size:0.8rem">Nuzy AI responding...</span>
+      </div>
+      <div class="chat-messages">
+        <div class="chat-message customer">
+          <div class="message-bubble">Hey! Do you ship to Mumbai? And what's the delivery time?</div>
+        </div>
+        <div class="chat-message ai typing">
+          <div class="message-bubble">
+            <div class="typing-indicator">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+        <div class="chat-message ai">
+          <div class="message-bubble">Yes! We ship across India 🚚 Mumbai delivery usually takes 3-4 days. Free shipping on orders above ₹999!</div>
+        </div>
+        <div class="chat-message customer">
+          <div class="message-bubble">Perfect! Is the blue dress available in size M?</div>
+        </div>
+        <div class="chat-message ai">
+          <div class="message-bubble">Let me check... Yes! Blue dress in M is in stock ✨ Want me to hold it for you?</div>
+        </div>
+      </div>
+      <div class="chat-footer">
+        <span style="color:var(--gn);font-size:0.75rem">✓ Sent automatically in <2s</span>
+      </div>
+    </div>
 
     <div class="hero-stats">
       <div class="stat">
@@ -767,12 +958,152 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </section>
 
+<!-- FAQ Section -->
+<section class="section" id="faq" style="background:var(--s1)">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">FAQ</div>
+      <h2>Common Questions</h2>
+    </div>
+
+    <div style="max-width:800px;margin:0 auto">
+      <!-- FAQ Item 1 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>How does Nuzy know what to reply?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>During onboarding, you teach Nuzy your brand voice, product details, and policies. It learns from your past conversations and adapts to your style. You can also review and approve replies before they're sent, so Nuzy gets smarter over time.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 2 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What happens if Nuzy doesn't know the answer?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Nuzy automatically escalates complex questions to you. Things like refund requests, complaints, or unique inquiries are flagged for your review. You'll get a notification and can reply manually—Nuzy handles the routine stuff, you handle the important conversations.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 3 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Do I need technical skills to set this up?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Not at all! Setup takes 2 minutes. Just connect your WhatsApp Business account or Instagram, tell Nuzy about your products, and you're done. No coding, no complicated configurations—it's built for small business owners, not developers.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 4 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Can customers tell it's AI?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>No! That's the whole point. Nuzy matches your exact tone, uses emojis the way you do, and replies like a human. We've tested with real D2C brands—customers can't tell the difference. It sounds like you, not a robot.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 5 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What if I want to reply manually sometimes?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>You're always in control. You can jump in and reply manually anytime, edit Nuzy's suggested replies before sending, or turn off auto-reply for specific conversations. Nuzy assists you—it doesn't take over.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 6 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>How much does it cost compared to hiring a VA?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>A virtual assistant costs ₹15,000-25,000/month. Nuzy starts at just $4/month (₹330). Even our most popular plan at $15/month saves you over 95% compared to a VA—and Nuzy works 24/7, never takes breaks, and responds in under 2 seconds.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 7 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Is there a free trial?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Yes! 14 days completely free, no credit card required. Test it with your real customer messages, see how it handles your specific questions, and decide if it's worth it. Most brands know within 48 hours that it's a game-changer.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 8 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What channels does Nuzy support?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Currently: WhatsApp Business and Instagram DMs. These are where most D2C brands get 90% of their customer messages. We're adding support for Facebook Messenger and email soon.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 9 -->
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Can I cancel anytime?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Absolutely. No contracts, no cancellation fees. Cancel with one click from your dashboard. If you cancel within 7 days of your first payment, we'll refund you in full. Simple as that.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.faq-item{background:var(--s2);border:1px solid var(--b1);border-radius:12px;margin-bottom:16px;overflow:hidden;transition:all 0.3s}
+.faq-item:hover{border-color:var(--b2)}
+.faq-question{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;cursor:pointer;font-weight:600;user-select:none;transition:all 0.2s}
+.faq-question:hover{background:var(--s3)}
+.faq-icon{font-size:1.5rem;color:var(--pri);transition:transform 0.3s;font-weight:300}
+.faq-item.active .faq-icon{transform:rotate(45deg)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height 0.3s ease-out,padding 0.3s}
+.faq-answer p{color:var(--t2);line-height:1.7}
+.faq-item.active .faq-answer{max-height:500px;padding:0 24px 20px}
+</style>
+
+<script>
+function toggleFAQ(element) {
+  const item = element.parentElement;
+  const wasActive = item.classList.contains('active');
+  
+  // Close all FAQ items
+  document.querySelectorAll('.faq-item').forEach(faq => {
+    faq.classList.remove('active');
+  });
+  
+  // Open clicked item if it wasn't active
+  if (!wasActive) {
+    item.classList.add('active');
+  }
+}
+</script>
+
 <footer>
   <div class="container">
     <div class="footer-content">
       <div class="footer-section">
         <div class="logo" style="margin-bottom:16px">Nuzy AI</div>
-        <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">AI agent trained specifically for customer service. Available worldwide.</p>
+        <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">AI customer service agent by <strong style="color:var(--pri3)">HighBridge Labs</strong>. Built for D2C & e-commerce brands worldwide.</p>
       </div>
 
       <div class="footer-section">
@@ -804,7 +1135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; 2026 Nuzy AI. All rights reserved.</p>
+      <p>&copy; 2026 HighBridge Labs. All rights reserved.</p>
     </div>
   </div>
 </footer>
